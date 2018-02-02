@@ -1,17 +1,28 @@
 import praw
 from bs4 import BeautifulSoup as Soup
+import steam
+# import steam.webauth as wa
+#
+# user = wa.WebAuth('', '')
+#
+# try:
+#     user.login()
+# except wa.EmailCodeRequired:
+#     code = input('Enter an email confirmation code: ')
+#     user.login(email_code=code)
 
+eligible = {}
+steamUrl = 'steamcommunity.com'
 reddit = praw.Reddit('bot')
 submission = reddit.submission('7rq8fv')
 
 for comment in submission.comments:
-    #vars(comment)
     for a in Soup(comment.body_html, 'html.parser')('a'):
-        #print(str(a.get('href')))
         href = a.get('href')
-        if href.find('steamcommunity') != -1:
-            print(href)
+        if href.find(steamUrl) != -1:
+            eligible[comment.author.name] = str(steam.steamid.from_url(href))
 
+for key, value in eligible.items():
+    print(key + ' ' + value)
 
-
-# add eligble users to an array, remove duplicates
+# TODO: remove duplicates
