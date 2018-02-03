@@ -1,20 +1,13 @@
-import praw
+import praw, steam, configparser
 from bs4 import BeautifulSoup as Soup
-import steam
-# import steam.webauth as wa
-#
-# user = wa.WebAuth('', '')
-#
-# try:
-#     user.login()
-# except wa.EmailCodeRequired:
-#     code = input('Enter an email confirmation code: ')
-#     user.login(email_code=code)
 
+settings = configparser.ConfigParser()
+settings.read('settings.ini')
+steamApi = steam.WebAPI(settings['steam']['api_key'])
+reddit = praw.Reddit('picker')
+submission = reddit.submission('7rq8fv')  # TODO: pass a submission
+steamUrl = settings['steam']['url']
 eligible = {}
-steamUrl = 'steamcommunity.com'
-reddit = praw.Reddit('bot')
-submission = reddit.submission('7rq8fv')
 
 for comment in submission.comments:
     for a in Soup(comment.body_html, 'html.parser')('a'):
@@ -25,4 +18,4 @@ for comment in submission.comments:
 for key, value in eligible.items():
     print(key + ' ' + value)
 
-# TODO: remove duplicates
+# TODO: handle exceptions
