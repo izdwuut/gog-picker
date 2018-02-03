@@ -106,6 +106,8 @@ venv.bak/
 # Custom
 docs/
 praw.ini
+steam.ini
+settings.ini
 
 # JetBrains
 .idea
