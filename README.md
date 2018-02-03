@@ -14,7 +14,7 @@ An `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.
 
 # Configuration
 
-GoG picker comes with two configuration files: `praw.ini.dist` and `settings.ini.dist`. You have to remove a `.dist` extenison first.
+GoG picker comes with two configuration files: `praw.ini.dist` and `settings.ini.dist`. You have to remove a `.dist` extension first.
 
 ## praw.ini
 
