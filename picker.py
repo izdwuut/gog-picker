@@ -35,12 +35,8 @@ for user in list(eligible):
         eligible.pop(user)
         violate.append(user)
 
-print('Users that violate rules:')
-for user in violate:
-    print(user)
-print('\nUsers eligible for drawing:')
-for user in eligible.keys():
-    print(user)
-print('\nWinner:\n' + random.choice(list(eligible)))
+print('Users that violate rules: ' + ', '.join(violate))
+print('Users eligible for drawing: ' + ', '.join(eligible.keys()))
+print('Winner: ' + random.choice(list(eligible)))
 
 # TODO: handle exceptions
