@@ -20,6 +20,19 @@ def get_steam_id(url):
         return response['steamid']
     return steamId
 
+
+def remove_hidden():
+    response = steamApi.call('ISteamUser.GetPlayerSummaries', steamids=','.join(eligible))['response']['players']
+    hidden = []
+    for player in response:
+        if player['communityvisibilitystate'] != 3:
+            hidden.append(player['steamid'])
+    for user, steamId in eligible.copy().items():
+        if steamId in hidden:
+            del eligible[user]
+            violate.append(user)
+
+
 for comment in submission.comments:
     username = comment.author.name
     if username.find('_bot') != -1 or username == 'AutoModerator':  # TODO: put in settings.ini
@@ -30,6 +43,7 @@ for comment in submission.comments:
             eligible[username] = get_steam_id(href)
     if username not in eligible.keys():
         violate.append(username)
+remove_hidden()
 for user in list(eligible):
     # TODO: handle HTTP 500 error
     level = steamApi.call('IPlayerService.GetSteamLevel', steamid=eligible[user])['response']['player_level']
