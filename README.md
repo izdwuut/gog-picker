@@ -1,18 +1,27 @@
-# Gift of Games Picker
+# Gift of Games Picker for Reddit
 
 An utility that picks a winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawing in accordance with subreddit [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release]() is sluggish but works more often than not. The script uses Python's standard [RNG](https://docs.python.org/3/library/random.html) but I might decide on implementing a [random.org](https://www.random.org/) API.
 
+The GoG Picker works with Steam giveaways only.
+
 # Usage
 
-GoG Picker requires Python 3.6+ installed on your PC. You need a Steam and Reddit API keys. Check [a configuration section](#configuration) for more details. The script is intended to be invoked from a [CLI](https://en.wikipedia.org/wiki/Command-line_interface):
+The GoG Picker requires Python 3.6+ installed on your PC. You need a Steam and Reddit API keys. Check [a configuration section](#configuration) for more details. The script is intended to be invoked from a [CLI](https://en.wikipedia.org/wiki/Command-line_interface):
 
 ```
-picker.py URL
+$ picker.py URL
 ```
 
 An `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/`.
 
-# Example
+# Covered rules
+
+The GoG Picker covers only a small subset of the subreddit rules, but large enough to pick a winner and save you some tedious work.
+
+* a clickable Steam profile link was provided
+* the Steam profile is public
+* the Steam account is level 2 or above
+* a Redditor has 300 comment karma or more
 
 # Configuration
 
