@@ -12,6 +12,14 @@ steamUrl = settings['steam']['url']
 eligible = {}
 violate = []
 
+def get_steam_id(url):
+    url = url.strip('/')
+    steamId = url[(url.rfind('/') + 1):]
+    response = steamApi.call('ISteamUser.ResolveVanityURL', vanityurl=steamId)['response']
+    if response['success'] == 1:
+        return response['steamid']
+    return steamId
+
 for comment in submission.comments:
     username = comment.author.name
     if username.find('_bot') != -1 or username == 'AutoModerator':  # TODO: put in settings.ini
@@ -19,13 +27,8 @@ for comment in submission.comments:
     for a in Soup(comment.body_html, 'html.parser')('a'):
         href = a.get('href')
         if href.find(steamUrl) != -1:
-            # TODO: refactor. it takes too long and could never yield a result
-            while True:
-                steamId = str(steam.steamid.from_url(href))
-                if steamId is not None:
-                    eligible[username] = steamId
-                    break
-    if username not in eligible:
+            eligible[username] = get_steam_id(href)
+    if username not in eligible.keys():
         violate.append(username)
 for user in list(eligible):
     # TODO: handle HTTP 500 error
