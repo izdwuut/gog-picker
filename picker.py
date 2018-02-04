@@ -11,7 +11,7 @@ minLevel = int(settings['rules']['min_steam_level'])
 minKarma = int(settings['rules']['min_karma'])
 steamUrl = settings['steam']['url']
 eligible = {}
-violate = []
+violators = []
 
 
 def get_steam_id(item):
@@ -20,11 +20,9 @@ def get_steam_id(item):
     url = url.strip('/')
     steamId = url[(url.rfind('/') + 1):]
     response = steamApi.call('ISteamUser.ResolveVanityURL', vanityurl=steamId)['response']
-    if response['success'] == 1:
-        eligible[user] = str(response['steamid'])
-    else:
-        eligible[user] = steamId
-    return user, eligible[user]
+    if response['success'] != 1:
+        return user, steamId
+    return user, str(response['steamid'])
 
 
 def remove_hidden():
@@ -36,7 +34,7 @@ def remove_hidden():
     for user, steamId in eligible.copy().items():
         if steamId in hidden:
             del eligible[user]
-            violate.append(user)
+            violators.append(user)
 
 
 if __name__ == '__main__':
@@ -49,7 +47,7 @@ if __name__ == '__main__':
             if href.find(steamUrl) != -1:
                 eligible[username] = href
         if username not in eligible.keys():
-            violate.append(username)
+            violators.append(username)
     with Pool() as p:
         result = p.map(get_steam_id, eligible.items())
         for item in result:
@@ -63,9 +61,9 @@ if __name__ == '__main__':
         karma = reddit.redditor(user).comment_karma
         if level < minLevel or karma < minKarma:
             eligible.pop(user)
-            violate.append(user)
+            violators.append(user)
 
-    print('Users that violate rules: ' + ', '.join(violate))
+    print('Users that violate rules: ' + ', '.join(violators))
     print('Users eligible for drawing: ' + ', '.join(eligible.keys()))
     print('Winner: ' + random.choice(list(eligible)))
 
