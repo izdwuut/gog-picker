@@ -14,15 +14,14 @@ eligible = {}
 violators = []
 
 
-def get_steam_id(item):
-    user = item[0]
-    url = item[1]
+def get_steam_id(url):
     url = url.strip('/')
     steamId = url[(url.rfind('/') + 1):]
     response = steamApi.call('ISteamUser.ResolveVanityURL', vanityurl=steamId)['response']
     if response['success'] != 1:
-        return user, steamId
-    return user, str(response['steamid'])
+        return steamId
+    else:
+        return str(response['steamid'])
 
 
 def remove_hidden():
@@ -48,12 +47,11 @@ if __name__ == '__main__':
                 eligible[username] = href
         if username not in eligible.keys():
             violators.append(username)
-    with Pool() as p:
-        result = p.map(get_steam_id, eligible.items())
-        for item in result:
-            user = item[0]
-            steamId = item[1]
-            eligible[user] = steamId
+    pool = Pool()
+    for user, url in eligible.copy().items():
+        eligible[user] = pool.apply_async(get_steam_id, [url])
+    for user, result in eligible.items():
+        eligible[user] = result.get()
     remove_hidden()
     for user in eligible.copy():
         # TODO: handle HTTP 500 error
