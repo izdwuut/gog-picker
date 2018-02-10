@@ -12,6 +12,8 @@ minKarma = int(settings['rules']['min_karma'])
 steamUrl = settings['steam']['url']
 eligible = {}
 violators = []
+karmas = {}
+levels = {}
 
 
 def get_steam_id(url):
@@ -36,7 +38,16 @@ def remove_hidden():
             violators.append(user)
 
 
+def get_steam_level(steamId):
+    return steamApi.call('IPlayerService.GetSteamLevel', steamid=steamId)['response']['player_level']
+
+
+def get_karma(user):
+    return reddit.redditor(user).comment_karma
+
+
 if __name__ == '__main__':
+    # TODO: find_profile_link()
     for comment in submission.comments:
         username = comment.author.name
         if username.find('_bot') != -1 or username == 'AutoModerator':  # TODO: put in settings.ini
@@ -50,13 +61,16 @@ if __name__ == '__main__':
     pool = Pool()
     for user, url in eligible.copy().items():
         eligible[user] = pool.apply_async(get_steam_id, [url])
+        karmas[user] = pool.apply_async(get_karma, [user])
     for user, result in eligible.items():
         eligible[user] = result.get()
     remove_hidden()
     for user in eligible.copy():
         # TODO: handle HTTP 500 error
-        level = steamApi.call('IPlayerService.GetSteamLevel', steamid=eligible[user])['response']['player_level']
-        karma = reddit.redditor(user).comment_karma
+        levels[user] = pool.apply_async(get_steam_level, [eligible[user]])
+    for user in eligible.copy():
+        level = levels[user].get()
+        karma = karmas[user].get()
         if level < minLevel or karma < minKarma:
             eligible.pop(user)
             violators.append(user)
@@ -64,5 +78,4 @@ if __name__ == '__main__':
     print('Users that violate rules: ' + ', '.join(violators))
     print('Users eligible for drawing: ' + ', '.join(eligible.keys()))
     print('Winner: ' + random.choice(list(eligible)))
-
     # TODO: handle exceptions
