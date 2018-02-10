@@ -5,8 +5,8 @@ from multiprocessing import Pool
 settings = configparser.ConfigParser()
 settings.read('settings.ini')
 steamApi = steam.WebAPI(settings['steam']['api_key'])
-reddit = praw.Reddit('picker')
-submission = reddit.submission('7rq8fv')  # TODO: pass a submission
+redditApi = praw.Reddit('picker')
+submission = redditApi.submission('7rq8fv')  # TODO: pass a submission
 minLevel = int(settings['rules']['min_steam_level'])
 minKarma = int(settings['rules']['min_karma'])
 steamUrl = settings['steam']['url']
@@ -43,39 +43,45 @@ def get_steam_level(steamId):
 
 
 def get_karma(user):
-    return reddit.redditor(user).comment_karma
+    return redditApi.redditor(user).comment_karma
 
 
-if __name__ == '__main__':
+def scrap_comments(submission):
     # TODO: find_profile_link()
     for comment in submission.comments:
         username = comment.author.name
         if username.find('_bot') != -1 or username == 'AutoModerator':  # TODO: put in settings.ini
             continue
         for a in Soup(comment.body_html, 'html.parser')('a'):
-            href = a.get('href')
-            if href.find(steamUrl) != -1:
-                eligible[username] = href
+            url = a.get('href')
+            if url.find(steamUrl) != -1:
+                eligible[username] = {'url': url}
         if username not in eligible.keys():
             violators.append(username)
+
+
+if __name__ == '__main__':
+    scrap_comments(submission)
     pool = Pool()
-    for user, url in eligible.copy().items():
-        eligible[user] = pool.apply_async(get_steam_id, [url])
-        karmas[user] = pool.apply_async(get_karma, [user])
+    for user in eligible.copy():
+        eligible[user]['steamId'] = pool.apply_async(get_steam_id, [eligible[user]['url']])
+        eligible[user]['karma'] = pool.apply_async(get_karma, [user])
     for user, result in eligible.items():
-        eligible[user] = result.get()
+        eligible[user]['steamId'] = result['steamId'].get()
     remove_hidden()
     for user in eligible.copy():
         # TODO: handle HTTP 500 error
-        levels[user] = pool.apply_async(get_steam_level, [eligible[user]])
+        eligible[user]['level'] = pool.apply_async(get_steam_level, [eligible[user]['steamId']])
     for user in eligible.copy():
-        level = levels[user].get()
-        karma = karmas[user].get()
+        level = eligible[user]['level'].get()
+        karma = eligible[user]['karma'].get()
         if level < minLevel or karma < minKarma:
             eligible.pop(user)
             violators.append(user)
 
     print('Users that violate rules: ' + ', '.join(violators))
     print('Users eligible for drawing: ' + ', '.join(eligible.keys()))
+    # TODO: a list can be empty
     print('Winner: ' + random.choice(list(eligible)))
     # TODO: handle exceptions
+    print(eligible)
