@@ -1,4 +1,5 @@
 import praw, steam, configparser, random, argparse, prawcore
+from tqdm import tqdm as tqdm
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup as Soup
 from multiprocessing import Pool
@@ -17,7 +18,7 @@ minKarma = int(settings['rules']['min_karma'])
 steamUrl = settings['steam']['url']
 eligible = {}
 violators = []
-
+bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
 
 def get_steam_id(user):
     url = eligible[user]['url'].strip('/')
@@ -71,32 +72,37 @@ def scrap_comments(submission):
 
 if __name__ == '__main__':
     # sub = '7rq8fv'
+    tqdm.write("Scrapping submission's comments.")
     submission = redditApi.submission(url=args.url)
-    try:
-        scrap_comments(submission)
-    except prawcore.exceptions.NotFound:
-        print('Invalid URL.')
-        exit(1)
+    with tqdm(total=100, bar_format=bar_format) as progress:
+        try:
+            scrap_comments(submission)
+        except prawcore.exceptions.NotFound:
+            print('Invalid URL.')
+            exit(1)
+        progress.update(100)
     pool = Pool()
     for user in eligible.copy():
         get_steam_id(user)
         eligible[user]['karma'] = pool.apply_async(get_karma, [user])
-    for user, data in eligible.items():
+    tqdm.write('\nResolving vanity URLs.')
+    for user, data in tqdm(eligible.copy().items(), bar_format=bar_format):
         if type(data['steamId']) is ApplyResult:
             eligible[user]['steamId'] = data['steamId'].get()
     remove_hidden()
     for user in eligible.copy():
         # TODO: handle HTTP 500 error
         eligible[user]['level'] = pool.apply_async(get_steam_level, [eligible[user]['steamId']])
-    for user in eligible.copy():
+    print("\nFetching user's Steam level and comment karma.")
+    for user in tqdm(eligible.copy(), bar_format=bar_format):
         if eligible[user]['level'].get() < minLevel or eligible[user]['karma'].get() < minKarma:
             eligible.pop(user)
             violators.append(user)
 
     if violators:
-        print('Users that violate rules: ' + ', '.join(violators) + '.')
+        print('\n\nResults:\nUsers that violate rules: ' + ', '.join(violators) + '.\n')
     if eligible:
-        print('Users eligible for drawing: ' + ', '.join(eligible.keys()) + '.')
+        print('Users eligible for drawing: ' + ', '.join(eligible.keys()) + '.\n')
         print('Winner: ' + random.choice(list(eligible)))
     else:
         print('No eligible users.')
