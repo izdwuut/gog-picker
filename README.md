@@ -21,8 +21,9 @@ You can get some more help by invoking the script with an `-h` flag.
 The GoG Picker covers only a small subset of the subreddit rules, but large enough to pick a winner and save you some tedious work.
 
 * a clickable Steam profile link was provided
-* the Steam profile is public
-* the Steam account is level 2 or above
+* the link leads to an existing profile
+* the profile is public
+* the profile is level 2 or above
 * a Redditor has 300 comment karma or more
 
 # Configuration
