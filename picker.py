@@ -1,14 +1,19 @@
-import praw, steam, configparser, random
+import praw, steam, configparser, random, argparse
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup as Soup
 from multiprocessing import Pool
 from multiprocessing.pool import ApplyResult
 
+parser = argparse.ArgumentParser(description='Picks a winner of r/GiftofGames drawing in accordance with subreddit rules.')
+parser.add_argument('url', help='pick a winner of a given thread')
+args = parser.parse_args()
+
 settings = configparser.ConfigParser()
 settings.read('settings.ini')
 steamApi = steam.WebAPI(settings['steam']['api_key'])
 redditApi = praw.Reddit('picker')
-submission = redditApi.submission('7rq8fv')  # TODO: pass a submission
+#sub = '7rq8fv'
+submission = redditApi.submission(url=args.url)
 minLevel = int(settings['rules']['min_steam_level'])
 minKarma = int(settings['rules']['min_karma'])
 steamUrl = settings['steam']['url']
