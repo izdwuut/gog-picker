@@ -1,6 +1,8 @@
 import praw, steam, configparser, random
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup as Soup
 from multiprocessing import Pool
+from multiprocessing.pool import ApplyResult
 
 settings = configparser.ConfigParser()
 settings.read('settings.ini')
@@ -12,17 +14,19 @@ minKarma = int(settings['rules']['min_karma'])
 steamUrl = settings['steam']['url']
 eligible = {}
 violators = []
-karmas = {}
-levels = {}
 
 
-def get_steam_id(url):
-    url = url.strip('/')
-    steamId = url[(url.rfind('/') + 1):]
-    response = steamApi.call('ISteamUser.ResolveVanityURL', vanityurl=steamId)['response']
-    if response['success'] != 1:
-        return steamId
-    return str(response['steamid'])
+def get_steam_id(user):
+    url = eligible[user]['url'].strip('/')
+    path = urlparse(url).path.strip('/').split('/')
+    if path[0] == 'profiles':
+        eligible[user]['steamId'] = path[1]
+    else:
+        eligible[user]['steamId'] = pool.apply_async(resolve_vanity_url, [path[1]])
+
+
+def resolve_vanity_url(url):
+    return steamApi.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']['steamid']
 
 
 def remove_hidden():
@@ -57,6 +61,7 @@ def scrap_comments(submission):
             url = a.get('href')
             if url.find(steamUrl) != -1:
                 eligible[username] = {'url': url}
+                break
         if username not in eligible.keys():
             violators.append(username)
 
@@ -65,10 +70,11 @@ if __name__ == '__main__':
     scrap_comments(submission)
     pool = Pool()
     for user in eligible.copy():
-        eligible[user]['steamId'] = pool.apply_async(get_steam_id, [eligible[user]['url']])
+        get_steam_id(user)
         eligible[user]['karma'] = pool.apply_async(get_karma, [user])
     for user, data in eligible.items():
-        eligible[user]['steamId'] = data['steamId'].get()
+        if type(data['steamId']) is ApplyResult:
+            eligible[user]['steamId'] = data['steamId'].get()
     remove_hidden()
     for user in eligible.copy():
         # TODO: handle HTTP 500 error
