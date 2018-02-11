@@ -30,7 +30,7 @@ def get_steam_id(user):
 
 
 def resolve_vanity_url(url):
-    return steamApi.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']['steamid']
+    return steamApi.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']
 
 
 def remove_hidden():
@@ -88,7 +88,12 @@ if __name__ == '__main__':
     tqdm.write('\nResolving vanity URLs.')
     for user, data in tqdm(eligible.copy().items(), bar_format=bar_format):
         if type(data['steamId']) is ApplyResult:
-            eligible[user]['steamId'] = data['steamId'].get()
+            response = data['steamId'].get()
+            if response['success'] == 1:
+                eligible[user]['steamId'] = response['steamid']
+            else:
+                eligible.pop(user)
+                violators.append(user)
     remove_hidden()
     for user in eligible.copy():
         # TODO: handle HTTP 500 error
