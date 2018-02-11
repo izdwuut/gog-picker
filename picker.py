@@ -1,4 +1,4 @@
-import praw, steam, configparser, random, argparse
+import praw, steam, configparser, random, argparse, prawcore
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup as Soup
 from multiprocessing import Pool
@@ -12,8 +12,6 @@ settings = configparser.ConfigParser()
 settings.read('settings.ini')
 steamApi = steam.WebAPI(settings['steam']['api_key'])
 redditApi = praw.Reddit('picker')
-#sub = '7rq8fv'
-submission = redditApi.submission(url=args.url)
 minLevel = int(settings['rules']['min_steam_level'])
 minKarma = int(settings['rules']['min_karma'])
 steamUrl = settings['steam']['url']
@@ -72,7 +70,13 @@ def scrap_comments(submission):
 
 
 if __name__ == '__main__':
-    scrap_comments(submission)
+    # sub = '7rq8fv'
+    submission = redditApi.submission(url=args.url)
+    try:
+        scrap_comments(submission)
+    except prawcore.exceptions.NotFound:
+        print('Invalid URL.')
+        exit(1)
     pool = Pool()
     for user in eligible.copy():
         get_steam_id(user)
