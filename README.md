@@ -9,10 +9,12 @@ The GoG Picker works with Steam giveaways only.
 The GoG Picker requires Python 3.6+ installed on your PC. You need a Steam and Reddit API keys. Check [a configuration section](#configuration) for more details. The script is intended to be invoked from a [CLI](https://en.wikipedia.org/wiki/Command-line_interface):
 
 ```
-$ picker.py URL
+$ python picker.py URL
 ```
 
-An `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/`.
+The `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/`.
+
+You can get some more help by invoking the script with an `-h` flag.
 
 # Covered rules
 
@@ -45,7 +47,7 @@ Rules applicable to an user who wants to participate in a drawing.
 ### [steam]
 
 * `url` - a Steam comunity URL used while crawling in search of a valid profile link
-* `api_key` - a [A Steam API key](https://steamcommunity.com/dev/apikey)
+* `api_key` - [a Steam API key](https://steamcommunity.com/dev/apikey)
 
 # License
 The GoG Picker is licensed under a permissive [MIT License](LICENSE).
