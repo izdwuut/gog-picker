@@ -105,9 +105,9 @@ if __name__ == '__main__':
             violators.append(user)
 
     if violators:
-        print('\n\nResults:\nUsers that violate rules: ' + ', '.join(violators) + '.\n')
+        tqdm.write('\n\nResults:\nUsers that violate rules: ' + ', '.join(violators) + '.\n')
     if eligible:
-        print('Users eligible for drawing: ' + ', '.join(eligible.keys()) + '.\n')
-        print('Winner: ' + random.choice(list(eligible)))
+        tqdm.write('Users eligible for drawing: ' + ', '.join(eligible.keys()) + '.\n')
+        tqdm.write('Winner: ' + random.choice(list(eligible)))
     else:
-        print('No eligible users.')
+        tqdm.write('No eligible users.')
