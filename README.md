@@ -1,6 +1,6 @@
 # Gift of Games Picker for Reddit
 
-An utility that picks a winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawing in accordance with subreddit [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release]() is sluggish but works more often than not. The script uses Python's standard [RNG](https://docs.python.org/3/library/random.html) but I might decide on implementing a [random.org](https://www.random.org/) API.
+An utility that picks a winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawing in accordance with subreddit [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release]() is sluggish but works more often than not. I'm going to convert the script to a bot and use cache to improve execution time. The script uses Python's standard [RNG](https://docs.python.org/3/library/random.html) but I might decide on implementing a [random.org](https://www.random.org/) API.
 
 The GoG Picker works with Steam giveaways only.
 
@@ -47,7 +47,7 @@ Rules applicable to an user who wants to participate in a drawing.
 
 ### [steam]
 
-* `url` - a Steam comunity URL used while crawling in search of a valid profile link
+* `url` - a Steam comunity URL
 * `api_key` - [a Steam API key](https://steamcommunity.com/dev/apikey)
 
 # License
