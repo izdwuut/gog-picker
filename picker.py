@@ -74,13 +74,11 @@ class Picker:
     violators = []
     bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
 
-    # TODO: separate classes
     steps = ["Scrapping submission's comments.", "Resolving vanity URLs.", "Fetching user's Steam level and comment karma."]
     steps_iter = None
     steam = Steam(settings['steam'], settings['rules']['min_steam_level'])
     reddit = Reddit(steam, settings['rules']['min_karma'])
 
-    # TODO: rename
     def scrap_comments(self, submission):
         for comment in submission.comments:
             username = comment.author.name
