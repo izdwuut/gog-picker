@@ -4,5 +4,13 @@ min_karma = 300
 
 [steam]
 url = steamcommunity.com
-api_key = 
+api_key =
+min_level = 2
 
+[general]
+replied_to = replied_to.txt
+
+[reddit]
+subreddit = GiftofGames
+tag = !pick
+limit = 25

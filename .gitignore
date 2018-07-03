@@ -108,6 +108,7 @@ docs/
 praw.ini
 steam.ini
 settings.ini
+replied_to.txt
 
 # JetBrains
 .idea
