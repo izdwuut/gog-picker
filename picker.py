@@ -165,6 +165,7 @@ class Picker:
         self.replied_to = File(self.settings['general']['replied_to'])
         self.pool = Pool()
 
+
 class File:
     def __init__(self, file_name):
         self.file_name = file_name
