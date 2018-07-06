@@ -1,4 +1,9 @@
-import praw, steam, configparser, random, argparse, prawcore, os
+import praw
+import steam
+import configparser
+import random
+import prawcore
+import os
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup as Soup
 from multiprocessing import Pool
