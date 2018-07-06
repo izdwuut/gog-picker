@@ -67,7 +67,8 @@ class Reddit:
     def has_tag(self, comment):
         return self.tag in comment.body
 
-    def is_user_special(self, username):
+    @staticmethod
+    def is_user_special(username):
         return username.find('_bot') != -1 or username == 'AutoModerator'
 
     def __init__(self, steam, min_karma, subreddit, tag):
