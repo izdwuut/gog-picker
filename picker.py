@@ -11,14 +11,17 @@ from multiprocessing.pool import ApplyResult
 
 
 class Steam:
-    # TODO: return in unified format (an id instead of dictionary)
     # TODO: handle /profiles/{non-numeric}
+    # TODO: throw an exception if an url is invalid.
     def get_id(self, url):
         url = url.strip('/')
         path = urlparse(url).path.strip('/').split('/')
         if path[0] == 'profiles':
             return path[1]
-        return self.resolve_vanity_url(path[1])
+        response = self.resolve_vanity_url(path[1])
+        if response['success'] == 1:
+            return response['steamid']
+        return None
 
     def resolve_vanity_url(self, url):
         return self.api.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']
@@ -150,15 +153,12 @@ class Picker:
             self.eligible[user]['steam_id'] = self.pool.apply_async(self.steam.get_id, [scrapped['url']])
             self.eligible[user]['karma'] = self.pool.apply_async(self.reddit.get_karma, [user])
         for user, data in self.eligible.copy().items():
-            response = data['steam_id'].get()
-            if type(response) is dict:
-                if response['success'] == 1:
-                    self.eligible[user]['steam_id'] = response['steamid']
-                else:
-                    self.eligible.pop(user)
-                    self.violators.append(user)
+            steam_id = data['steam_id'].get()
+            if steam_id:
+                self.eligible[user]['steam_id'] = steam_id
             else:
-                self.eligible[user]['steam_id'] = response
+                self.eligible.pop(user)
+                self.violators.append(user)
         self.remove_hidden()
         for user in self.eligible.copy():
             # TODO: handle HTTP 500 error
