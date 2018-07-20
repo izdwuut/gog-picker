@@ -31,3 +31,27 @@ class TestSteam(TestCase):
             self.assertDictEqual(self.steam.resolve_vanity_url(url), response['response'])
             self.mock_call.assert_called_with('ISteamUser.ResolveVanityURL', vanityurl=url)
 
+    # TODO: split into:
+    #   * _when_profile_url (in- & valid)
+    #   * _when_invalid_url (use steam.is_steam_url)
+    @patch('picker.Steam.resolve_vanity_url')
+    def test_get_id_when_valid_vanity_url(self, mock_resolve):
+        vals = {'https://steamcommunity.com/id/izdwuut/': '76561198011689582'}
+
+        side = {'izdwuut': {'steamid': '76561198011689582', 'success': 1},
+                     '6$$$$55545435jj': {'success': 42, 'message': 'No match'}}
+
+        self._test_get_id(vals, side, mock_resolve)
+
+    def test_get_id_when_invalid_vanity_url(self):
+        urls = {'https://steamcommunity.com/id/6$$$$55545435jj'}
+        for url in urls:
+            self.assertIsNone(self.steam.get_id(url))
+
+    def _test_get_id(self, vals, side, mock_resolve):
+        def side_effect(url):
+            return side[url]
+
+        mock_resolve.side_effect = side_effect
+        for url, id in vals.items():
+            self.assertEqual(self.steam.get_id(url), id)
