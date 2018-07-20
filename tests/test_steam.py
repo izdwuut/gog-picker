@@ -17,15 +17,17 @@ class TestSteam(TestCase):
     def tearDownClass(cls):
         cls.mock_call_patcher.stop()
 
+    # TODO: split into a possitive and negative tests
+    # TODO: extract method
     def test_resolve_vanity_url(self):
-        test_data = {'https://steamcommunity.com/profiles/6459068394824823': {'response': {'success': 42, 'message': 'No match'}},
+        vals = {'https://steamcommunity.com/profiles/6459068394824823': {'response': {'success': 42, 'message': 'No match'}},
                 'https://steamcommunity.com/id/izdwuut/': {'response': {'steamid': '76561198011689582', 'success': 1}}}
 
         def side_effect(method_path, **kwargs):
-            return test_data[kwargs['vanityurl']]
+            return vals[kwargs['vanityurl']]
 
         self.mock_call.side_effect = side_effect
-        for url, response in test_data.items():
+        for url, response in vals.items():
             self.assertDictEqual(self.steam.resolve_vanity_url(url), response['response'])
             self.mock_call.assert_called_with('ISteamUser.ResolveVanityURL', vanityurl=url)
 
