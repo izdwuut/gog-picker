@@ -13,6 +13,7 @@ from multiprocessing.pool import ApplyResult
 class Steam:
     # TODO: handle /profiles/{non-numeric}
     # TODO: throw an exception if an url is invalid.
+    # TODO: fix invalid url with /profiles
     def get_id(self, url):
         url = url.strip('/')
         path = urlparse(url).path.strip('/').split('/')
