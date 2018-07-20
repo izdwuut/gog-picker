@@ -121,17 +121,20 @@ class Picker:
             self.violators = []
 
     def post_results(self, comment):
-        reply = []
+        comment.reply(self.get_results())
+
+    def get_results(self):
+        results = []
         if self.violators:
-            reply.append('Users that violate rules: ' + ', '.join(self.violators) + '.\n')
+            results.append('Users that violate rules: ' + ', '.join(self.violators) + '.\n')
         if self.eligible:
-            reply.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
-            reply.append('Winner: ' + self.get_random_user())
-        if reply:
-            reply = ['\n\nResults:\n'] + reply
+            results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
+            results.append('Winner: ' + self.get_random_user())
+        if results:
+            results = ['\n\nResults:\n'] + results
         else:
-            reply.append('No eligible users.')
-        comment.reply(''.join(reply))
+            results.append('No eligible users.')
+        return ''.join(results)
 
     def get_drawings(self, limit):
         for comment in self.reddit.get_recent_comments(limit):
