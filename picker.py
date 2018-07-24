@@ -34,9 +34,12 @@ class Steam:
         response = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids))['response']['players']
         hidden = []
         for player in response:
-            if player['communityvisibilitystate'] != 3:
+            if not self.is_profile_visible(player['communityvisibilitystate']):
                 hidden.append(player['steamid'])
         return hidden
+
+    def is_profile_visible(self, state):
+        return state == 3
 
     def get_level(self, steam_id):
         return self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
