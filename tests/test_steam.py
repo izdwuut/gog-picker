@@ -27,9 +27,14 @@ class TestSteam(TestCase):
             return vals[kwargs['vanityurl']]
 
         self.mock_call.side_effect = side_effect
+
         for url, response in vals.items():
-            self.assertDictEqual(self.steam.resolve_vanity_url(url), response['response'])
+            result = self.steam.resolve_vanity_url(url)
+
+            self.assertDictEqual(result, response['response'])
             self.mock_call.assert_called_with('ISteamUser.ResolveVanityURL', vanityurl=url)
+
+
 
     # TODO: split into:
     #   * _when_profile_url (in- & valid)
