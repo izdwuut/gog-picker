@@ -64,5 +64,4 @@ class TestSteam(TestCase):
             result = self.steam.get_id(url)
 
             self.assertEqual(result, id)
-            mock_resolve.assert_called_with(url)
 
