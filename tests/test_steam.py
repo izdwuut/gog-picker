@@ -43,12 +43,11 @@ class TestSteam(TestCase):
     def test_get_id_when_valid_vanity_url(self, mock_resolve):
         vals = {'https://steamcommunity.com/id/izdwuut/': '76561198011689582'}
 
-        side = {'izdwuut': {'steamid': '76561198011689582', 'success': 1},
-                     '6$$$$55545435jj': {'success': 42, 'message': 'No match'}}
+        side = {'izdwuut': {'steamid': '76561198011689582', 'success': 1}}
 
         self._test_get_id(vals, side, mock_resolve)
 
-    def test_get_id_when_invalid_vanity_url(self):
+    def test_get_id_when_invalid_vanity_url_expect_none(self):
         urls = {'https://steamcommunity.com/id/6$$$$55545435jj'}
         for url in urls:
             result = self.steam.get_id(url)
