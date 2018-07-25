@@ -51,7 +51,9 @@ class TestSteam(TestCase):
     def test_get_id_when_invalid_vanity_url(self):
         urls = {'https://steamcommunity.com/id/6$$$$55545435jj'}
         for url in urls:
-            self.assertIsNone(self.steam.get_id(url))
+            result = self.steam.get_id(url)
+
+            self.assertIsNone(result)
 
     def _test_get_id(self, vals, side, mock_resolve: Mock):
         def side_effect(url):
@@ -59,6 +61,8 @@ class TestSteam(TestCase):
 
         mock_resolve.side_effect = side_effect
         for url, id in vals.items():
-            self.assertEqual(self.steam.get_id(url), id)
+            result = self.steam.get_id(url)
+
+            self.assertEqual(result, id)
             mock_resolve.assert_called_with(url)
 
