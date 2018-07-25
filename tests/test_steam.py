@@ -17,12 +17,17 @@ class TestSteam(TestCase):
     def tearDownClass(cls):
         cls.mock_call_patcher.stop()
 
-    # TODO: split into a possitive and negative tests
-    # TODO: extract method
-    def test_resolve_vanity_url(self):
-        vals = {'https://steamcommunity.com/profiles/6459068394824823': {'response': {'success': 42, 'message': 'No match'}},
-                'https://steamcommunity.com/id/izdwuut/': {'response': {'steamid': '76561198011689582', 'success': 1}}}
+    def test_resolve_vanity_url__when_valid_url__expect_steam_id_response(self):
+        vals = {'https://steamcommunity.com/id/izdwuut/': {'response': {'steamid': '76561198011689582', 'success': 1}}}
 
+        self._test_resolve_vanity_url(vals)
+
+    def test_resolve_vanity_url__when_invalid_url__expect_no_match_response(self):
+        vals = {'https://steamcommunity.com/profiles/6459068394824823': {'response': {'success': 42, 'message': 'No match'}}}
+
+        self._test_resolve_vanity_url(vals)
+
+    def _test_resolve_vanity_url(self, vals):
         def side_effect(method_path, **kwargs):
             return vals[kwargs['vanityurl']]
 
