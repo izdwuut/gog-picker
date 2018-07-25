@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from picker import Steam
 import configparser
 
@@ -48,10 +48,12 @@ class TestSteam(TestCase):
         for url in urls:
             self.assertIsNone(self.steam.get_id(url))
 
-    def _test_get_id(self, vals, side, mock_resolve):
+    def _test_get_id(self, vals, side, mock_resolve: Mock):
         def side_effect(url):
             return side[url]
 
         mock_resolve.side_effect = side_effect
         for url, id in vals.items():
             self.assertEqual(self.steam.get_id(url), id)
+            mock_resolve.assert_called_with(url)
+
