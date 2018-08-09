@@ -78,18 +78,18 @@ class Reddit:
     def get_recent_comments(self, limit):
         return self.subreddit.comments(limit=limit)
 
-    def has_tag(self, comment):
-        return self.tag in comment.body
+    @staticmethod
+    def has_tag(self, comment, tag):
+        return tag in comment.body
 
     @staticmethod
     def is_user_special(username):
         return username.find('_bot') != -1 or username == 'AutoModerator'
 
-    def __init__(self, steam, min_karma, subreddit, tag):
+    def __init__(self, steam, min_karma, subreddit):
         self.steam_api = steam
         self.min_karma = int(min_karma)
         self.subreddit = self.api.subreddit(subreddit)
-        self.tag = tag
 
 
 class Picker:
@@ -98,8 +98,9 @@ class Picker:
     eligible = {}
     violators = []
     steam = Steam(settings['steam'])
-    reddit = Reddit(steam, settings['rules']['min_karma'], settings['reddit']['subreddit'], settings['reddit']['tag'])
+    reddit = Reddit(steam, settings['rules']['min_karma'], settings['reddit']['subreddit'])
     submissions = []
+    tag = settings['reddit']['tag']
 
     def scrap_comments(self, submission):
         for comment in submission.comments:
@@ -145,7 +146,7 @@ class Picker:
 
     def get_drawings(self, limit):
         for comment in self.reddit.get_recent_comments(limit):
-            if not self.replied_to.contains(comment.name) and self.reddit.has_tag(comment):
+            if not self.replied_to.contains(comment.name) and self.reddit.has_tag(comment, self.tag):
                 self.submissions.append({'comment': comment, 'submission': comment.submission})
 
     def draw(self, submission):
