@@ -154,8 +154,9 @@ class Picker:
             self.scrap_comments(self.reddit.get_submission(submission))
         except prawcore.exceptions.NotFound:
             exit(1)
-        for user, scrapped in self.eligible.copy().items():
-            self.eligible[user]['steam_id'] = self.pool.apply_async(self.steam.get_id, [scrapped['url']])
+        for user in self.eligible.copy():
+            url = self.eligible[user].pop('url')
+            self.eligible[user]['steam_id'] = self.pool.apply_async(self.steam.get_id, [url])
             self.eligible[user]['karma'] = self.pool.apply_async(self.reddit.get_karma, [user])
         for user, data in self.eligible.copy().items():
             steam_id = data['steam_id'].get()
