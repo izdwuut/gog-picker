@@ -4,6 +4,8 @@ An utility that picks a winner of [r/GiftofGames](https://www.reddit.com/r/Gifto
 
 The GoG Picker works with Steam giveaways only.
 
+As of now I don't implement any throttling, so APIs query limits can be easily exceeded. Please keep it in mind! 
+
 # Usage
 
 The GoG Picker requires Python 3.6+ installed on your PC. You need a Steam and Reddit API keys. Check [a configuration section](#configuration) for more details. The script is intended to be invoked from a [CLI](https://en.wikipedia.org/wiki/Command-line_interface):
