@@ -45,7 +45,8 @@ This file is used both by the GoG Picker and [Steam API wrapper](https://pypi.py
 General settings that don't fall into more specific categories.
 
 * `replied_to` - a list of threads that the bot has already replied to.
-
+* `included_users` - a list of users that can participate in a drawing. If it's empty, every user but those listed in `excluded_users` can participate in the drawing.
+* `excluded_users` - a list of users excluded from drawings. It is only taken into account if `included_users` is empty.
 
 ### [steam]
 

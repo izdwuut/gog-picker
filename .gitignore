@@ -109,6 +109,8 @@ praw.ini
 steam.ini
 settings.ini
 replied_to.txt
+included_users.txt
+excluded_users.txt
 
 # JetBrains
 .idea

@@ -1,5 +1,7 @@
 [general]
 replied_to = replied_to.txt
+included_users = included_users.txt
+excluded_users = excluded_users.txt
 
 [steam]
 url = steamcommunity.com

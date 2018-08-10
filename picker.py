@@ -154,6 +154,14 @@ class Picker:
             self.scrap_comments(self.reddit.get_submission(submission))
         except prawcore.exceptions.NotFound:
             exit(1)
+        to_include = File(self.settings['general']['included_users'])
+        if not to_include.contents():
+            to_exclude = File(self.settings['general']['excluded_users'])
+            self.exclude_users(self.eligible, to_exclude)
+            to_exclude.close()
+        else:
+            self.include_users(self.eligible, to_include)
+        to_include.close()
         for user in self.eligible.copy():
             url = self.eligible[user].pop('url')
             self.eligible[user]['steam_id'] = self.pool.apply_async(self.steam.get_id, [url])
@@ -179,6 +187,23 @@ class Picker:
 
     def get_random_user(self):
         return random.choice(list(self.eligible))
+
+    def include_users(self, users: dict, to_filter):
+        self._filter_users(users, self._include_user, to_filter)
+
+    def _filter_users(self, users: dict, meets_criteria, to_filter):
+        for user in users.copy():
+            if meets_criteria(user, to_filter):
+                users.pop(user)
+
+    def _include_user(self, user, to_filter):
+        return not to_filter.contains(user)
+
+    def _exclude_user(self, user, to_filter):
+        return to_filter.contains(user)
+
+    def exclude_users(self, users: dict, to_filter):
+        self._filter_users(users, self._exclude_user, to_filter)
 
     def __init__(self):
         self.replied_to = File(self.settings['general']['replied_to'])
