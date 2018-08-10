@@ -86,10 +86,10 @@ class Reddit:
     def is_user_special(username):
         return username.find('_bot') != -1 or username == 'AutoModerator'
 
-    def __init__(self, steam, min_karma, subreddit):
+    def __init__(self, steam, settings):
         self.steam_api = steam
-        self.min_karma = int(min_karma)
-        self.subreddit = self.api.subreddit(subreddit)
+        self.min_karma = int(settings['min_karma'])
+        self.subreddit = self.api.subreddit(settings['subreddit'])
 
 
 class Picker:
@@ -98,7 +98,7 @@ class Picker:
     eligible = {}
     violators = []
     steam = Steam(settings['steam'])
-    reddit = Reddit(steam, settings['rules']['min_karma'], settings['reddit']['subreddit'])
+    reddit = Reddit(steam, settings['reddit'])
     submissions = []
     tag = settings['reddit']['tag']
 

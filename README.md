@@ -38,19 +38,33 @@ Used by [Python Reddit API Wrapper](https://github.com/praw-dev/praw) and docume
 
 ## settings.ini
 
-This file is used both by the GoG Picker and [Steam API wrapper](https://pypi.python.org/pypi/steam). It is divided into two sections: `[rules]` and `[steam]`.
+This file is used both by the GoG Picker and [Steam API wrapper](https://pypi.python.org/pypi/steam). It is divided into a couple of sections:
 
-### [rules]
+### [general]
 
-Rules applicable to an user who wants to participate in a drawing.
+General settings that don't fall into more specific categories.
 
-* `min_steam_level` - a minimum Steam account [level](https://support.steampowered.com/kb_article.php?ref=4395-TUZC-9912).
-* `min_karma` - minimum Redditor comment [karma](https://www.reddit.com/wiki/faq#wiki_what_is_that_number_next_to_usernames.3F_and_what_is_karma.3F).
+* `replied_to` - a list of threads that the bot has already replied to.
+
 
 ### [steam]
 
-* `url` - a Steam comunity URL
-* `api_key` - [a Steam API key](https://steamcommunity.com/dev/apikey)
+Steam-related settings.
+
+* `url` - a Steam community URL.
+* `api_key` - [a Steam API key](https://steamcommunity.com/dev/apikey).
+* `min_level` - a minimum [Steam account level](https://support.steampowered.com/kb_article.php?ref=4395-TUZC-9912)
+
+
+### [reddit]
+
+Reddit-related settings.
+
+* `subreddit` - a future-proof setting. It specifies a subreddit which the bot crawls.
+* `tag` - a tag that invokes the bot.
+* `limit` - limits number of comments fetched at once.
+* `min_karma` - minimum Redditor comment [karma](https://www.reddit.com/wiki/faq#wiki_what_is_that_number_next_to_usernames.3F_and_what_is_karma.3F).
+
 
 # License
 The GoG Picker is licensed under a permissive [MIT License](LICENSE).
