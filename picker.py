@@ -205,6 +205,9 @@ class File:
     def close(self):
         self.file.close()
 
+    def contents(self):
+        return self.lines
+
 
 if __name__ == "__main__":
     Picker().pick()
