@@ -7,7 +7,6 @@ import os
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup as Soup
 from multiprocessing import Pool
-from multiprocessing.pool import ApplyResult
 
 
 class Steam:
