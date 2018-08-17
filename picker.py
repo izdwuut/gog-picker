@@ -102,7 +102,12 @@ class Picker:
     tag = settings['reddit']['tag']
 
     def scrap_comments(self, submission):
-        for comment in submission.comments:
+        try:
+            comments = submission.comments
+        except prawcore.exceptions.NotFound:
+            print("nie wyszlo")
+            exit(1)
+        for comment in comments:
             username = comment.author.name
             if self.reddit.is_user_special(username):
                 continue
@@ -149,11 +154,7 @@ class Picker:
                 self.submissions.append({'comment': comment, 'submission': comment.submission})
 
     def draw(self, submission):
-        try:
-            self.scrap_comments(self.reddit.get_submission(submission))
-        except prawcore.exceptions.NotFound:
-            exit(1)
-
+        self.scrap_comments(self.reddit.get_submission(submission))
         self.apply_filter_lists(self.eligible)
 
         for user in self.eligible.copy():
