@@ -52,7 +52,7 @@ class Steam:
     def __init__(self, settings):
         self.api = steam.WebAPI(settings['api_key'])
         self.steam_url = settings['url']
-        self.min_level = int(settings['min_level'])
+        self.min_level = settings['min_level'].getint()
 
 
 class Reddit:
@@ -87,7 +87,7 @@ class Reddit:
 
     def __init__(self, steam, settings):
         self.steam_api = steam
-        self.min_karma = int(settings['min_karma'])
+        self.min_karma = settings['min_karma'].getint()
         self.subreddit = self.api.subreddit(settings['subreddit'])
 
 
@@ -125,7 +125,7 @@ class Picker:
                 self.violators.append(user)
 
     def pick(self):
-        self.get_drawings(int(self.settings['reddit']['limit']))
+        self.get_drawings(self.settings['reddit']['limit'].getint())
         for item in self.submissions:
             self.draw(item['submission'])
             self.post_results(item['comment'])
