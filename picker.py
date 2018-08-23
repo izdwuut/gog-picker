@@ -105,7 +105,6 @@ class Picker:
         try:
             comments = submission.comments
         except prawcore.exceptions.NotFound:
-            print("nie wyszlo")
             exit(1)
         for comment in comments:
             username = comment.author.name
