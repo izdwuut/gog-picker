@@ -174,6 +174,8 @@ class Picker:
 
     def has_required_keywords(self, title):
         keywords = self.settings['reddit']['required_keywords']
+        if not keywords:
+            return True
         keywords = List.get_string_as_list(keywords, ',')
         not_included_keywords = List.get_not_included_keywords(title, keywords)
         if not_included_keywords:
