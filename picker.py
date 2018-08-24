@@ -247,6 +247,20 @@ class File:
         return self.lines
 
 
+class List:
+    @staticmethod
+    def get_string_as_list(string, delimiter):
+        return string.replace(" ", "").split(delimiter)
+
+    @staticmethod
+    def get_not_included_keywords(string, keywords):
+        return [keyword for keyword in keywords if keyword.lower() not in string.lower()]
+
+    @staticmethod
+    def get_tags(keywords):
+        return ['[' + keyword + ']' for keyword in keywords]
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Picks a winner of r/GiftofGames drawing in accordance with subreddit rules.')
