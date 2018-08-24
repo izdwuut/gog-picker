@@ -30,15 +30,12 @@ The GoG Picker covers only a small subset of the subreddit rules, but large enou
 
 # Configuration
 
-GoG picker comes with two configuration files: `praw.ini.dist` and `settings.ini.dist`. You have to remove a `.dist` extension first.
 
-## praw.ini
+GoG picker comes with a `settings.ini.dist` configuration file. You have to trim the `.dist` extension first. In order to make the script work, you have to provide API keys for the following services:
+* Steam API - [here](https://steamcommunity.com/dev/apikey).
+* Reddit API - [here](https://www.reddit.com/prefs/apps/).
 
-Used by [Python Reddit API Wrapper](https://github.com/praw-dev/praw) and documented [here](http://praw.readthedocs.io/en/latest/getting_started/configuration/prawini.html). You need to request an API key from [here](https://www.reddit.com/prefs/apps/) first.
-
-## settings.ini
-
-This file is used both by the GoG Picker and [Steam API wrapper](https://pypi.python.org/pypi/steam). It is divided into a couple of sections:
+The configuration is divided into a couple of sections.
 
 ### [general]
 
@@ -50,22 +47,34 @@ General settings that don't fall into more specific categories.
 
 ### [steam]
 
-Steam-related settings.
+Steam-related settings and [Steam API wrapper](https://github.com/ValvePython/steam) configuration.
 
 * `url` - a Steam community URL.
-* `api_key` - [a Steam API key](https://steamcommunity.com/dev/apikey).
 * `min_level` - a minimum [Steam account level](https://support.steampowered.com/kb_article.php?ref=4395-TUZC-9912)
 
+In order to configure the wrapper, you have to provide the following information:
+* `api_key` - [a Steam API key](https://steamcommunity.com/dev/apikey).
+
+The wrapper is documented [here](https://steam.readthedocs.io/en/latest/).
 
 ### [reddit]
 
-Reddit-related settings.
+Reddit-related settings and [Python Reddit API Wrapper](https://github.com/praw-dev/praw) configuration.
 
 * `subreddit` - a future-proof setting. It specifies a subreddit which the bot crawls.
 * `tag` - a tag that invokes the bot.
 * `limit` - limits number of comments fetched at once.
 * `min_karma` - minimum Redditor comment [karma](https://www.reddit.com/wiki/faq#wiki_what_is_that_number_next_to_usernames.3F_and_what_is_karma.3F).
 
+API wrapper can be configured using the following settings:
+
+* `client_id` - an unique ID obtainable [here](https://www.reddit.com/prefs/apps).
+* `client_secret` - an unique secret phrase obtainable [here](https://www.reddit.com/prefs/apps).
+* `username` - a Reddit username
+* `password` - a Reddit user password
+* `user_agent` - every hit to the Reddit API server have to come with an user agent. I'd suggest to leave it to default.
+
+The wrapper is documented [here](https://praw.readthedocs.io/en/latest/).
 
 # License
 The GoG Picker is licensed under a permissive [MIT License](LICENSE).

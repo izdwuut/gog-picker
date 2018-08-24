@@ -56,7 +56,14 @@ class Steam:
 
 
 class Reddit:
-    api = praw.Reddit('picker')
+    @staticmethod
+    def get_api(settings):
+        api = praw.Reddit(client_id=settings['client_id'],
+                             client_secret=settings['client_secret'],
+                    password=settings['password'],
+                    username=settings['username'],
+                    user_agent=settings['user_agent'])
+        return api
 
     def get_steam_profile(self, comment):
         for a in Soup(comment.body_html, 'html.parser')('a'):
@@ -88,6 +95,7 @@ class Reddit:
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.getint('min_karma')
+        self.api = self.get_api(settings)
         self.subreddit = self.api.subreddit(settings['subreddit'])
 
 
