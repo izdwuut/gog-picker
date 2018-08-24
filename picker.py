@@ -1,4 +1,5 @@
 import praw
+import argparse
 import steam
 import configparser
 import random
@@ -150,7 +151,7 @@ class Picker:
             results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
             results.append('Winner: ' + self.get_random_user())
         if results:
-            results = ['\n\nResults:\n'] + results
+            results = ['Results:\n'] + results
         else:
             results.append('No eligible users.')
         return ''.join(results)
@@ -247,4 +248,13 @@ class File:
 
 
 if __name__ == "__main__":
-    Picker().pick()
+    parser = argparse.ArgumentParser(
+        description='Picks a winner of r/GiftofGames drawing in accordance with subreddit rules.')
+    parser.add_argument('-u', '--url', help='pick a winner of a given thread')
+    submission = parser.parse_args().url
+    picker = Picker()
+    if submission is None:
+        picker.pick()
+    else:
+        picker.draw(submission)
+        print(picker.get_results())

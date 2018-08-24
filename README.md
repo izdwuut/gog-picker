@@ -1,6 +1,6 @@
 # Gift of Games Picker for Reddit
 
-An utility that picks a winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawing in accordance with subreddit [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release](https://github.com/izdwuut/gog-picker/releases/tag/v0.1.0-beta) is sluggish but works more often than not. I'm going to convert the script to a bot and use cache to improve execution time. The script uses Python's standard [RNG](https://docs.python.org/3/library/random.html) but I might decide on implementing a [random.org](https://www.random.org/) API.
+An utility (and a bot, too!) that picks a winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawing in accordance with subreddit [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release](https://github.com/izdwuut/gog-picker/releases/tag/v0.1.0-beta) is sluggish but works more often than not. I'm going to use cache to improve execution time. The script uses Python's standard [RNG](https://docs.python.org/3/library/random.html) but I might decide on implementing a [random.org](https://www.random.org/) API.
 
 The GoG Picker works with Steam giveaways only.
 
@@ -11,10 +11,10 @@ As of now I don't implement any throttling, so APIs query limits can be easily e
 The GoG Picker requires Python 3.6+ installed on your PC. You need a Steam and Reddit API keys. Check [a configuration section](#configuration) for more details. The script is intended to be invoked from a [CLI](https://en.wikipedia.org/wiki/Command-line_interface):
 
 ```
-$ python picker.py URL
+$ python picker.py --url URL
 ```
 
-The `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/`.
+The `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/`. When the script is invoked without the optional `url` parameter, it acts more like a bot and fetches the latest threads from the subreddit provided in `settings.ini`.
 
 You can get some more help by invoking the script with an `-h` flag.
 
@@ -29,7 +29,6 @@ The GoG Picker covers only a small subset of the subreddit rules, but large enou
 * a Redditor has 300 comment karma or more
 
 # Configuration
-
 
 GoG picker comes with a `settings.ini.dist` configuration file. You have to trim the `.dist` extension first. In order to make the script work, you have to provide API keys for the following services:
 * Steam API - [here](https://steamcommunity.com/dev/apikey).
