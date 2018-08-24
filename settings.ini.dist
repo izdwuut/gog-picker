@@ -11,6 +11,7 @@ min_level = 2
 [reddit]
 subreddit = GiftofGames
 tag = !pick
+title_keywords = Offer,Steam
 limit = 25
 min_karma = 300
 client_id =

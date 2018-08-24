@@ -109,6 +109,7 @@ class Picker:
     reddit = Reddit(steam, settings['reddit'])
     submissions = []
     tag = settings['reddit']['tag']
+    not_included_keywords = []
 
     def scrap_comments(self, submission):
         try:
@@ -141,7 +142,10 @@ class Picker:
             self.violators = []
 
     def post_results(self, comment):
-        comment.reply(self.get_results())
+        reply = self.get_no_required_keywords_reply()
+        if not reply:
+            reply = self.get_results()
+        comment.reply(reply)
 
     def get_results(self):
         results = []
@@ -156,13 +160,31 @@ class Picker:
             results.append('No eligible users.')
         return ''.join(results)
 
+    def get_no_required_keywords_reply(self):
+        reply = ""
+        if self.not_included_keywords:
+            keywords = ', '.join(List.get_tags(self.not_included_keywords))
+            reply += "The drawing has failed! Please add the following keywords to the title and invoke the bot in a new comment: \n" + keywords
+        return reply
+
     def get_drawings(self, limit):
         for comment in self.reddit.get_recent_comments(limit):
             if not self.replied_to.contains(comment.name) and self.reddit.has_tag(comment, self.tag):
                 self.submissions.append({'comment': comment, 'submission': comment.submission})
 
+    def has_required_keywords(self, title):
+        keywords = self.settings['reddit']['required_keywords']
+        keywords = List.get_string_as_list(keywords, ',')
+        not_included_keywords = List.get_not_included_keywords(title, keywords)
+        if not_included_keywords:
+            self.not_included_keywords = not_included_keywords
+            return False
+        return True
+
     def draw(self, submission):
-        self.scrap_comments(self.reddit.get_submission(submission))
+        if not self.has_required_keywords(submission.title):
+            return
+        self.scrap_comments(submission)
         self.apply_filter_lists(self.eligible)
 
         for user in self.eligible.copy():
