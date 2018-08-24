@@ -62,6 +62,7 @@ Reddit-related settings and [Python Reddit API Wrapper](https://github.com/praw-
 
 * `subreddit` - a future-proof setting. It specifies a subreddit which the bot crawls.
 * `tag` - a tag that invokes the bot.
+* `required_keywords` - comma-separated keywords that every thread title has to contain. Whitespace characters are ignored, as well as capitalization. Ignored if empty.
 * `limit` - limits number of comments fetched at once.
 * `min_karma` - minimum Redditor comment [karma](https://www.reddit.com/wiki/faq#wiki_what_is_that_number_next_to_usernames.3F_and_what_is_karma.3F).
 
