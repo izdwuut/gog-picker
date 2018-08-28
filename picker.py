@@ -274,7 +274,7 @@ class File:
 class List:
     @staticmethod
     def get_string_as_list(string, delimiter):
-        return string.replace(" ", "").split(delimiter)
+        return [elem.strip(" ") for elem in string.split(delimiter)]
 
     @staticmethod
     def get_not_included_keywords(string, keywords):
