@@ -1,13 +1,14 @@
-import praw
 import argparse
-import steam
 import configparser
-import random
-import prawcore
 import os
-from urllib.parse import urlparse
-from bs4 import BeautifulSoup as Soup
+import random
 from multiprocessing import Pool
+from urllib.parse import urlparse
+
+import praw
+import prawcore
+import steam
+from bs4 import BeautifulSoup as Soup
 
 
 class Steam:
@@ -60,10 +61,10 @@ class Reddit:
     @staticmethod
     def get_api(settings):
         api = praw.Reddit(client_id=settings['client_id'],
-                             client_secret=settings['client_secret'],
-                    password=settings['password'],
-                    username=settings['username'],
-                    user_agent=settings['user_agent'])
+                          client_secret=settings['client_secret'],
+                          password=settings['password'],
+                          username=settings['username'],
+                          user_agent=settings['user_agent'])
         return api
 
     def get_steam_profile(self, comment):
@@ -203,7 +204,8 @@ class Picker:
         self.remove_hidden()
         for user in self.eligible.copy():
             # TODO: handle HTTP 500 error
-            self.eligible[user]['level'] = self.pool.apply_async(self.steam.get_level, [self.eligible[user]['steam_id']])
+            self.eligible[user]['level'] = self.pool.apply_async(self.steam.get_level,
+                                                                 [self.eligible[user]['steam_id']])
 
         for user in self.eligible.copy():
             level = self.eligible[user]['level'].get()
