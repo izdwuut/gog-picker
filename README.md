@@ -27,6 +27,7 @@ The GoG Picker covers only a small subset of the subreddit rules, but large enou
 * the profile is public
 * the profile is level 2 or above
 * a Redditor has 300 comment karma or more
+* the thread title contains required keywords
 
 # Configuration
 
