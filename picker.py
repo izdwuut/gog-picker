@@ -94,6 +94,9 @@ class Reddit:
     def is_user_special(username):
         return username.find('_bot') != -1 or username == 'AutoModerator'
 
+    def get_subreddit(self):
+        return self.subreddit.display_name
+
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.getint('min_karma')
@@ -289,12 +292,13 @@ class List:
 
 
 if __name__ == "__main__":
+    picker = Picker()
+    subreddit = picker.reddit.get_subreddit()
     parser = argparse.ArgumentParser(
-        description='Picks a winner of r/GiftofGames drawing in accordance with subreddit rules.',
+        description='Picks a winner of r/' + subreddit + ' drawing in accordance with subreddit rules.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-u', '--url', help='pick a winner of a given thread or run as a bot by default')
     submission = parser.parse_args().url
-    picker = Picker()
     if submission is None:
         picker.pick()
     else:
