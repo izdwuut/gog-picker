@@ -290,8 +290,9 @@ class List:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='Picks a winner of r/GiftofGames drawing in accordance with subreddit rules.')
-    parser.add_argument('-u', '--url', help='pick a winner of a given thread')
+        description='Picks a winner of r/GiftofGames drawing in accordance with subreddit rules.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-u', '--url', help='pick a winner of a given thread or run as a bot by default')
     submission = parser.parse_args().url
     picker = Picker()
     if submission is None:
