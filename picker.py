@@ -1,5 +1,5 @@
 import argparse
-import configparser
+from configparser import ConfigParser
 import os
 import random
 from multiprocessing import Pool
@@ -105,7 +105,7 @@ class Reddit:
 
 
 class Picker:
-    settings = configparser.ConfigParser()
+    settings = ConfigParser()
     settings.read('settings.ini')
     eligible = {}
     violators = []
