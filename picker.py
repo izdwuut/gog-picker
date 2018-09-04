@@ -46,7 +46,7 @@ class Steam:
         return self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
 
     def is_steam_url(self, url):
-        return url.find(self.steam_url) != -1
+        return self.steam_url in urlparse(url).hostname
 
     def is_level_valid(self, level):
         return level >= self.min_level
