@@ -211,8 +211,8 @@ class Picker:
                                                                  [self.eligible[user]['steam_id']])
 
         for user in self.eligible.copy():
-            level = self.eligible[user]['level'].get()
-            karma = self.eligible[user]['karma'].get()
+            level = self.eligible[user]['level'] = self.eligible[user]['level'].get()
+            karma = self.eligible[user]['karma'] = self.eligible[user]['karma'].get()
             if not (self.steam.is_level_valid(level) and self.reddit.is_karma_valid(karma)):
                 self.eligible.pop(user)
                 self.violators.append(user)
