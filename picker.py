@@ -302,9 +302,10 @@ if __name__ == "__main__":
         description='Picks a winner of r/' + subreddit + ' drawing in accordance with subreddit rules.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-u', '--url', help='pick a winner of a given thread or run as a bot by default')
-    submission = parser.parse_args().url
-    if submission is None:
+    url = parser.parse_args().url
+    if url is None:
         picker.pick()
     else:
+        submission = picker.reddit.get_submission(url)
         picker.draw(submission)
         print(picker.get_results())
