@@ -11,6 +11,10 @@ import steam
 from bs4 import BeautifulSoup as Soup
 
 
+class Greeter:
+    def _greet(self):
+        print("Secret greeting.")
+
 class Steam:
     # TODO: handle /profiles/{non-numeric}
     # TODO: throw an exception if an url is invalid.
@@ -105,7 +109,7 @@ class Reddit:
 
 
 class Picker:
-    settings = ConfigParser()
+    settings = ConfigParser(os.environ)
     settings.read('settings.ini')
     eligible = {}
     violators = []

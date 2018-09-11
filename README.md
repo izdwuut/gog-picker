@@ -31,9 +31,11 @@ The GoG Picker covers only a small subset of the subreddit rules, but large enou
 
 # Configuration
 
-GoG picker comes with a `settings.ini.dist` configuration file. You have to trim the `.dist` extension first. In order to make the script work, you have to provide API keys for the following services:
+GoG picker comes with a `settings.ini` configuration file. In order to make the script work, you have to provide API keys for the following services:
 * Steam API - [here](https://steamcommunity.com/dev/apikey).
 * Reddit API - [here](https://www.reddit.com/prefs/apps/).
+
+By design, some of the keys reference OS environmental variables but it's perfectly okay to enter those values directly into the config file.
 
 The configuration is divided into a couple of sections.
 
