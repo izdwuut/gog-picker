@@ -87,11 +87,11 @@ class Reddit:
     def is_karma_valid(self, karma):
         return karma >= self.min_karma
 
-    def get_recent_comments(self, limit):
-        return self.subreddit.comments(limit=limit)
+    def get_comments(self):
+        return self.subreddit.stream.comments()
 
     @staticmethod
-    def has_tag(self, comment, tag):
+    def has_tag(comment, tag):
         return tag in comment.body
 
     @staticmethod
@@ -115,7 +115,6 @@ class Picker:
     violators = []
     steam = Steam(settings['steam'])
     reddit = Reddit(steam, settings['reddit'])
-    submissions = []
     tag = settings['reddit']['tag']
     not_included_keywords = []
 
@@ -141,13 +140,23 @@ class Picker:
                 del self.eligible[user]
                 self.violators.append(user)
 
+    def get_drawings(self):
+        for comment in self.reddit.get_comments():
+            if not self.replied_to.contains(comment.name) and Reddit.has_tag(comment, self.tag):
+                drawing = {'comment': comment, 'submission': comment.submission}
+                yield drawing
+
     def run(self):
-        self.get_drawings(self.settings.getint('reddit', 'limit'))
-        for item in self.submissions:
-            self.pick(item['submission'])
-            self.post_results(item['comment'])
+        for drawing in self.get_drawings():
+            self.pick(drawing['submission'])
+            comment = drawing['comment']
+            self.post_results(comment)
+            self.mark_as_replied_to(comment)
             self.eligible = {}
             self.violators = []
+
+    def mark_as_replied_to(self, comment):
+        self.replied_to.add_line(comment.name)
 
     def post_results(self, comment):
         reply = self.get_no_required_keywords_reply()
@@ -174,11 +183,6 @@ class Picker:
             keywords = ', '.join(List.get_tags(self.not_included_keywords))
             reply += "The drawing has failed! Please add the following keywords to the title and invoke the bot in a new comment: \n" + keywords
         return reply
-
-    def get_drawings(self, limit):
-        for comment in self.reddit.get_recent_comments(limit):
-            if not self.replied_to.contains(comment.name) and self.reddit.has_tag(comment, self.tag):
-                self.submissions.append({'comment': comment, 'submission': comment.submission})
 
     def has_required_keywords(self, title):
         keywords = self.settings['reddit']['required_keywords']
@@ -250,6 +254,9 @@ class Picker:
         else:
             self.include_users(users, to_include)
         to_include.close()
+
+    def __del__(self):
+        self.replied_to.close()
 
     def __init__(self):
         self.replied_to = File(self.settings['general']['replied_to'])
