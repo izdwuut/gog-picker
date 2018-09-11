@@ -138,21 +138,28 @@ class Picker:
 
     def get_drawings(self):
         for comment in self.reddit.get_comments():
-            if not self.replied_to.contains(comment.name) and Reddit.has_tag(comment, self.tag):
+            print(comment.submission.name)
+            if not self.replied_to.contains(comment.submission.name) and Reddit.has_tag(comment, self.tag):
                 drawing = {'comment': comment, 'submission': comment.submission}
                 yield drawing
 
     def run(self):
         for drawing in self.get_drawings():
-            self.pick(drawing['submission'])
+            submission = drawing['submission']
             comment = drawing['comment']
+            Picker.print_current_submission(submission)
+            self.pick(submission)
             self.post_results(comment)
-            self.mark_as_replied_to(comment)
+            self.mark_as_replied_to(submission)
             self.eligible = {}
             self.violators = []
 
-    def mark_as_replied_to(self, comment):
-        self.replied_to.add_line(comment.name)
+    @staticmethod
+    def print_current_submission(submission):
+        print("Currently processing: " + submission.name + '.')
+
+    def mark_as_replied_to(self, submission):
+        self.replied_to.add_line(submission.name)
 
     def post_results(self, comment):
         reply = self.get_no_required_keywords_reply()
