@@ -161,7 +161,7 @@ class Picker:
             results.append('Users that violate rules: ' + ', '.join(self.violators) + '.\n')
         if self.eligible:
             results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
-            results.append('Winner: ' + self.get_random_user())
+            results.append('Winner: ' + self.get_random_user() + '.')
         if results:
             results = ['Results:\n'] + results
         else:
