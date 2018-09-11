@@ -141,10 +141,10 @@ class Picker:
                 del self.eligible[user]
                 self.violators.append(user)
 
-    def pick(self):
+    def run(self):
         self.get_drawings(self.settings.getint('reddit', 'limit'))
         for item in self.submissions:
-            self.draw(item['submission'])
+            self.pick(item['submission'])
             self.post_results(item['comment'])
             self.eligible = {}
             self.violators = []
@@ -191,7 +191,7 @@ class Picker:
             return False
         return True
 
-    def draw(self, submission):
+    def pick(self, submission):
         if not self.has_required_keywords(submission.title):
             return
         self.scrap_comments(submission)
@@ -304,8 +304,8 @@ if __name__ == "__main__":
     parser.add_argument('-u', '--url', help='pick a winner of a given thread or run as a bot by default')
     url = parser.parse_args().url
     if url is None:
-        picker.pick()
+        picker.run()
     else:
         submission = picker.reddit.get_submission(url)
-        picker.draw(submission)
+        picker.pick(submission)
         print(picker.get_results())
