@@ -311,7 +311,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Picks a winner of r/' + subreddit + ' drawing in accordance with subreddit rules.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-u', '--url', help='pick a winner of a given thread or run as a bot by default')
+    parser.add_argument('-u', '--url', help='runs the script only for the given thread')
     url = parser.parse_args().url
     if url is None:
         picker.run()
