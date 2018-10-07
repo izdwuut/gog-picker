@@ -1,6 +1,6 @@
 # Gift of Games Picker for Reddit
 
-An utility (and a bot, too!) that picks a winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawing in accordance with subreddit [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release](https://github.com/izdwuut/gog-picker/releases/tag/v0.1.0-beta) is sluggish but works more often than not. I'm going to use cache to improve execution time. The script uses Python's standard [RNG](https://docs.python.org/3/library/random.html) but I might decide on implementing a [random.org](https://www.random.org/) API.
+An utility (and a bot, too!) that picks a winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawings in accordance with subreddit [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release](https://github.com/izdwuut/gog-picker/releases/tag/v0.1.0-beta) is sluggish but works more often than not. I'm going to use cache to improve execution time. The script uses [random.org](https://www.random.org/)'s API to select a winner.
 
 The GoG Picker works with Steam giveaways only.
 
@@ -32,8 +32,9 @@ The GoG Picker covers only a small subset of the subreddit rules, but large enou
 # Configuration
 
 GoG picker comes with a `settings.ini` configuration file. In order to make the script work, you have to provide API keys for the following services:
-* Steam API - [here](https://steamcommunity.com/dev/apikey).
-* Reddit API - [here](https://www.reddit.com/prefs/apps/).
+* Steam API - [here](https://steamcommunity.com/dev/apikey)
+* Reddit API - [here](https://www.reddit.com/prefs/apps/)
+* Random.org API - [here](https://api.random.org/api-keys/beta)
 
 By design, some of the keys reference OS environmental variables but it's perfectly okay to enter those values directly into the config file.
 
@@ -79,5 +80,14 @@ API wrapper can be configured using the following settings:
 
 The wrapper is documented [here](https://praw.readthedocs.io/en/latest/).
 
+### [random]
+
+Random.org-related settings.
+
+* `api_key` - [a Random.org beta API key](https://api.random.org/api-keys/beta)
+
+The wrapper is documented [here](https://api.random.org/json-rpc/1/).
+
 # License
+
 The GoG Picker is licensed under a permissive [MIT License](LICENSE).
