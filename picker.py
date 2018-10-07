@@ -1,4 +1,5 @@
 import argparse
+import requests
 from configparser import ConfigParser
 import os
 import random
@@ -222,9 +223,12 @@ class Picker:
                                                                  [self.eligible[user]['steam_id']])
 
         for user in self.eligible.copy():
-            level = self.eligible[user]['level'] = self.eligible[user]['level'].get()
+            try:
+                level = self.eligible[user]['level'] = self.eligible[user]['level'].get()
+            except requests.exceptions.HTTPError:
+                level = None
             karma = self.eligible[user]['karma'] = self.eligible[user]['karma'].get()
-            if not (self.steam.is_level_valid(level) and self.reddit.is_karma_valid(karma)):
+            if not (level and self.steam.is_level_valid(level) and self.reddit.is_karma_valid(karma)):
                 self.eligible.pop(user)
                 self.violators.append(user)
 
@@ -319,3 +323,5 @@ if __name__ == "__main__":
         submission = picker.reddit.get_submission(url)
         picker.pick(submission)
         print(picker.get_results())
+
+import picker
