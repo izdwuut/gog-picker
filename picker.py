@@ -2,13 +2,13 @@ import argparse
 import requests
 from configparser import ConfigParser
 import os
-import random
 from multiprocessing import Pool
 from urllib.parse import urlparse
 
 import praw
 import prawcore
 import steam
+from rdoclient import RandomOrgClient
 from bs4 import BeautifulSoup as Soup
 
 
@@ -104,6 +104,11 @@ class Reddit:
         self.api = self.get_api(settings)
         self.subreddit = self.api.subreddit(settings['subreddit'])
 
+class Random:
+    def choose_item(user_list):
+        return user_list[self.api.generate_integers(1, 0, len(user_list))]
+    def __init__(self, settings):
+        self.api = RandomOrgClient(settings['api_key'])
 
 class Picker:
     settings = ConfigParser(os.environ)
@@ -112,6 +117,7 @@ class Picker:
     violators = []
     steam = Steam(settings['steam'])
     reddit = Reddit(steam, settings['reddit'])
+    random = Random(settings['random'])
     tag = settings['reddit']['tag']
     not_included_keywords = []
 
@@ -233,7 +239,7 @@ class Picker:
                 self.violators.append(user)
 
     def get_random_user(self):
-        return random.choice(list(self.eligible))
+        return random.choose_item(list(self.eligible))
 
     def include_users(self, users: dict, to_filter):
         self._filter_users(users, self._include_user, to_filter)
