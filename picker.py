@@ -63,8 +63,6 @@ class Reddit:
     def get_api(settings):
         api = praw.Reddit(client_id=settings['client_id'],
                           client_secret=settings['client_secret'],
-                          password=settings['password'],
-                          username=settings['username'],
                           user_agent=settings['user_agent'])
         return api
 
@@ -105,8 +103,9 @@ class Reddit:
         self.subreddit = self.api.subreddit(settings['subreddit'])
 
 class Random:
-    def choose_item(user_list):
-        return user_list[self.api.generate_integers(1, 0, len(user_list))]
+    def choose_item(self, user_list):
+        integers = self.api.generate_integers(1, 0, len(user_list)-1)
+        return user_list[list(integers)[0]]
     def __init__(self, settings):
         self.api = RandomOrgClient(settings['api_key'])
 
@@ -239,7 +238,7 @@ class Picker:
                 self.violators.append(user)
 
     def get_random_user(self):
-        return random.choose_item(list(self.eligible))
+        return self.random.choose_item(list(self.eligible))
 
     def include_users(self, users: dict, to_filter):
         self._filter_users(users, self._include_user, to_filter)
