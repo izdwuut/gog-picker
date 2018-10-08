@@ -336,5 +336,3 @@ if __name__ == "__main__":
         submission = picker.reddit.get_submission(url)
         picker.pick(submission)
         print(picker.get_results())
-
-import picker
