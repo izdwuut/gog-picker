@@ -1,5 +1,4 @@
 import argparse
-import requests
 from configparser import ConfigParser
 import os
 import random
