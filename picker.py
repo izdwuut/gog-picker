@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 import praw
 import prawcore
 import steam
-from rdoclient import RandomOrgClient
+from rdoclient_py3 import RandomOrgClient
 from bs4 import BeautifulSoup as Soup
 
 
