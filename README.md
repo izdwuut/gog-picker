@@ -1,10 +1,10 @@
 # Gift of Games Picker for Reddit
 
-An utility (and a bot, too!) that picks a winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawings in accordance with subreddit [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release](https://github.com/izdwuut/gog-picker/releases/tag/v0.1.0-beta) is sluggish but works more often than not. The script uses [random.org](https://www.random.org/)'s API to select a winner.
+An utility (and a bot, too!) that picks the winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawings in accordance with the subreddit's [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release](https://github.com/izdwuut/gog-picker/releases/tag/v0.1.0-beta) is sluggish but works more often than not. The script uses [random.org](https://www.random.org/)'s API to select the winner.
 
 The GoG Picker works with Steam giveaways only.
 
-As of now, the picker does not implement any throttling, so APIs query limits can be easily exceeded. Please keep this in mind! Cache to improve execution time may also be implemented in the future.
+As of now, the picker does not implement any throttling, so APIs query limits can be easily exceeded. Please keep this in mind! In the future, cache may be implemented to improve execution time.
 
 # Usage
 
@@ -43,9 +43,9 @@ GoG picker comes with a `settings.ini` configuration file. In order to run the s
 * Reddit API - [here](https://www.reddit.com/prefs/apps/)
 * Random.org API - [here](https://api.random.org/api-keys/beta)
 
-Some of the keys reference OS environmental variables, but it is okay to enter those values directly into the config file.
+Some of the keys are intended to reference OS environmental variables, but it is okay to enter those values directly into the config file.
 
-The configuration is divided into four sections:
+The configuration is divided into several sections:
 
 ### [general]
 
@@ -94,7 +94,7 @@ Random.org-related settings.
 
 * `api_key` - [a Random.org beta API key](https://api.random.org/api-keys/beta)
 
-The wrapper is documented [here](https://api.random.org/json-rpc/1/).
+The wrapper is documented [here](https://github.com/RandomOrg/JSON-RPC-Python).
 
 # License
 
