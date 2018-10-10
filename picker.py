@@ -9,6 +9,7 @@ import prawcore
 import steam
 from rdoclient_py3 import RandomOrgClient
 from bs4 import BeautifulSoup as Soup
+import requests
 
 
 class Steam:
