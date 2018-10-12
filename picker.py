@@ -3,6 +3,7 @@ from configparser import ConfigParser
 import os
 from multiprocessing import Pool
 from urllib.parse import urlparse
+import re
 
 import praw
 import prawcore
@@ -26,6 +27,14 @@ class Steam:
             return response['steamid']
         return None
 
+    def get_steam_profile(self, comment):
+        result = re.search("(" + self.steam_url + "[^\)\]\"<]+)", comment.body_html)
+        url = {}
+        print(result)
+        if result:
+            url['url'] = 'https://' + result.group(0)
+        return url
+
     def resolve_vanity_url(self, url):
         return self.api.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']
 
@@ -46,9 +55,6 @@ class Steam:
     def get_level(self, steam_id):
         return self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
 
-    def is_steam_url(self, url):
-        return self.steam_url in urlparse(url).hostname
-
     def is_level_valid(self, level):
         return level >= self.min_level
 
@@ -65,13 +71,6 @@ class Reddit:
                           client_secret=settings['client_secret'],
                           user_agent=settings['user_agent'])
         return api
-
-    def get_steam_profile(self, comment):
-        for a in Soup(comment.body_html, 'html.parser')('a'):
-            url = a.get('href')
-            if self.steam_api.is_steam_url(url):
-                return {'url': url}
-        return {}
 
     def get_karma(self, user):
         return self.api.redditor(user).comment_karma
@@ -137,7 +136,7 @@ class Picker:
             username = comment.author.name
             if self.reddit.is_user_special(username):
                 continue
-            profile = self.reddit.get_steam_profile(comment)
+            profile = self.steam.get_steam_profile(comment)
             if profile:
                 self.eligible[username] = profile
             else:
