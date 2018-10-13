@@ -166,6 +166,7 @@ class Picker:
             self.mark_as_replied_to(submission)
             self.eligible = {}
             self.violators = []
+        self.replied_to.close()
 
     @staticmethod
     def print_current_submission(submission):
