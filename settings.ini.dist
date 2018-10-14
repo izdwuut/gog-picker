@@ -1,8 +1,0 @@
-[rules]
-min_steam_level = 2
-min_karma = 300
-
-[steam]
-url = steamcommunity.com
-api_key = 
-
