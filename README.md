@@ -98,4 +98,4 @@ The wrapper is documented [here](https://github.com/RandomOrg/JSON-RPC-Python).
 
 # License
 
-The GoG Picker is licensed under a permissive [MIT License](LICENSE). JSON-RPC Python wrapper for Random.org used under the [MIT License](https://github.com/RandomOrg/JSON-RPC-Python/blob/master/LICENSE).
+The GoG Picker is licensed under a permissive [MIT License](LICENSE).
