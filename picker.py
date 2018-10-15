@@ -1,131 +1,16 @@
 import argparse
 from configparser import ConfigParser
-import os
 from multiprocessing import Pool
-from urllib.parse import urlparse
-import re
+import os
 
-import praw
 import prawcore
-import steam
-from rdoclient_py3 import RandomOrgClient
-from bs4 import BeautifulSoup as Soup
 import requests
 
-
-class Steam:
-    # TODO: handle /profiles/{non-numeric}
-    # TODO: throw an exception if an url is invalid.
-    # TODO: fix invalid url with /profiles
-    def get_id(self, url):
-        url = url.strip('/')
-        path = urlparse(url).path.strip('/').split('/')
-        if path[0] == 'profiles':
-            return path[1]
-        response = self.resolve_vanity_url(path[1])
-        if response['success'] == 1:
-            return response['steamid']
-        return None
-
-    def get_steam_profile(self, comment):
-        result = re.search("(" + self.steam_url + "[^\)\]\"<]+)", comment.body_html)
-        url = {}
-        if result:
-            url['url'] = 'https://' + result.group(0)
-        return url
-
-    def resolve_vanity_url(self, url):
-        return self.api.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']
-
-    def get_hidden(self, users):
-        ids = []
-        for user, data in users:
-            ids.append(data['steam_id'])
-        response = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids))['response']['players']
-        hidden = []
-        for player in response:
-            if not self.is_profile_visible(player['communityvisibilitystate']):
-                hidden.append(player['steamid'])
-        return hidden
-
-    def is_profile_visible(self, state):
-        return state == 3
-
-    def get_level(self, steam_id):
-        return self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
-
-    def is_level_valid(self, level):
-        return level >= self.min_level
-
-    def __init__(self, settings):
-        self.api = steam.WebAPI(settings['api_key'])
-        self.steam_url = settings['url']
-        self.min_level = settings.getint('min_level')
-
-
-class Reddit:
-    @staticmethod
-    def get_api(settings):
-        api = praw.Reddit(client_id=settings['client_id'],
-                          client_secret=settings['client_secret'],
-                          user_agent=settings['user_agent'])
-        return api
-
-    def get_karma(self, user):
-        return self.api.redditor(user).comment_karma
-
-    def get_submission(self, url):
-        return self.api.submission(url=url)
-
-    def is_karma_valid(self, karma):
-        return karma >= self.min_karma
-
-    def get_comments(self):
-        return self.subreddit.stream.comments()
-
-    @staticmethod
-    def has_tag(comment, tag):
-        return tag in comment.body
-
-    @staticmethod
-    def is_user_special(username):
-        return username.find('_bot') != -1 or username == 'AutoModerator'
-
-    def get_subreddit(self):
-        return self.subreddit.display_name
-
-    def __init__(self, steam, settings):
-        self.steam_api = steam
-        self.min_karma = settings.getint('min_karma')
-        self.api = self.get_api(settings)
-        self.subreddit = self.api.subreddit(settings['subreddit'])
-
-
-class Random:
-    def item(self, items):
-        max = self._get_max(items)
-        pos = self._get_integer(max)
-        return items[pos]
-
-    def items(self, items, n, replacement=False):
-        max = self._get_max(items)
-        integers = self._get_integers(n, max, replacement=replacement)
-        set = [items[i] for i in integers]
-        return set
-
-    def _get_integer(self, max=0, min=0):
-        integers = self._get_integers(min=min, max=max)
-        return integers[0]
-
-    def _get_integers(self, n=1, max=0, min=0, replacement=False):
-        integers = self.api.generate_integers(n, min, max, replacement=replacement)
-        return integers
-
-    def _get_max(self, items):
-        return len(items) - 1
-
-    def __init__(self, settings):
-        self.api = RandomOrgClient(settings['api_key'])
+from _steam import Steam
+from _random_org import Random
+from _file import File
+from _list import List
+from _reddit import Reddit
 
 
 class Picker:
@@ -343,45 +228,6 @@ class Picker:
     def __init__(self):
         self.replied_to = File(self.settings['general']['replied_to'])
         self.pool = Pool()
-
-
-class File:
-    def __init__(self, file_name):
-        self.file_name = file_name
-        if os.path.isfile(file_name):
-            with open(file_name) as f:
-                self.lines = list(filter(None, f.read().split('\n')))
-        else:
-            self.lines = []
-        self.file = open(file_name, 'a')
-
-    def contains(self, line):
-        return line in self.lines
-
-    def add_line(self, line):
-        self.lines.append(line)
-        self.file.write(line)
-
-    def close(self):
-        self.file.close()
-
-    def contents(self):
-        return self.lines
-
-
-class List:
-    @staticmethod
-    def get_string_as_list(string, delimiter):
-        return [elem.strip(" ") for elem in string.split(delimiter)]
-
-    @staticmethod
-    def get_not_included_keywords(string, keywords):
-        normalised_string = string.lower()
-        return [keyword for keyword in keywords if keyword.lower() not in normalised_string]
-
-    @staticmethod
-    def get_tags(keywords):
-        return ['[' + keyword + ']' for keyword in keywords]
 
 
 if __name__ == "__main__":
