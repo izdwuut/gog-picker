@@ -28,7 +28,7 @@ You can get some more help by invoking the script with an `-h` flag.
 
 The GoG Picker covers only a small subset of the subreddit rules, but large enough to pick a winner and save you some tedious work.
 
-* a clickable Steam profile link was provided
+* a link to Steam profile was provided
 * the link leads to an existing profile
 * the profile is public
 * the profile is level 2 or above
@@ -39,9 +39,9 @@ The GoG Picker covers only a small subset of the subreddit rules, but large enou
 
 GoG picker comes with a `settings.ini` configuration file. In order to run the script, you will need to provide API keys for the following services:
 
-* Steam API - [here](https://steamcommunity.com/dev/apikey)
-* Reddit API - [here](https://www.reddit.com/prefs/apps/)
-* Random.org API - [here](https://api.random.org/api-keys/beta)
+* [Steam](https://steamcommunity.com/dev/apikey)
+* [Reddit](https://www.reddit.com/prefs/apps/)
+* [Random.org](https://api.random.org/api-keys/beta)
 
 Some of the keys are intended to reference OS environmental variables, but it is okay to enter those values directly into the config file.
 
