@@ -1,6 +1,6 @@
 # Gift of Games Picker for Reddit
 
-An utility (and a bot, too!) that picks the winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawings in accordance with the subreddit's [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). [The latest release](https://github.com/izdwuut/gog-picker/releases/tag/v0.1.0-beta) is sluggish but works more often than not. The script uses [random.org](https://www.random.org/)'s API to select the winner.
+An utility (and a bot, too!) that picks the winner of [r/GiftofGames](https://www.reddit.com/r/GiftofGames) drawings in accordance with the subreddit's [rules](https://www.reddit.com/r/GiftofGames/wiki/rules). The latest release is sluggish but works more often than not. The script uses [random.org](https://www.random.org/)'s API to select the winner.
 
 The GoG Picker works with Steam giveaways only.
 
