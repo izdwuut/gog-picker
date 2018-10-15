@@ -133,11 +133,13 @@ class Picker:
     settings.read('settings.ini')
     eligible = {}
     violators = []
+    winners = []
     steam = Steam(settings['steam'])
     reddit = Reddit(steam, settings['reddit'])
     random = Random(settings['random'])
     tag = settings['reddit']['tag']
     not_included_keywords = []
+    args = None
 
     def scrap_comments(self, submission):
         try:
@@ -173,11 +175,13 @@ class Picker:
             submission = drawing['submission']
             comment = drawing['comment']
             Picker.print_current_submission(submission)
-            self.pick(submission)
+            self.filter(submission)
+            self.pick()
             self.post_results(comment)
             self.mark_as_replied_to(submission)
             self.eligible = {}
             self.violators = []
+            self.winners = []
         self.replied_to.close()
 
     @staticmethod
@@ -199,12 +203,55 @@ class Picker:
             results.append('Users that violate rules: ' + ', '.join(self.violators) + '.\n')
         if self.eligible:
             results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
-            results.append('Winner: ' + self.get_random_user() + '.')
+            if isinstance(self.winners, str):
+                winners = self.winners
+                s = ''
+            else:
+                winners = ', '.join(self.winners)
+                s = 's'
+            results.append('Winner' + s + ': ' + winners + '.')
         if results:
             results = ['Results:\n'] + results
         else:
             results.append('No eligible users.')
         return ''.join(results)
+
+    def pick(self):
+        winners = []
+        if not self.eligible:
+            self.winners = winners
+            return
+        eligible = list(self.eligible.keys())
+        bot = False if self.args.url else True
+        n = self.args.number
+        if bot or n == 1:
+            self.winners = self._pick_one(eligible)
+            return
+        if n == len(eligible):
+            self.winners = eligible
+            return
+        replacement = self.args.replacement
+        if n < len(eligible):
+            self.winners = self._pick_multiple(eligible, n, replacement)
+            return
+        remainder_winners = []
+        if replacement:
+            if self.args.all:
+                winners = [*eligible]
+            remainder = n - len(winners)
+            remainder_winners = self._pick_multiple(eligible, remainder, replacement)
+        else:
+            winners = [*eligible]
+        self.winners = [*winners, *remainder_winners]
+
+    def _pick_one(self, eligible):
+        return self.random.item(eligible)
+
+    def _pick_multiple(self, eligible, n, replacement):
+        eligible_len = len(eligible)
+        if n > eligible_len and not replacement:
+            return eligible
+        return self.random.items(eligible, n, replacement)
 
     def get_no_required_keywords_reply(self):
         reply = ""
@@ -224,7 +271,7 @@ class Picker:
             return False
         return True
 
-    def pick(self, submission):
+    def filter(self, submission):
         if not self.has_required_keywords(submission.title):
             return
         self.scrap_comments(submission)
@@ -287,6 +334,9 @@ class Picker:
             self.include_users(users, to_include)
         to_include.close()
 
+    def set_args(self, args):
+        self.args = args
+
     def __del__(self):
         self.replied_to.close()
 
@@ -340,11 +390,28 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Picks a winner of r/' + subreddit + ' drawing in accordance with subreddit rules.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-u', '--url', help='runs the script only for the given thread')
-    url = parser.parse_args().url
+    parser.add_argument('-u', '--url',
+                        help='runs the script only for the given thread')
+    parser.add_argument('-r', '--replacement',
+                        help='Users can win multiple times. Ignored if --number was not specified.',
+                        action='store_true')
+    parser.add_argument('-a', '--all',
+                        help='Ensures that every user wins at least once (given that there are enough of them) if used with --replacement flag. Ignored if --number was not specified.',
+                        action='store_true')
+    parser.add_argument('-n', '--number',
+                        help='Number of winners to pick.',
+                        type=int,
+                        default=1)
+    args = parser.parse_args()
+    if args.number < 1:
+        print('Error: invalid value of --number argument (must be >= 1).')
+        exit(1)
+    picker.set_args(args)
+    url = args.url
     if url is None:
         picker.run()
     else:
         submission = picker.reddit.get_submission(url)
-        picker.pick(submission)
+        picker.filter(submission)
+        picker.pick()
         print(picker.get_results())
