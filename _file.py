@@ -16,7 +16,7 @@ class File:
 
     def add_line(self, line):
         self.lines.append(line)
-        self.file.write(line)
+        self.file.write(line + '\n')
 
     def close(self):
         self.file.close()
