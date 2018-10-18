@@ -56,6 +56,7 @@ class Picker:
                 yield drawing
 
     def run(self):
+        self.replied_to = File(self.settings['general']['replied_to'])
         for drawing in self.get_drawings():
             submission = drawing['submission']
             comment = drawing['comment']
@@ -222,11 +223,7 @@ class Picker:
     def set_args(self, args):
         self.args = args
 
-    def __del__(self):
-        self.replied_to.close()
-
     def __init__(self):
-        self.replied_to = File(self.settings['general']['replied_to'])
         self.pool = Pool()
 
 
