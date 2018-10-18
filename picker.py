@@ -176,7 +176,6 @@ class Picker:
                 self.violators.append(user)
         self.remove_hidden()
         for user in self.eligible.copy():
-            # TODO: handle HTTP 500 error
             self.eligible[user]['level'] = self.pool.apply_async(self.steam.get_level,
                                                                  [self.eligible[user]['steam_id']])
 
