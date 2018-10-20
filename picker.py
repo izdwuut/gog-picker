@@ -32,6 +32,8 @@ class Picker:
         except prawcore.exceptions.NotFound:
             exit(1)
         for comment in comments:
+            if not comment.author:
+                continue
             username = comment.author.name
             if self.reddit.is_user_special(username):
                 continue
