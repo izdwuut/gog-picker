@@ -1,6 +1,7 @@
 import steam
 import re
 from urllib.parse import urlparse
+import requests
 
 
 class Steam:
@@ -42,7 +43,11 @@ class Steam:
         return state == 3
 
     def get_level(self, steam_id):
-        return self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
+        try:
+            level = self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
+        except requests.exceptions.HTTPError:
+            level = None
+        return level
 
     def is_level_valid(self, level):
         return level >= self.min_level
