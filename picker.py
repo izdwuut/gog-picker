@@ -18,7 +18,7 @@ class Picker:
     settings.read('settings.ini')
     eligible = {}
     violators = []
-    winners = []
+    winners = {}
     steam = Steam(settings['steam'])
     reddit = Reddit(steam, settings['reddit'])
     random = Random(settings['random'])
@@ -91,12 +91,15 @@ class Picker:
             results.append('Users that violate rules: ' + ', '.join(self.violators) + '.\n')
         if self.eligible:
             results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
-            if isinstance(self.winners, str):
-                winners = self.winners
+            if len(self.winners):
                 s = ''
             else:
-                winners = ', '.join(self.winners)
                 s = 's'
+            winners = []
+            for user, times in self.winners.items():
+                t = ' (x{})'.format(times) if times > 1 else ''
+                winners.append(user + t)
+            winners = ', '.join(winners)
             results.append('Winner' + s + ': ' + winners + '.')
         if results:
             results = ['Results:\n'] + results
@@ -107,20 +110,21 @@ class Picker:
     def pick(self):
         winners = []
         if not self.eligible:
-            self.winners = winners
             return
         eligible = list(self.eligible.keys())
         bot = False if self.args.url else True
         n = self.args.number
         if bot or n == 1:
-            self.winners = self._pick_one(eligible)
+            winner = self._pick_one(eligible)
+            self._add_winners(winner)
             return
         if n == len(eligible):
-            self.winners = eligible
+            self._add_winners(eligible)
             return
         replacement = self.args.replacement
         if n < len(eligible):
-            self.winners = self._pick_multiple(eligible, n, replacement)
+            winners = self._pick_multiple(eligible, n, replacement)
+            self._add_winners(winners)
             return
         remainder_winners = []
         if replacement:
@@ -130,7 +134,15 @@ class Picker:
             remainder_winners = self._pick_multiple(eligible, remainder, replacement)
         else:
             winners = [*eligible]
-        self.winners = [*winners, *remainder_winners]
+        self._add_winners([*winners, *remainder_winners])
+
+    def _add_winners(self, winners):
+        if isinstance(winners, str):
+            winners = [winners]
+        for winner in winners:
+            if winner not in self.winners:
+                self.winners[winner] = 0
+            self.winners[winner] += 1
 
     def _pick_one(self, eligible):
         return self.random.item(eligible)
