@@ -26,32 +26,32 @@ The script is intended to be invoked from a [CLI](https://en.wikipedia.org/wiki/
 $ python picker.py --url URL
 ```
 
-`URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/`.
+`URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/`.
 
 ## Multiple winners
 
 The script can handle drawings with multiple winners by running it with `-n` (`--number`) parameter. The following line would run the script and pick 2 winners in the aforementioned thread:
 
 ```
-$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/ -n 2
+$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2
 ``` 
  
 Passing `-r` (`--replacement`) flag makes it possible for users to win multiple times:
 
 ```
-$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/ -n 2 -r 
+$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -r 
 ``` 
 
 Using `-a` (`--all`) flag *ensures* that every user wins at least once (given that there are more games to giveaway than participants):
 
 ```
-$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/ -n 2 -a 
+$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -a 
 ``` 
 
 It can be combined with `-r` flag so that every user wins multiple times (but at least once):
 
 ```
-$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/7rq8fv/offersteam_humble_indie_bundle_3/ -n 2 -ra
+$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -ra
 ``` 
 
 ## Bot
