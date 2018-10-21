@@ -69,6 +69,7 @@ The GoG Picker covers only a small subset of the subreddit rules, but large enou
 * the link leads to an existing profile
 * the profile is public
 * the profile is level 2 or above
+* games list is public
 * a Redditor has 300 comment karma or more
 * the thread title contains required keywords
 
