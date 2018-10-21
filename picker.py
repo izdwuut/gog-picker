@@ -43,10 +43,18 @@ class Picker:
             else:
                 self.violators.append(username)
 
-    def remove_hidden(self):
-        hidden = self.steam.get_hidden(self.eligible.items())
+    def remove_users_with_hidden_steam_profiles(self):
+        hidden = self.steam.get_hidden_profiles(self.eligible.items())
         for user, data in self.eligible.copy().items():
             if data['steam_id'] in hidden:
+                del self.eligible[user]
+                self.violators.append(user)
+
+    def remove_users_with_hidden_steam_games(self):
+        for user, data in self.eligible.copy().items():
+            steamid = data['steam_id']
+            is_visible = self.steam.is_games_list_visible(steamid)
+            if not is_visible:
                 del self.eligible[user]
                 self.violators.append(user)
 
@@ -186,9 +194,10 @@ class Picker:
             if steam_id:
                 self.eligible[user]['steam_id'] = steam_id
             else:
-                self.eligible.pop(user)
+                del self.eligible[user]
                 self.violators.append(user)
-        self.remove_hidden()
+        self.remove_users_with_hidden_steam_profiles()
+        self.remove_users_with_hidden_steam_games()
         for user in self.eligible.copy():
             self.eligible[user]['level'] = self.pool.apply_async(self.steam.get_level,
                                                                  [self.eligible[user]['steam_id']])
@@ -197,7 +206,7 @@ class Picker:
             level = self.eligible[user]['level'] = self.eligible[user]['level'].get()
             karma = self.eligible[user]['karma'] = self.eligible[user]['karma'].get()
             if not (level and self.steam.is_level_valid(level) and self.reddit.is_karma_valid(karma)):
-                self.eligible.pop(user)
+                del self.eligible[user]
                 self.violators.append(user)
 
     def get_random_user(self):

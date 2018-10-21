@@ -5,6 +5,17 @@ import requests
 
 
 class Steam:
+    def get_user_games(self, steamid):
+        return self.api.call('IPlayerService.GetOwnedGames',
+                             steamid=steamid,
+                             include_appinfo=False,
+                             include_played_free_games=False,
+                             appids_filter=None)['response']
+
+    def is_games_list_visible(self, steamid):
+        games = self.get_user_games(steamid)
+        return bool(games)
+
     # TODO: handle /profiles/{non-numeric}
     # TODO: throw an exception if an url is invalid.
     # TODO: fix invalid url with /profiles
@@ -28,7 +39,7 @@ class Steam:
     def resolve_vanity_url(self, url):
         return self.api.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']
 
-    def get_hidden(self, users):
+    def get_hidden_profiles(self, users):
         ids = []
         for user, data in users:
             ids.append(data['steam_id'])
