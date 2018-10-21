@@ -2,8 +2,6 @@ from rdoclient_py3 import RandomOrgClient
 
 
 class Random:
-    a = 'a'
-
     def item(self, items):
         max = self._get_max(items)
         pos = self._get_integer(max)
