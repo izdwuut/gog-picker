@@ -6,6 +6,18 @@ The GoG Picker works with Steam giveaways only.
 
 As of now, the picker does not implement any throttling, so APIs query limits can be easily exceeded. Please keep this in mind! In the future, cache may be implemented to improve execution time.
 
+# Covered rules
+
+The GoG Picker covers only a small subset of the subreddit rules, but large enough to pick a winner and save you some tedious work.
+
+* a link to Steam profile was provided
+* the link leads to an existing profile
+* the profile is public
+* the profile is level 2 or above
+* games list is public
+* a Redditor has 300 comment karma or more
+* the thread title contains required keywords
+
 # Usage
 
 The GoG Picker requires Python 3.6+ installed on your PC. To install the necessary dependencies, execute the following on the command line:
@@ -60,18 +72,6 @@ When the script is invoked without the optional `url` parameter, it acts like a 
 ```
 $ python picker.py
 ```
-
-# Covered rules
-
-The GoG Picker covers only a small subset of the subreddit rules, but large enough to pick a winner and save you some tedious work.
-
-* a link to Steam profile was provided
-* the link leads to an existing profile
-* the profile is public
-* the profile is level 2 or above
-* games list is public
-* a Redditor has 300 comment karma or more
-* the thread title contains required keywords
 
 # Configuration
 
