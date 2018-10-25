@@ -39,16 +39,27 @@ class Steam:
     def resolve_vanity_url(self, url):
         return self.api.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']
 
-    def get_hidden_profiles(self, users):
-        ids = []
-        for user, data in users:
-            ids.append(data['steam_id'])
-        response = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids))['response']['players']
+    def get_player_summaries(self, users):
+        ids = [users[user]['steam_id'] for user in users]
+        summaries = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids))['response']['players']
+        return summaries
+
+    def get_users_with_hidden_profiles(self, users, summaries):
+        id_user = {data['steam_id']:user for user, data in users.items()}
         hidden = []
-        for player in response:
-            if not self.is_profile_visible(player['communityvisibilitystate']):
-                hidden.append(player['steamid'])
+        for player in summaries:
+            visibility = player['communityvisibilitystate']
+            if not self.is_profile_visible(visibility):
+                steam_id = player['steamid']
+                user = id_user[steam_id]
+                hidden.append(user)
         return hidden
+
+    @staticmethod
+    def get_users_with_non_existent_profiles(users, summaries):
+        existent = [summary['steamid'] for summary in summaries]
+        non_existent = [user for user in users if users[user]['steam_id'] not in existent]
+        return non_existent
 
     def is_profile_visible(self, state):
         return state == 3

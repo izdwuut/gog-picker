@@ -43,10 +43,13 @@ class Picker:
             else:
                 self.violators.append(username)
 
-    def remove_users_with_hidden_steam_profiles(self):
-        hidden = self.steam.remove_users_with_hidden_profiles(self.eligible.items())
-        for user, data in self.eligible.copy().items():
-            if data['steam_id'] in hidden:
+    def remove_users_with_non_accessible_steam_profiles(self):
+        users = self.eligible.copy()
+        summaries = self.steam.get_player_summaries(users)
+        hidden = self.steam.get_users_with_hidden_profiles(users, summaries)
+        non_existent = Steam.get_users_with_non_existent_profiles(users, summaries)
+        for user in users:
+            if user in [*hidden, *non_existent]:
                 del self.eligible[user]
                 self.violators.append(user)
 
@@ -196,7 +199,7 @@ class Picker:
             else:
                 del self.eligible[user]
                 self.violators.append(user)
-        self.remove_users_with_hidden_steam_profiles()
+        self.remove_users_with_non_accessible_steam_profiles()
         self.remove_users_with_hidden_steam_games()
         for user in self.eligible.copy():
             self.eligible[user]['level'] = self.pool.apply_async(self.steam.get_level,
