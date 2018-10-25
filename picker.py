@@ -44,7 +44,7 @@ class Picker:
                 self.violators.append(username)
 
     def remove_users_with_hidden_steam_profiles(self):
-        hidden = self.steam.get_hidden_profiles(self.eligible.items())
+        hidden = self.steam.remove_users_with_hidden_profiles(self.eligible.items())
         for user, data in self.eligible.copy().items():
             if data['steam_id'] in hidden:
                 del self.eligible[user]
