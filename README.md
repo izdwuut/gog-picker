@@ -40,6 +40,8 @@ $ python picker.py --url URL
 
 `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/`.
 
+You can manipulate level of verbosity by passing `-v` (`--verbose`) flag.
+
 ## Multiple winners
 
 The script can handle drawings with multiple winners by running it with `-n` (`--number`) parameter. The following line would run the script and pick 2 winners in the aforementioned thread:
