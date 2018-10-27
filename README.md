@@ -90,8 +90,8 @@ The configuration is divided into several sections:
 General settings that don't fall into more specific categories.
 
 * `replied_to` - a list of threads that the bot has already replied to
-* `included_users` - a list of users that can participate in a drawing. If it's empty, every user except those listed in `excluded_users` can participate in the drawing
-* `excluded_users` - a list of users excluded from drawings. It is only taken into account if `included_users` is empty
+* `whitelist` - a list of users that can participate in a drawing. If it's empty, every user except those listed in `blacklist` can participate in the drawing
+* `blacklist` - a list of users excluded from drawings. It is only taken into account if `whitelist` is empty
 
 ### [steam]
 

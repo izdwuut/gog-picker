@@ -43,13 +43,13 @@ class Picker:
             else:
                 self.violators.append(username)
 
-    def remove_users_with_non_accessible_steam_profiles(self):
+    def remove_users_with_inaccessible_steam_profiles(self):
         users = self.eligible.copy()
         summaries = self.steam.get_player_summaries(users)
         hidden = self.steam.get_users_with_hidden_profiles(users, summaries)
-        non_existent = Steam.get_users_with_non_existent_profiles(users, summaries)
+        nonexistent = Steam.get_users_with_nonexistent_profiles(users, summaries)
         for user in users:
-            if user in [*hidden, *non_existent]:
+            if user in [*hidden, *nonexistent]:
                 del self.eligible[user]
                 self.violators.append(user)
 
@@ -199,7 +199,7 @@ class Picker:
             else:
                 del self.eligible[user]
                 self.violators.append(user)
-        self.remove_users_with_non_accessible_steam_profiles()
+        self.remove_users_with_inaccessible_steam_profiles()
         self.remove_users_with_hidden_steam_games()
         for user in self.eligible.copy():
             self.eligible[user]['level'] = self.pool.apply_async(self.steam.get_level,
@@ -215,9 +215,6 @@ class Picker:
     def get_random_user(self):
         return self.random.item(list(self.eligible))
 
-    def include_users(self, users: dict, to_filter):
-        self._filter_users(users, self._include_user, to_filter)
-
     def _filter_users(self, users: dict, meets_criteria, to_filter):
         for user in users.copy():
             if meets_criteria(user, to_filter):
@@ -229,17 +226,14 @@ class Picker:
     def _exclude_user(self, user, to_filter):
         return to_filter.contains(user)
 
-    def exclude_users(self, users: dict, to_filter):
-        self._filter_users(users, self._exclude_user, to_filter)
-
     def apply_filter_lists(self, users):
-        to_include = File(self.settings['general']['included_users'])
+        to_include = File(self.settings['general']['whitelist'])
         if not to_include.contents():
-            to_exclude = File(self.settings['general']['excluded_users'])
-            self.exclude_users(users, to_exclude)
+            to_exclude = File(self.settings['general']['blacklist'])
+            self._filter_users(users, self._exclude_user, to_exclude)
             to_exclude.close()
         else:
-            self.include_users(users, to_include)
+            self._filter_users(users, self._include_user, to_include)
         to_include.close()
 
     def set_args(self, args):

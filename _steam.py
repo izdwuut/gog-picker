@@ -56,7 +56,7 @@ class Steam:
         return hidden
 
     @staticmethod
-    def get_users_with_non_existent_profiles(users, summaries):
+    def get_users_with_nonexistent_profiles(users, summaries):
         existent = [summary['steamid'] for summary in summaries]
         non_existent = [user for user in users if users[user]['steam_id'] not in existent]
         return non_existent
