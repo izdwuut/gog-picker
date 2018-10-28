@@ -32,7 +32,7 @@ class Steam:
         return None
 
     def get_steam_profile(self, comment):
-        result = re.search("(" + self.steam_url + "[^\)\]\"<]+)", comment.body_html)
+        result = re.search("(" + self.steam_url + "/(?:id|profiles)/[^\)\]\"<]+)", comment.body_html)
         url = {}
         if result:
             url['url'] = 'https://' + result.group(0)
