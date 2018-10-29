@@ -13,6 +13,7 @@ from _list import List
 from _reddit import Reddit
 from _errors import Errors
 
+
 class Picker:
     settings = ConfigParser(os.environ)
     settings.read('settings.ini')
@@ -80,8 +81,8 @@ class Picker:
             self.post_results(comment)
             self.mark_as_replied_to(submission)
             self.eligible = {}
-            self.violators = []
-            self.winners = []
+            self.violators = {}
+            self.winners = {}
         self.replied_to.close()
 
     @staticmethod
