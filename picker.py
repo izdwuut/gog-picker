@@ -27,6 +27,7 @@ class Picker:
     not_included_keywords = []
     args = None
     replied_to = None
+    not_entering = []
 
     def scrap_comments(self, submission):
         try:
@@ -38,6 +39,9 @@ class Picker:
                 continue
             user = comment.author.name
             if self.reddit.is_user_special(user):
+                continue
+            if not self.reddit.is_entering(comment):
+                self.not_entering.append(user)
                 continue
             profile = self.steam.get_steam_profile(comment)
             if profile:
@@ -106,6 +110,8 @@ class Picker:
             results.append('Users that violate rules:{}\n'.format(violations))
         if self.eligible:
             results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
+            not_entering = self._get_not_entering()
+            results.append(not_entering)
             if len(self.winners):
                 s = ''
             else:
@@ -131,6 +137,12 @@ class Picker:
             user_reason = '{} ({})'.format(user, reason)
             reasons.append(user_reason)
         return '\n' + ',\n'.join(reasons) + '.'
+
+    def _get_not_entering(self):
+        not_entering = ''
+        if self.args.verbose:
+            not_entering = 'Not entering: ' + ', '.join(self.not_entering) + '\n'
+        return not_entering
 
     def pick(self):
         winners = []

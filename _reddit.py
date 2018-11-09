@@ -34,6 +34,9 @@ class Reddit:
     def get_subreddit(self):
         return self.subreddit.display_name
 
+    def is_entering(self, comment):
+        return 'not entering' not in comment.body.lower()
+
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.getint('min_karma')
