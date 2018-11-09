@@ -26,6 +26,7 @@ class Picker:
     tag = settings['reddit']['tag']
     not_included_keywords = []
     args = None
+    replied_to = None
 
     def scrap_comments(self, submission):
         try:
