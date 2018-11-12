@@ -194,7 +194,8 @@ class Picker:
         reply = ""
         if self.not_included_keywords:
             keywords = ', '.join(List.get_tags(self.not_included_keywords))
-            reply += "The drawing has failed! Please add the following keywords to the title and invoke the bot in a new comment: \n" + keywords
+            reply += "The drawing has failed! Please add the following keywords to the title and invoke" \
+                     "the bot in a new comment: \n" + keywords
         return reply
 
     def has_required_keywords(self, title):
@@ -294,7 +295,8 @@ if __name__ == "__main__":
                         help='Users can win multiple times. Ignored if --number was not specified.',
                         action='store_true')
     parser.add_argument('-a', '--all',
-                        help='Ensures that every user wins at least once (given that there are enough of them) if used with --replacement flag. Ignored if --number was not specified.',
+                        help='Ensures that every user wins at least once (given that there are enough of them) ' \
+                             'if used with --replacement flag. Ignored if --number was not specified.',
                         action='store_true')
     parser.add_argument('-n', '--number',
                         help='Number of winners to pick.',
