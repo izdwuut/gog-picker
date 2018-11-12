@@ -4,7 +4,7 @@ An utility (and a bot, too!) that picks the winner of [r/GiftofGames](https://ww
 
 The GoG Picker works with Steam giveaways only.
 
-As of now, the picker does not implement any throttling, so APIs query limits can be easily exceeded. Please keep this in mind! In the future, cache may be implemented to improve execution time.
+In the future, cache may be implemented to improve execution time.
 
 # Covered rules
 
