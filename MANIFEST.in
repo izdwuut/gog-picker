@@ -1,0 +1,4 @@
+include LICENSE
+include settings.ini
+include README.md
+graft tests
