@@ -56,7 +56,7 @@ Passing `-r` (`--replacement`) flag makes it possible for users to win multiple 
 $ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -r 
 ``` 
 
-Using `-a` (`--all`) flag *ensures* that every user wins at least once (given that there are more games to giveaway than participants):
+Using `-a` (`--all`) flag ensures that every user wins at least once (given that there are more games to giveaway than participants):
 
 ```
 $ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -a 
