@@ -16,21 +16,23 @@ class Steam:
         games = self.get_user_games(steamid)
         return bool(games)
 
-    # TODO: handle /profiles/{non-numeric}
-    # TODO: throw an exception if an url is invalid.
-    # TODO: fix invalid url with /profiles
     def get_id(self, url):
         url = url.strip('/')
         path = urlparse(url).path.strip('/').split('/')
         if path[0] == 'profiles':
-            return path[1]
+            try:
+                id = path[1]
+                if isinstance(int(id), int):
+                    return id
+            except ValueError:
+                return None
         response = self.resolve_vanity_url(path[1])
         if response['success'] == 1:
             return response['steamid']
         return None
 
     def get_steam_profile(self, comment):
-        result = re.search("(" + self.steam_url + "[^\)\]\"<]+)", comment.body_html)
+        result = re.search("(" + self.steam_url + "/(?:id|profiles)/[^\)\]\"<]+)", comment.body_html)
         url = {}
         if result:
             url['url'] = 'https://' + result.group(0)
@@ -56,7 +58,7 @@ class Steam:
         return hidden
 
     @staticmethod
-    def get_users_with_non_existent_profiles(users, summaries):
+    def get_users_with_nonexistent_profiles(users, summaries):
         existent = [summary['steamid'] for summary in summaries]
         non_existent = [user for user in users if users[user]['steam_id'] not in existent]
         return non_existent

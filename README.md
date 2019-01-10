@@ -4,7 +4,7 @@ An utility (and a bot, too!) that picks the winner of [r/GiftofGames](https://ww
 
 The GoG Picker works with Steam giveaways only.
 
-As of now, the picker does not implement any throttling, so APIs query limits can be easily exceeded. Please keep this in mind! In the future, cache may be implemented to improve execution time.
+In the future, cache may be implemented to improve execution time.
 
 # Covered rules
 
@@ -40,6 +40,8 @@ $ python picker.py --url URL
 
 `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/`.
 
+You can manipulate level of verbosity by passing `-v` (`--verbose`) flag.
+
 ## Multiple winners
 
 The script can handle drawings with multiple winners by running it with `-n` (`--number`) parameter. The following line would run the script and pick 2 winners in the aforementioned thread:
@@ -54,7 +56,7 @@ Passing `-r` (`--replacement`) flag makes it possible for users to win multiple 
 $ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -r 
 ``` 
 
-Using `-a` (`--all`) flag *ensures* that every user wins at least once (given that there are more games to giveaway than participants):
+Using `-a` (`--all`) flag ensures that every user wins at least once (given that there are more games to giveaway than participants):
 
 ```
 $ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -a 
@@ -90,8 +92,8 @@ The configuration is divided into several sections:
 General settings that don't fall into more specific categories.
 
 * `replied_to` - a list of threads that the bot has already replied to
-* `included_users` - a list of users that can participate in a drawing. If it's empty, every user except those listed in `excluded_users` can participate in the drawing
-* `excluded_users` - a list of users excluded from drawings. It is only taken into account if `included_users` is empty
+* `whitelist` - a list of users that can participate in a drawing. If it's empty, every user except those listed in `blacklist` can participate in the drawing
+* `blacklist` - a list of users excluded from drawings. It is only taken into account if `whitelist` is empty
 
 ### [steam]
 
