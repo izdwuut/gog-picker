@@ -6,11 +6,11 @@ import os
 import prawcore
 import requests
 
-from _steam import Steam
-from _random_org import Random
-from _file import File
-from _list import List
-from _reddit import Reddit
+from steam import Steam
+from random_org import Random
+from file import File
+from list import List
+from reddit import Reddit
 from _errors import Errors
 from args import Args
 
