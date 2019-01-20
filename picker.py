@@ -251,7 +251,8 @@ class Picker:
     def get_random_user(self):
         return self.random.item(list(self.eligible))
 
-    def _filter_users(self, users: dict, meets_criteria, to_filter):
+    @staticmethod
+    def _filter_users(users: dict, meets_criteria, to_filter):
         filtered = []
         for user in users.copy():
             if meets_criteria(user, to_filter):
@@ -259,21 +260,23 @@ class Picker:
                 filtered.append(user)
         return filtered
 
-    def _include_user(self, user, to_filter):
+    @staticmethod
+    def _include_user(user, to_filter):
         return not to_filter.contains(user)
 
-    def _exclude_user(self, user, to_filter):
+    @staticmethod
+    def _exclude_user(user, to_filter):
         return to_filter.contains(user)
 
     def apply_filter_lists(self, users):
         to_include = File(self.settings['general']['whitelist'])
         if not to_include.contents():
             to_exclude = File(self.settings['general']['blacklist'])
-            blacklisted = self._filter_users(users, self._exclude_user, to_exclude)
+            blacklisted = Picker._filter_users(users, Picker._exclude_user, to_exclude)
             self.add_violators(blacklisted, Errors.BLACKLISTED)
             to_exclude.close()
         else:
-            self._filter_users(users, self._include_user, to_include)
+            Picker._filter_users(users, Picker._include_user, to_include)
         to_include.close()
 
     def set_args(self, args):
