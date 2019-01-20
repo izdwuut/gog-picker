@@ -12,6 +12,7 @@ from _file import File
 from _list import List
 from _reddit import Reddit
 from _errors import Errors
+from args import Args
 
 
 class Picker:
@@ -282,41 +283,47 @@ class Picker:
     def set_args(self, args):
         self.args = args
 
-    def __init__(self):
+    @classmethod
+    def from_cli(cls):
+        picker = cls()
+        subreddit = picker.reddit.get_subreddit()
+        parser = argparse.ArgumentParser(
+            description="Picks a winner of r/" + subreddit + " drawing in accordance with subreddit's rules.",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        parser.add_argument('-u', '--url',
+                            help='runs the script only for the given thread')
+        parser.add_argument('-r', '--replacement',
+                            help='Users can win multiple times. Ignored if --number was not specified.',
+                            action='store_true')
+        parser.add_argument('-a', '--all',
+                            help='Ensures that every user wins at least once (given that there are enough of them) ' \
+                                 'if used with --replacement flag. Ignored if --number was not specified.',
+                            action='store_true')
+        parser.add_argument('-n', '--number',
+                            help='Number of winners to pick.',
+                            type=int,
+                            default=1)
+        parser.add_argument('-v', '--verbose', help='increase output verbosity',
+                            action='store_true')
+        parser_args = parser.parse_args()
+        args = Args.from_dict(parser_args)
+        if args.number < 1:
+            print('Error: invalid value of --number argument (must be >= 1).')
+            exit(1)
+        picker.set_args(args)
+        url = args.url
+        if url is None:
+            picker.run()
+        else:
+            submission = picker.reddit.get_submission(url)
+            picker.filter(submission)
+            picker.pick()
+            print(picker.get_results())
+
+    def __init__(self, args=Args()):
         self.pool = Pool()
+        self.set_args(args)
 
 
 if __name__ == "__main__":
-    picker = Picker()
-    subreddit = picker.reddit.get_subreddit()
-    parser = argparse.ArgumentParser(
-        description='Picks a winner of r/' + subreddit + ' drawing in accordance with subreddit rules.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-u', '--url',
-                        help='runs the script only for the given thread')
-    parser.add_argument('-r', '--replacement',
-                        help='Users can win multiple times. Ignored if --number was not specified.',
-                        action='store_true')
-    parser.add_argument('-a', '--all',
-                        help='Ensures that every user wins at least once (given that there are enough of them) ' \
-                             'if used with --replacement flag. Ignored if --number was not specified.',
-                        action='store_true')
-    parser.add_argument('-n', '--number',
-                        help='Number of winners to pick.',
-                        type=int,
-                        default=1)
-    parser.add_argument('-v', '--verbose', help='increase output verbosity',
-                        action='store_true')
-    args = parser.parse_args()
-    if args.number < 1:
-        print('Error: invalid value of --number argument (must be >= 1).')
-        exit(1)
-    picker.set_args(args)
-    url = args.url
-    if url is None:
-        picker.run()
-    else:
-        submission = picker.reddit.get_submission(url)
-        picker.filter(submission)
-        picker.pick()
-        print(picker.get_results())
+    Picker.from_cli()
