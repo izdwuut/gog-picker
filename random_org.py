@@ -3,12 +3,12 @@ from rdoclient_py3 import RandomOrgClient
 
 class Random:
     def item(self, items):
-        max = self._get_max(items)
+        max = Random._get_max(items)
         pos = self._get_integer(max)
         return items[pos]
 
     def items(self, items, n, replacement=False):
-        max = self._get_max(items)
+        max = Random._get_max(items)
         integers = self._get_integers(n, max, replacement=replacement)
         set = [items[i] for i in integers]
         return set
@@ -21,7 +21,8 @@ class Random:
         integers = self.api.generate_integers(n, min, max, replacement=replacement)
         return integers
 
-    def _get_max(self, items):
+    @staticmethod
+    def _get_max(items):
         return len(items) - 1
 
     def __init__(self, settings):

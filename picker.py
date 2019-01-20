@@ -41,7 +41,7 @@ class Picker:
             user = comment.author.name
             if self.reddit.is_user_special(user):
                 continue
-            if not self.reddit.is_entering(comment):
+            if not Reddit.is_entering(comment):
                 self.not_entering.append(user)
                 continue
             profile = self.steam.get_steam_profile(comment)
@@ -53,7 +53,7 @@ class Picker:
     def remove_users_with_inaccessible_steam_profiles(self):
         users = self.eligible.copy()
         summaries = self.steam.get_player_summaries(users)
-        hidden = self.steam.get_users_with_hidden_profiles(users, summaries)
+        hidden = Steam.get_users_with_hidden_profiles(users, summaries)
         nonexistent = Steam.get_users_with_nonexistent_profiles(users, summaries)
         for user in users:
             if user in nonexistent:

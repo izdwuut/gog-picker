@@ -46,12 +46,13 @@ class Steam:
         summaries = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids))['response']['players']
         return summaries
 
-    def get_users_with_hidden_profiles(self, users, summaries):
-        id_user = {data['steam_id']:user for user, data in users.items()}
+    @staticmethod
+    def get_users_with_hidden_profiles(users, summaries):
+        id_user = {data['steam_id']: user for user, data in users.items()}
         hidden = []
         for player in summaries:
             visibility = player['communityvisibilitystate']
-            if not self.is_profile_visible(visibility):
+            if not Steam.is_profile_visible(visibility):
                 steam_id = player['steamid']
                 user = id_user[steam_id]
                 hidden.append(user)
@@ -63,7 +64,8 @@ class Steam:
         non_existent = [user for user in users if users[user]['steam_id'] not in existent]
         return non_existent
 
-    def is_profile_visible(self, state):
+    @staticmethod
+    def is_profile_visible(state):
         return state == 3
 
     def get_level(self, steam_id):
