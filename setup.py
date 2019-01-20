@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gog-picker",
-    version="0.3.1",
+    version="0.4.1",
     author='Bartosz "izdwuut" Konikiewicz',
     author_email="izdwuut@gmail.com",
     description="Gift of Games Picker for Reddit",
