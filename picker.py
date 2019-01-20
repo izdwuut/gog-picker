@@ -26,7 +26,7 @@ class Picker:
     random = Random(settings['random'])
     tag = settings['reddit']['tag']
     not_included_keywords = []
-    args = None
+    args = Args()
     replied_to = None
     not_entering = []
 
@@ -281,7 +281,17 @@ class Picker:
         to_include.close()
 
     def set_args(self, args):
-        self.args = args
+        if self._validate_args(args):
+            self.args = args
+        else:
+            exit(1)
+
+    @staticmethod
+    def _validate_args(args):
+        if args.number < 1:
+            print('Error: invalid value of --number argument (must be >= 1).')
+            return False
+        return True
 
     @classmethod
     def from_cli(cls):
@@ -307,9 +317,6 @@ class Picker:
                             action='store_true')
         parser_args = parser.parse_args()
         args = Args.from_dict(parser_args)
-        if args.number < 1:
-            print('Error: invalid value of --number argument (must be >= 1).')
-            exit(1)
         picker.set_args(args)
         url = args.url
         if url is None:
