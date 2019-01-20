@@ -327,9 +327,14 @@ class Picker:
             picker.pick()
             print(picker.get_results())
 
-    def __init__(self, args=Args()):
+    @classmethod
+    def from_args(cls, args):
+        picker = cls()
+        picker.set_args(args)
+        return picker
+
+    def __init__(self):
         self.pool = Pool()
-        self.set_args(args)
 
 
 if __name__ == "__main__":
