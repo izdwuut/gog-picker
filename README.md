@@ -23,7 +23,7 @@ The GoG Picker covers only a small subset of the subreddit rules, but large enou
 The GoG Picker requires Python 3.6+ installed on your PC. To install the necessary dependencies, execute the following on the command line:
 
 ```
-pip install -r requirements.txt
+pip install .
 ```
 
 You will need Steam, Reddit, and Random.org API keys. Check [the configuration section](#configuration) for more details. 
@@ -32,10 +32,10 @@ You can access help screen by running the script with `-h` (`--help`) flag.
 
 ## Single winner
 
-The script is intended to be invoked from a [CLI](https://en.wikipedia.org/wiki/Command-line_interface). By running it with `-u` (`--url`) parameter you can pick a winner of a single drawing:
+The script is intended to be invoked from a [CLI](https://en.wikipedia.org/wiki/Command-line_interface). By running it with an optional positional `url` parameter you can pick a winner of a single drawing:
 
 ```
-$ python picker.py --url URL
+$ python picker.py URL
 ```
 
 `URL` is a link to a r/GiftofGames thread like this one: `https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/`.
@@ -47,25 +47,25 @@ You can manipulate level of verbosity by passing `-v` (`--verbose`) flag.
 The script can handle drawings with multiple winners by running it with `-n` (`--number`) parameter. The following line would run the script and pick 2 winners in the aforementioned thread:
 
 ```
-$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2
+$ python picker.py https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2
 ``` 
  
 Passing `-r` (`--replacement`) flag makes it possible for users to win multiple times:
 
 ```
-$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -r 
+$ python picker.py https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -r 
 ``` 
 
 Using `-a` (`--all`) flag ensures that every user wins at least once (given that there are more games to giveaway than participants):
 
 ```
-$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -a 
+$ python picker.py https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -a 
 ``` 
 
 It can be combined with `-r` flag so that every user wins multiple times (but at least once):
 
 ```
-$ python picker.py -u https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -ra
+$ python picker.py https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -ra
 ``` 
 
 ## Bot

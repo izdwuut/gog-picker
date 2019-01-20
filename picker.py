@@ -6,7 +6,7 @@ import os
 import prawcore
 import requests
 
-from steam import Steam
+from _steam import Steam
 from random_org import Random
 from file import File
 from list import List
@@ -300,7 +300,8 @@ class Picker:
         parser = argparse.ArgumentParser(
             description="Picks a winner of r/" + subreddit + " drawing in accordance with subreddit's rules.",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-        parser.add_argument('-u', '--url',
+        parser.add_argument('url',
+                            nargs='?',
                             help='runs the script only for the given thread')
         parser.add_argument('-r', '--replacement',
                             help='Users can win multiple times. Ignored if --number was not specified.',
