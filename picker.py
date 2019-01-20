@@ -316,7 +316,7 @@ class Picker:
         parser.add_argument('-v', '--verbose', help='increase output verbosity',
                             action='store_true')
         parser_args = parser.parse_args()
-        args = Args.from_dict(parser_args)
+        args = Args.from_namespace(parser_args)
         picker.set_args(args)
         url = args.url
         if url is None:

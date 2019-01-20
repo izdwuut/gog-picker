@@ -6,8 +6,8 @@ class Args:
     verbose = False
 
     @classmethod
-    def from_dict(cls, dict_):
+    def from_namespace(cls, namespace):
         args = cls()
-        for attr, value in dict_.items():
+        for attr, value in vars(namespace).items():
             setattr(args, attr, value)
         return args
