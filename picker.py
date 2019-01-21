@@ -141,8 +141,8 @@ class Picker:
 
     def _get_not_entering(self):
         not_entering = ''
-        if self.args.verbose:
-            not_entering = 'Not entering: ' + ', '.join(self.not_entering) + '\n'
+        if self.args.verbose and self.not_entering:
+            not_entering = 'Not entering: ' + ', '.join(self.not_entering) + '.\n'
         return not_entering
 
     def pick(self):
