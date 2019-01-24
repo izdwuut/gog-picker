@@ -2,6 +2,7 @@ import argparse
 from configparser import ConfigParser
 from multiprocessing import Pool
 import os
+import sys
 
 import prawcore
 import requests
@@ -34,7 +35,8 @@ class Picker:
         try:
             comments = submission.comments
         except prawcore.exceptions.NotFound:
-            exit(1)
+            sys.exit(1)
+
         for comment in comments:
             if not comment.author:
                 continue
