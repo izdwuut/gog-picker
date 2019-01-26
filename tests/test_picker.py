@@ -1,5 +1,7 @@
 from unittest import TestCase
-from picker import Picker
+from picker import Picker, Args
+from unittest.mock import patch
+import io
 
 
 class TestPicker(TestCase):
@@ -27,5 +29,44 @@ class TestPicker(TestCase):
 
         result = self.picker._get_not_entering()
 
-        message = 'Not entering: UserA, UserB, UserC.\n'
-        self.assertEqual(result, message)
+        self.assertEqual(result, 'Not entering: UserA, UserB, UserC.\n')
+
+    @patch('sys.stdout', new_callable=io.StringIO)
+    def test_validate_args__when_number_less_than_1__expect_error_string(self, mock_stdout):
+        args = Args()
+        args.number = 0
+
+        Picker._validate_args(args)
+
+        error = 'Error: invalid value of --number argument (must be >= 1).\n'
+        self.assertEqual(mock_stdout.getvalue(), error)
+
+    def test_validate_args__when_number_less_than_1__expect_false(self):
+        args = Args()
+        args.number = 0
+
+        result = Picker._validate_args(args)
+
+        self.assertFalse(result)
+
+    def test_validate_args__when_number_equals_1__expect_true(self):
+        args = Args()
+        args.number = 1
+
+        result = Picker._validate_args(args)
+
+        self.assertTrue(result)
+
+    def test_validate_args__when_number_greater_than_1__expect_true(self):
+        args = Args()
+        args.number = 2
+
+        result = Picker._validate_args(args)
+
+        self.assertTrue(result)
+
+    def test_validate_args__when_number_is_none__expect_type_error_exception(self):
+        args = Args()
+        args.number = None
+
+        self.assertRaises(TypeError, Picker._validate_args, args)
