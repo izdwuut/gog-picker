@@ -2,9 +2,7 @@ import argparse
 from configparser import ConfigParser
 from multiprocessing import Pool
 import os
-import sys
 
-import prawcore
 import requests
 
 from _steam import Steam
@@ -32,25 +30,19 @@ class Picker:
     not_entering = []
 
     def scrap_comments(self, submission):
-        try:
-            comments = submission.comments
-        except prawcore.exceptions.NotFound:
-            sys.exit(1)
-
-        for comment in comments:
-            if not comment.author:
-                continue
-            user = comment.author.name
-            if self.reddit.is_user_special(user):
-                continue
+        for comment in Reddit.get_regular_users_comments(submission):
+            user = Reddit.get_author(comment)
             if not Reddit.is_entering(comment):
                 self.not_entering.append(user)
                 continue
-            profile = self.steam.get_steam_profile(comment)
-            if profile:
-                self.eligible[user] = profile
-            else:
-                self.add_violator(user, Errors.NO_STEAM_PROFILE_LINK)
+            self.scrap_steam_profile(comment, user)
+
+    def scrap_steam_profile(self, comment, user):
+        profile = self.steam.get_steam_profile(comment)
+        if profile:
+            self.eligible[user] = profile
+        else:
+            self.add_violator(user, Errors.NO_STEAM_PROFILE_LINK)
 
     def remove_users_with_inaccessible_steam_profiles(self):
         users = self.eligible.copy()
@@ -72,7 +64,7 @@ class Picker:
                 self.add_violator(user, Errors.HIDDEN_STEAM_GAMES)
 
     def get_drawings(self):
-        for comment in self.reddit.get_comments():
+        for comment in self.reddit.get_comments_stream():
             print(comment.submission.name)
             if not self.replied_to.contains(comment.submission.name) and Reddit.has_tag(comment, self.tag):
                 drawing = {'comment': comment, 'submission': comment.submission}
