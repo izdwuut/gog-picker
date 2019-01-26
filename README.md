@@ -117,6 +117,7 @@ Reddit-related settings and [Python Reddit API Wrapper](https://github.com/praw-
 * `required_keywords` - comma-separated keywords that every thread title has to contain. Whitespace characters and capitalization are ignored. Ignored if empty.
 * `limit` - limits number of comments fetched at once.
 * `min_karma` - minimum Redditor comment [karma](https://www.reddit.com/wiki/faq#wiki_what_is_that_number_next_to_usernames.3F_and_what_is_karma.3F).
+* `not_entering` - a string that an user's post has to contain in order to mark it's author as not participating in a drawing. 
 
 API wrapper can be configured using the following settings:
 

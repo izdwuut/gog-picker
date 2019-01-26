@@ -32,7 +32,7 @@ class Picker:
     def scrap_comments(self, submission):
         for comment in Reddit.get_regular_users_comments(submission):
             user = Reddit.get_author(comment)
-            if not Reddit.is_entering(comment):
+            if not self.reddit.is_entering(comment):
                 self.not_entering.append(user)
                 continue
             self.scrap_steam_profile(comment, user)
