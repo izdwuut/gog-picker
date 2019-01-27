@@ -58,8 +58,8 @@ class Picker:
 
     def remove_users_with_hidden_steam_games(self):
         for user, data in self.eligible.copy().items():
-            steamid = data['steam_id']
-            is_visible = self.steam.is_games_list_visible(steamid)
+            steam_id = data['steam_id']
+            is_visible = self.steam.is_games_list_visible(steam_id)
             if not is_visible:
                 self.add_violator(user, Errors.HIDDEN_STEAM_GAMES)
 
