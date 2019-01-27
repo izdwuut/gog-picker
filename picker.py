@@ -65,7 +65,6 @@ class Picker:
 
     def get_drawings(self):
         for comment in self.reddit.get_comments_stream():
-            print(comment.submission.name)
             if not self.replied_to.contains(comment.submission.name) and Reddit.has_tag(comment, self.tag):
                 drawing = {'comment': comment, 'submission': comment.submission}
                 yield drawing
@@ -73,6 +72,7 @@ class Picker:
     def run(self):
         self.replied_to = File(self.settings['general']['replied_to'])
         for drawing in self.get_drawings():
+            print('The bot is on!')
             submission = drawing['submission']
             comment = drawing['comment']
             Picker.print_current_submission(submission)
