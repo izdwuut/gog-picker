@@ -75,6 +75,31 @@ When the script is invoked without the optional `url` parameter, it acts like a 
 $ python picker.py
 ```
 
+# Including a module
+If you are willing to use the script as a dependence of your own script, you need to import it first:
+
+```
+from picker import Picker
+```
+
+You can also import the whole module:
+
+```
+import picker
+```
+
+The module contains some useful submodules for interacting with external services:
+
+* `Reddit` - a class handling requests to Reddit API through means of [PRAW](https://praw.readthedocs.io/en/latest/) wrapper.
+* `Steam` - a class handling requests to Steam API through means of [Steam](https://steam.readthedocs.io/en/latest/) wrapper.
+* `Random` - a class handling requests to Random.org API through means of [rdoclient-py3](https://pypi.org/project/rdoclient-py3/) wrapper.
+
+There are also a few utility classes:
+
+* `Errors` - validation errors that can occur when an user doesn't confront to subreddit rules.
+* `File` - a simple files abstraction. Used for operating on a whitelist, blacklist and tracking a list of visited threads.
+* `Args` - app's configuration. Provided automatically by running the script from CLI. It can be also passed manually using a `from_args` factory method.
+
 # Configuration
 
 GoG picker comes with a `settings.ini` configuration file. In order to run the script, you will need to provide API keys for the following services:
@@ -135,7 +160,7 @@ Random.org-related settings.
 
 * `api_key` - [a Random.org beta API key](https://api.random.org/api-keys/beta)
 
-The wrapper is documented [here](https://github.com/RandomOrg/JSON-RPC-Python).
+The wrapper is documented [here](https://pypi.org/project/rdoclient-py3/).
 
 # License
 
