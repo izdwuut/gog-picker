@@ -52,6 +52,14 @@ class Reddit:
     def get_comments_stream(self):
         return self.subreddit.stream.comments()
 
+    def get_profile_prefix(self):
+        return self.profile_prefix
+
+    def get_usernames(self, usernames, prefixed=False):
+        if prefixed:
+            return [self.profile_prefix + winner for winner in usernames]
+        return usernames
+
     @staticmethod
     def has_tag(comment, tag):
         return tag in comment.body
@@ -69,6 +77,7 @@ class Reddit:
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.getint('min_karma')
+        self.profile_prefix = settings['profile_prefix']
         self.api = self.get_api(settings)
         self.subreddit = self.api.subreddit(settings['subreddit'])
         self.not_entering = settings['not_entering']

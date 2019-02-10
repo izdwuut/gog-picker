@@ -100,11 +100,14 @@ class Picker:
 
     def get_results(self):
         results = []
+        prefixed = self.args.links
+        profile_prefix = self.reddit.get_profile_prefix() if prefixed else ''
         if self.violators:
             violations = self._get_violations()
-            results.append('Users that violate rules:{}\n'.format(violations))
+            results.append('Users that violate rules:{}.\n'.format(violations))
         if self.eligible:
-            results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
+            eligible = self.reddit.get_usernames(self.eligible.keys(), prefixed)
+            results.append('Users eligible for a drawing: ' + ', '.join(eligible) + '.\n')
             not_entering = self._get_not_entering()
             results.append(not_entering)
             if len(self.winners) is 1:
@@ -115,8 +118,8 @@ class Picker:
             for user, times in self.winners.items():
                 t = ' (x{})'.format(times) if times > 1 else ''
                 winners.append(user + t)
-            winners = ', '.join(winners)
-            results.append('Winner' + s + ': ' + winners + '.')
+            winners = [profile_prefix + winner for winner in winners]
+            results.append('Winner' + s + ': ' + ', '.join(winners) + '.')
         if results:
             results = ['Results:\n'] + results
         else:
@@ -124,14 +127,16 @@ class Picker:
         return ''.join(results)
 
     def _get_violations(self):
+        prefixed = self.args.links
         if not self.args.verbose:
-            users = self.violators.keys()
+            users = self.reddit.get_usernames(self.violators.keys(), prefixed)
             return ' ' + ', '.join(users)
         reasons = []
         for user, reason in self.violators.items():
             user_reason = '{} ({})'.format(user, reason)
             reasons.append(user_reason)
-        return '\n' + ',\n'.join(reasons) + '.'
+        users = self.reddit.get_usernames(reasons, prefixed)
+        return '\n' + ',\n'.join(users) + '.'
 
     def _get_not_entering(self):
         not_entering = ''
@@ -301,6 +306,7 @@ class Picker:
     def from_cli(cls):
         picker = cls()
         subreddit = picker.reddit.get_subreddit()
+        profile_prefix = picker.reddit.get_profile_prefix()
         parser = argparse.ArgumentParser(
             description="Picks a winner of r/" + subreddit + " drawing in accordance with subreddit's rules.",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -319,6 +325,9 @@ class Picker:
                             type=int,
                             default=1)
         parser.add_argument('-v', '--verbose', help='increase output verbosity',
+                            action='store_true')
+        parser.add_argument('-l', '--links', help='Prepends usernames with "' + profile_prefix +
+                                                  '" in a drawing results.',
                             action='store_true')
         parser_args = parser.parse_args()
         args = Args.from_namespace(parser_args)

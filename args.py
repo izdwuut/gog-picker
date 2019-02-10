@@ -4,6 +4,7 @@ class Args:
     all = False
     number = 1
     verbose = False
+    links = False
 
     @classmethod
     def from_namespace(cls, namespace):
