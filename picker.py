@@ -2,7 +2,6 @@ import argparse
 from configparser import ConfigParser
 from multiprocessing import Pool
 import os
-
 import requests
 import praw
 
@@ -108,7 +107,7 @@ class Picker:
             results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
             not_entering = self._get_not_entering()
             results.append(not_entering)
-            if len(self.winners):
+            if len(self.winners) is 1:
                 s = ''
             else:
                 s = 's'
