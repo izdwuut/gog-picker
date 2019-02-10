@@ -4,6 +4,7 @@ from multiprocessing import Pool
 import os
 
 import requests
+import praw
 
 from _steam import Steam
 from random_org import Random
@@ -204,7 +205,17 @@ class Picker:
             return False
         return True
 
-    def filter(self, submission):
+    def get_submission(self, thread=None):
+        if not thread:
+            url = self.args.url
+            return self.reddit.get_submission(url)
+        if isinstance(thread, str):
+            return self.reddit.get_submission(thread)
+        if isinstance(thread, praw.models.Submission):
+            return thread
+
+    def filter(self, thread=None):
+        submission = self.get_submission(thread)
         if not self.has_required_keywords(submission.title):
             return
         self.scrap_comments(submission)
@@ -317,8 +328,7 @@ class Picker:
         if url is None:
             picker.run()
         else:
-            submission = picker.reddit.get_submission(url)
-            picker.filter(submission)
+            picker.filter(url)
             picker.pick()
             print(picker.get_results())
 
