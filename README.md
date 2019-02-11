@@ -75,31 +75,6 @@ When the script is invoked without the optional `url` parameter, it acts like a 
 $ python picker.py
 ```
 
-# Including a module
-If you are willing to use the script as a dependence of your own script, you need to import it first:
-
-```
-from picker import Picker
-```
-
-You can also import the whole module:
-
-```
-import picker
-```
-
-The module contains some useful submodules for interacting with external services:
-
-* `Reddit` - a class handling requests to Reddit API through means of [PRAW](https://praw.readthedocs.io/en/latest/) wrapper.
-* `Steam` - a class handling requests to Steam API through means of [Steam](https://steam.readthedocs.io/en/latest/) wrapper.
-* `Random` - a class handling requests to Random.org API through means of [rdoclient-py3](https://pypi.org/project/rdoclient-py3/) wrapper.
-
-There are also a few utility classes:
-
-* `Errors` - validation errors that can occur when an user doesn't confront to subreddit rules.
-* `File` - a simple files abstraction. Used for operating on a whitelist, blacklist and tracking a list of visited threads.
-* `Args` - app's configuration. Provided automatically by running the script from CLI. It can be also passed manually using a `from_args` factory method.
-
 # Configuration
 
 GoG picker comes with a `settings.ini` configuration file. In order to run the script, you will need to provide API keys for the following services:
@@ -162,6 +137,59 @@ Random.org-related settings.
 * `api_key` - [a Random.org beta API key](https://api.random.org/api-keys/beta)
 
 The wrapper is documented [here](https://pypi.org/project/rdoclient-py3/).
+
+# Module
+
+If you are willing to use the script as a dependence of your own script, you need to import it first:
+
+```
+from picker import Picker
+```
+
+You can also import the whole module:
+
+```
+import picker
+```
+
+## Submodules
+
+The module contains some useful submodules for interacting with external services:
+
+* `Reddit` - a submodule handling requests to [Reddit API](https://www.reddit.com/dev/api/) through means of [PRAW](https://praw.readthedocs.io/en/latest/) wrapper.
+* `Steam` - a submodule handling requests to [Steam API](https://steamcommunity.com/dev) through means of [Steam](https://steam.readthedocs.io/en/latest/) wrapper.
+* `Random` - a submodule handling requests to [Random.org API](https://api.random.org/json-rpc/1/) through means of [rdoclient-py3](https://pypi.org/project/rdoclient-py3/) wrapper.
+
+There are also a few utility classes:
+
+* `Errors` - validation errors that can occur when an user doesn't confront to subreddit rules.
+* `File` - a simple files abstraction. Used for operating on a whitelist, blacklist and tracking a list of visited threads.
+* `Args` - app's configuration. Provided automatically by running the script from CLI. It can be also passed manually using a `from_args` factory method.
+
+## Building a `Picker` object
+
+The `Picker` class is designed to be instantiated using one of these factory methods:
+
+* `from_cli` - run as a CLI tool. It is run by default when you run the script from CLI. Provided arguments are directly mapped into an [`Args`](args.py)  object.
+* `from_args` - builds a `Picker` object using provided [`Args`](args.py) object.
+
+If run using an initializer, the value of `Picker.args` variable gets assigned to an instance of [`Args`](args.py) class with default attributes values left.
+ 
+## Running a drawing
+
+To run the script manually, you can either:
+
+### Run the bot
+
+To start the bot, you need to simply invoke a `run` method. It would then listen to a subreddit specified in [settings](#configuration).
+
+### Run a single drawing
+ 
+To perform a single drawing, there are a couple of steps you need to do:
+
+1. Run a `filter` method that takes an URL to a thread with drawing (eg. `https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/`). It would make the script scrap comments and change it's internal state so it reflects users eligible for a drawing (an `eligible` attribute), violators (`violators`) and user not entering to the drawing (`not_entering`).
+2. Run a `pick` method. It would append winners to a `winners` attribute.
+3. Run a `get_results` method to obtain drawing results in human-readable string form.
 
 # License
 
