@@ -95,6 +95,10 @@ General settings that don't fall into more specific categories.
 * `whitelist` - a list of users that can participate in a drawing. If it's empty, every user except those listed in `blacklist` can participate in the drawing
 * `blacklist` - a list of users excluded from drawings. It is only taken into account if `whitelist` is empty
 
+### [args]
+
+Arguments that would normally need to be provided via command line.
+
 ### [steam]
 
 Steam-related settings and [Steam API wrapper](https://github.com/ValvePython/steam) configuration.
