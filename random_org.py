@@ -14,6 +14,8 @@ class Random:
         return set
 
     def _get_integer(self, max=0, min=0):
+        if min is max:
+            return max
         integers = self._get_integers(min=min, max=max)
         return integers[0]
 
