@@ -99,6 +99,13 @@ General settings that don't fall into more specific categories.
 
 Arguments that would normally need to be provided via command line.
 
+* `replacement` - sets if users can win multiple times. Ignored if `number` was not specified.
+* `all` - ensures that every user wins at least once (given that there are enough of them) if a `replacement` option is set. Ignored if `number` was not specified.
+* `number` - a number of winners to pick.
+* `verbose` - increases output's verbosity.
+* `link` - prefix usernames in drawings results with a prefix specified by a `profile_prefix` option in a `[reddit]` section.
+
+
 ### [steam]
 
 Steam-related settings and [Steam API wrapper](https://github.com/ValvePython/steam) configuration.
