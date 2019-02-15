@@ -175,7 +175,7 @@ There are also a few utility classes:
 
 * `Errors` - validation errors that can occur when an user doesn't confront to subreddit rules.
 * `File` - a simple files abstraction. Used for operating on a whitelist, blacklist and tracking a list of visited threads.
-* `Args` - app's configuration. Provided automatically by running the script from CLI. It can be also passed manually using a `from_args` factory method.
+* `Args` - app's configuration. Automatically fetched from settings or provided by running the script from CLI. It can be also passed manually using a `from_args` factory method.
 
 ## Building a `Picker` object
 
