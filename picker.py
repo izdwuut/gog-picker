@@ -2,6 +2,7 @@ import argparse
 from configparser import ConfigParser
 from multiprocessing import Pool
 import os
+import sys
 import requests
 import praw
 
@@ -25,7 +26,7 @@ class Picker:
     random = Random(settings['random'])
     tag = settings['reddit']['tag']
     not_included_keywords = []
-    args = Args()
+    args = Args.from_config(settings['args'])
     replied_to = None
     not_entering = []
 
@@ -136,7 +137,7 @@ class Picker:
             user_reason = '{} ({})'.format(user, reason)
             reasons.append(user_reason)
         users = self.reddit.get_usernames(reasons, prefixed)
-        return '\n' + ',\n'.join(users) + '.'
+        return '\n' + ',\n'.join(users)
 
     def _get_not_entering(self):
         not_entering = ''
@@ -291,14 +292,17 @@ class Picker:
 
     def set_args(self, args):
         if self._validate_args(args):
-            self.args = args
+            self.args.update(args)
         else:
-            exit(1)
+            sys.exit(1)
 
-    @staticmethod
-    def _validate_args(args):
-        if args.number < 1:
-            print('Error: invalid value of --number argument (must be >= 1).')
+    def _validate_args(self, args):
+        number_error = 'Error: invalid value of number argument (must be >= 1).'
+        if args.number is not None and args.number < 1:
+            print(number_error)
+            return False
+        if self.args.number is None or self.args.number < 1:
+            print(number_error)
             return False
         return True
 
@@ -312,33 +316,38 @@ class Picker:
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         parser.add_argument('url',
                             nargs='?',
-                            help='runs the script only for the given thread')
+                            help='runs the script only for the given thread',
+                            default=None)
         parser.add_argument('-r', '--replacement',
                             help='Users can win multiple times. Ignored if --number was not specified.',
-                            action='store_true')
+                            action='store_true',
+                            default=None)
         parser.add_argument('-a', '--all',
                             help='Ensures that every user wins at least once (given that there are enough of them) ' \
                                  'if used with --replacement flag. Ignored if --number was not specified.',
-                            action='store_true')
+                            action='store_true',
+                            default=None)
         parser.add_argument('-n', '--number',
                             help='Number of winners to pick.',
                             type=int,
-                            default=1)
+                            default=None)
         parser.add_argument('-v', '--verbose', help='increase output verbosity',
-                            action='store_true')
+                            action='store_true',
+                            default=None)
         parser.add_argument('-l', '--links', help='Prepends usernames with "' + profile_prefix +
                                                   '" in a drawing results.',
-                            action='store_true')
+                            action='store_true',
+                            default=None)
         parser_args = parser.parse_args()
         args = Args.from_namespace(parser_args)
         picker.set_args(args)
         url = args.url
-        if url is None:
-            picker.run()
-        else:
+        if url:
             picker.filter(url)
             picker.pick()
             print(picker.get_results())
+        else:
+            picker.run()
 
     @classmethod
     def from_args(cls, args):

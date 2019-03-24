@@ -95,6 +95,17 @@ General settings that don't fall into more specific categories.
 * `whitelist` - a list of users that can participate in a drawing. If it's empty, every user except those listed in `blacklist` can participate in the drawing
 * `blacklist` - a list of users excluded from drawings. It is only taken into account if `whitelist` is empty
 
+### [args]
+
+Arguments that would normally need to be provided via command line.
+
+* `replacement` - sets if users can win multiple times. Ignored if `number` was not specified.
+* `all` - ensures that every user wins at least once (given that there are enough of them) if a `replacement` option is set. Ignored if `number` was not specified.
+* `number` - a number of winners to pick.
+* `verbose` - increases output's verbosity.
+* `link` - prefix usernames in drawings results with a prefix specified by a `profile_prefix` option in a `[reddit]` section.
+
+
 ### [steam]
 
 Steam-related settings and [Steam API wrapper](https://github.com/ValvePython/steam) configuration.
@@ -164,7 +175,7 @@ There are also a few utility classes:
 
 * `Errors` - validation errors that can occur when an user doesn't confront to subreddit rules.
 * `File` - a simple files abstraction. Used for operating on a whitelist, blacklist and tracking a list of visited threads.
-* `Args` - app's configuration. Provided automatically by running the script from CLI. It can be also passed manually using a `from_args` factory method.
+* `Args` - app's configuration. Automatically fetched from settings or provided by running the script from CLI. It can be also passed manually using a `from_args` factory method.
 
 ## Building a `Picker` object
 
