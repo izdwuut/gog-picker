@@ -220,6 +220,7 @@ class Picker:
             return thread
 
     def filter(self, thread=None):
+        pool = Pool()
         submission = self.get_submission(thread)
         if not self.has_required_keywords(submission.title):
             return
@@ -228,8 +229,8 @@ class Picker:
 
         for user in self.eligible.copy():
             url = self.eligible[user].pop('url')
-            self.eligible[user]['steam_id'] = self.pool.apply_async(self.steam.get_id, [url])
-            self.eligible[user]['karma'] = self.pool.apply_async(self.reddit.get_karma, [user])
+            self.eligible[user]['steam_id'] = pool.apply_async(self.steam.get_id, [url])
+            self.eligible[user]['karma'] = pool.apply_async(self.reddit.get_karma, [user])
         for user, data in self.eligible.copy().items():
             steam_id = data['steam_id'].get()
             if steam_id:
@@ -239,7 +240,7 @@ class Picker:
         self.remove_users_with_inaccessible_steam_profiles()
         self.remove_users_with_hidden_steam_games()
         for user in self.eligible.copy():
-            self.eligible[user]['level'] = self.pool.apply_async(self.steam.get_level,
+            self.eligible[user]['level'] = pool.apply_async(self.steam.get_level,
                                                                  [self.eligible[user]['steam_id']])
 
         for user in self.eligible.copy():
@@ -354,9 +355,6 @@ class Picker:
         picker = cls()
         picker.set_args(args)
         return picker
-
-    def __init__(self):
-        self.pool = Pool()
 
 
 if __name__ == "__main__":
