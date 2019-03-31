@@ -1,0 +1,3 @@
+Hello!
+
+You have won {title} in my drawing ([thread]({thread}))! Here is your Steam key: {key}. Have fun!

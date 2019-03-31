@@ -9,6 +9,7 @@ class Args:
     number = None
     verbose = None
     links = None
+    message = None
 
     @classmethod
     def from_namespace(cls, namespace):
@@ -22,6 +23,7 @@ class Args:
         args.number = cls._get_val(config, 'number', int)
         args.verbose = cls._get_val(config, 'verbose', bool)
         args.links = cls._get_val(config, 'links', bool)
+        args.message = cls._get_val(config, 'message', bool)
         return args
 
     def update(self, args):

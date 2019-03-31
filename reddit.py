@@ -74,6 +74,12 @@ class Reddit:
     def is_entering(self, comment):
         return self.not_entering not in comment.body.lower()
 
+    def get_redditor(self, username):
+        return self.api.redditor(username)
+
+    def send_message(self, username, subject, message):
+        self.get_redditor(username).message(subject, message)
+
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.getint('min_karma')
