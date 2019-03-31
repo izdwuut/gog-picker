@@ -24,6 +24,7 @@ class Picker:
     steam = Steam(settings['steam'])
     reddit = Reddit(steam, settings['reddit'])
     random = Random(settings['random'])
+    messager = settings['messager']
     tag = settings['reddit']['tag']
     not_included_keywords = []
     args = Args.from_config(settings['args'])
@@ -241,7 +242,7 @@ class Picker:
         self.remove_users_with_hidden_steam_games()
         for user in self.eligible.copy():
             self.eligible[user]['level'] = pool.apply_async(self.steam.get_level,
-                                                                 [self.eligible[user]['steam_id']])
+                                                            [self.eligible[user]['steam_id']])
 
         for user in self.eligible.copy():
             level = self.eligible[user]['level'] = self.eligible[user]['level'].get()
@@ -307,6 +308,30 @@ class Picker:
             return False
         return True
 
+    def send_messages(self):
+        if not self.args.message:
+            return
+        with open(self.messager['keys']) as keys_file, open(self.messager['message']) as message_file:
+            keys = list(filter(None, keys_file.read().strip('\n').split('\n')))
+            if len(keys) < len(self.winners):
+                print('Not enough keys ({} found, {} are needed). '
+                      'No messages were sent.'.format(str(len(keys)),
+                                                      str(len(self.winners))))
+                return
+            body = message_file.read()
+        subject = self.messager['subject']
+        params = {}
+        if self.messager['title']:
+            params['title'] = self.messager['title']
+        if self.messager['thread']:
+            params['thread'] = self.messager['thread']
+        for winner in self.winners:
+            params['key'] = keys.pop()
+            message = body.format(**params)
+            self.reddit.send_message(winner, subject, message)
+        with open(self.messager['keys'], 'w') as keys_file:
+            keys_file.write('\n'.join(keys))
+
     @classmethod
     def from_cli(cls):
         picker = cls()
@@ -339,6 +364,9 @@ class Picker:
                                                   '" in a drawing results.',
                             action='store_true',
                             default=None)
+        parser.add_argument('-m', '--message', help='Send a direct message to winners with keys that they have won.',
+                            action='store_true',
+                            default=None)
         parser_args = parser.parse_args()
         args = Args.from_namespace(parser_args)
         picker.set_args(args)
@@ -347,6 +375,7 @@ class Picker:
             picker.filter(url)
             picker.pick()
             print(picker.get_results())
+            picker.send_messages()
         else:
             picker.run()
 
