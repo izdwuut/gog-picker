@@ -329,6 +329,8 @@ class Picker:
             params['key'] = keys.pop()
             message = body.format(**params)
             self.reddit.send_message(winner, subject, message)
+            if self.args.verbose:
+                print('Sent a message to ' + winner + '.')
         with open(self.messager['keys'], 'w') as keys_file:
             keys_file.write('\n'.join(keys))
 
