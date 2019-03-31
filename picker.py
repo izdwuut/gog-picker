@@ -330,7 +330,8 @@ class Picker:
             message = body.format(**params)
             self.reddit.send_message(winner, subject, message)
             if self.args.verbose:
-                print('Sent a message to ' + winner + '.')
+                prefix = self.settings['reddit']['profile_prefix'] if self.args.links else ''
+                print('Sent a message to {}{}.'.format(prefix, winner))
         with open(self.messager['keys'], 'w') as keys_file:
             keys_file.write('\n'.join(keys))
 
