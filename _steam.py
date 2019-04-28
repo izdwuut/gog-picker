@@ -19,14 +19,15 @@ class Steam:
     def get_id(self, url):
         url = url.strip('/')
         path = urlparse(url).path.strip('/').split('/')
-        if path[0] == 'profiles':
+        parts = [part for part in path if part]
+        if parts[0] == 'profiles':
             try:
-                id = path[1]
+                id = parts[1]
                 if isinstance(int(id), int):
                     return id
             except ValueError:
                 return None
-        response = self.resolve_vanity_url(path[1])
+        response = self.resolve_vanity_url(parts[1])
         if response['success'] == 1:
             return response['steamid']
         return None
