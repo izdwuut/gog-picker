@@ -44,8 +44,13 @@ class Steam:
 
     def get_player_summaries(self, users):
         ids = [users[user]['steam_id'] for user in users]
-        summaries = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids))['response']['players']
-        return summaries
+        summaries_aggregated = []
+        i = 0
+        while i < len(ids):
+            summaries = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids[i:i + 100]))['response']['players']
+            summaries_aggregated.extend(summaries)
+            i += 100
+        return summaries_aggregated
 
     @staticmethod
     def get_users_with_hidden_profiles(users, summaries):
