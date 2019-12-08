@@ -34,7 +34,7 @@ class Steam:
 
     def get_steam_profile(self, comment):
         comment_body = comment.body_html.replace('</a>', '')
-        result = re.search("(" + self.steam_url + "/(?:id|profiles)/[^\)\]\"<]+)", comment_body)
+        result = re.search("(" + self.steam_url + "/(?:id|profiles)/[^\)\]\"<]+)", comment_body.lower())
         url = {}
         if result:
             url['url'] = 'https://' + result.group(0).replace(' ', '').replace('\n', '')
