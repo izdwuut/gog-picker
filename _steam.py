@@ -34,13 +34,10 @@ class Steam:
 
     def get_steam_profile(self, comment):
         comment_body = comment.body_html.replace('</a>', '')
-        result = re.search("(" + self.steam_url + "/(?:id|profiles)/[^\)\]\"<]+)", comment_body.lower())
+        result = re.search("(" + self.steam_url + "/(?:id|profiles)/ ?[^\)\]\"< ]+)", comment_body.lower())
         url = {}
         if result:
             url['url'] = 'https://' + result.group(0).replace(' ', '').replace('\n', '')
-            if url['url'].count('/') >= 5:
-                last_slash = url['url'].rfind('/')
-                url['url'] = url['url'][:last_slash]
         return url
 
     def resolve_vanity_url(self, url):
