@@ -78,7 +78,7 @@ class Steam:
     def get_level(self, steam_id):
         try:
             level = self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
-        except requests.exceptions.HTTPError:
+        except (requests.exceptions.HTTPError, KeyError):
             level = None
         return level
 
