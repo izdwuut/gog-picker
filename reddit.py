@@ -17,7 +17,7 @@ class Reddit:
     @staticmethod
     def get_comments(submission):
         try:
-            # submission.comments.replace_more(limit=None)
+            submission.comments.replace_more(limit=None)
             comments = submission.comments
         except prawcore.exceptions.NotFound:
             sys.exit(1)
