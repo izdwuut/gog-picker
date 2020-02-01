@@ -68,7 +68,18 @@ It can be combined with `-r` flag so that every user wins multiple times (but at
 $ python picker.py https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -n 2 -ra
 ``` 
 
+## Messager
+
+An optional message can be sent to winners. To do so, run the script with `-m` (`--message`) flag:
+
+```
+$ python picker.py https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -m
+``` 
+
+See [messager](#messager) config section for more details.
+
 ## Bot
+
 When the script is invoked without the optional `url` parameter, it acts like a bot and fetches the latest threads from the subreddit provided in `settings.ini`. This translates to the following command:
 
 ```
@@ -105,6 +116,15 @@ Arguments that would normally need to be provided via command line.
 * `verbose` - increases output's verbosity.
 * `link` - prefix usernames in drawings results with a prefix specified by a `profile_prefix` option in a `[reddit]` section.
 
+### [messager]
+
+Settings related to a messager module.
+
+* `thread` - a drawing thread replacing a placeholder in a template file specified by a `message` key
+* `title` - a game name replacing a placeholder in a template file specified by a `message` key
+* `message` - a file with a message template
+* `keys` - a file with keys to send (new line separated)
+* `subject` - a message subject
 
 ### [steam]
 
