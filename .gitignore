@@ -115,3 +115,6 @@ blacklist.txt
 # JetBrains
 .idea
 
+# venv-related
+Scripts/
+pyvenv.cfg

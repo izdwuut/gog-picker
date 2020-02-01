@@ -19,23 +19,25 @@ class Steam:
     def get_id(self, url):
         url = url.strip('/')
         path = urlparse(url).path.strip('/').split('/')
-        if path[0] == 'profiles':
+        parts = [part for part in path if part]
+        if parts[0] == 'profiles':
             try:
-                id = path[1]
+                id = parts[1]
                 if isinstance(int(id), int):
                     return id
             except ValueError:
                 return None
-        response = self.resolve_vanity_url(path[1])
+        response = self.resolve_vanity_url(parts[1])
         if response['success'] == 1:
             return response['steamid']
         return None
 
     def get_steam_profile(self, comment):
-        result = re.search("(" + self.steam_url + "/(?:id|profiles)/[^\)\]\"<]+)", comment.body_html)
+        comment_body = comment.body_html.replace('</a>', '')
+        result = re.search("(" + self.steam_url + "/(?:id|profiles)/ ?[^\)\]\"< ]+)", comment_body.lower())
         url = {}
         if result:
-            url['url'] = 'https://' + result.group(0)
+            url['url'] = 'https://' + result.group(0).replace(' ', '').replace('\n', '')
         return url
 
     def resolve_vanity_url(self, url):
@@ -43,15 +45,21 @@ class Steam:
 
     def get_player_summaries(self, users):
         ids = [users[user]['steam_id'] for user in users]
-        summaries = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids))['response']['players']
-        return summaries
+        summaries_aggregated = []
+        i = 0
+        while i < len(ids):
+            summaries = self.api.call('ISteamUser.GetPlayerSummaries', steamids=','.join(ids[i:i + 100]))['response']['players']
+            summaries_aggregated.extend(summaries)
+            i += 100
+        return summaries_aggregated
 
-    def get_users_with_hidden_profiles(self, users, summaries):
-        id_user = {data['steam_id']:user for user, data in users.items()}
+    @staticmethod
+    def get_users_with_hidden_profiles(users, summaries):
+        id_user = {data['steam_id']: user for user, data in users.items()}
         hidden = []
         for player in summaries:
             visibility = player['communityvisibilitystate']
-            if not self.is_profile_visible(visibility):
+            if not Steam.is_profile_visible(visibility):
                 steam_id = player['steamid']
                 user = id_user[steam_id]
                 hidden.append(user)
@@ -63,13 +71,14 @@ class Steam:
         non_existent = [user for user in users if users[user]['steam_id'] not in existent]
         return non_existent
 
-    def is_profile_visible(self, state):
+    @staticmethod
+    def is_profile_visible(state):
         return state == 3
 
     def get_level(self, steam_id):
         try:
             level = self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
-        except requests.exceptions.HTTPError:
+        except (requests.exceptions.HTTPError, KeyError):
             level = None
         return level
 

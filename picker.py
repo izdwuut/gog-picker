@@ -2,15 +2,15 @@ import argparse
 from configparser import ConfigParser
 from multiprocessing import Pool
 import os
-
-import prawcore
+import sys
 import requests
+import praw
 
 from _steam import Steam
-from _random_org import Random
-from _file import File
-from _list import List
-from _reddit import Reddit
+from random_org import Random
+from file import File
+from list import List
+from reddit import Reddit
 from _errors import Errors
 from args import Args
 
@@ -24,36 +24,34 @@ class Picker:
     steam = Steam(settings['steam'])
     reddit = Reddit(steam, settings['reddit'])
     random = Random(settings['random'])
+    messager = settings['messager']
     tag = settings['reddit']['tag']
     not_included_keywords = []
-    args = Args()
+    args = Args.from_config(settings['args'])
     replied_to = None
     not_entering = []
 
     def scrap_comments(self, submission):
-        try:
-            comments = submission.comments
-        except prawcore.exceptions.NotFound:
-            exit(1)
-        for comment in comments:
-            if not comment.author:
-                continue
-            user = comment.author.name
-            if self.reddit.is_user_special(user):
+        for comment in Reddit.get_regular_users_comments(submission):
+            user = Reddit.get_author(comment)
+            if user == submission.author.name:
                 continue
             if not self.reddit.is_entering(comment):
                 self.not_entering.append(user)
                 continue
-            profile = self.steam.get_steam_profile(comment)
-            if profile:
-                self.eligible[user] = profile
-            else:
-                self.add_violator(user, Errors.NO_STEAM_PROFILE_LINK)
+            self.scrap_steam_profile(comment, user)
+
+    def scrap_steam_profile(self, comment, user):
+        profile = self.steam.get_steam_profile(comment)
+        if profile:
+            self.eligible[user] = profile
+        else:
+            self.add_violator(user, Errors.NO_STEAM_PROFILE_LINK)
 
     def remove_users_with_inaccessible_steam_profiles(self):
         users = self.eligible.copy()
         summaries = self.steam.get_player_summaries(users)
-        hidden = self.steam.get_users_with_hidden_profiles(users, summaries)
+        hidden = Steam.get_users_with_hidden_profiles(users, summaries)
         nonexistent = Steam.get_users_with_nonexistent_profiles(users, summaries)
         for user in users:
             if user in nonexistent:
@@ -64,14 +62,13 @@ class Picker:
 
     def remove_users_with_hidden_steam_games(self):
         for user, data in self.eligible.copy().items():
-            steamid = data['steam_id']
-            is_visible = self.steam.is_games_list_visible(steamid)
+            steam_id = data['steam_id']
+            is_visible = self.steam.is_games_list_visible(steam_id)
             if not is_visible:
                 self.add_violator(user, Errors.HIDDEN_STEAM_GAMES)
 
     def get_drawings(self):
-        for comment in self.reddit.get_comments():
-            print(comment.submission.name)
+        for comment in self.reddit.get_comments_stream():
             if not self.replied_to.contains(comment.submission.name) and Reddit.has_tag(comment, self.tag):
                 drawing = {'comment': comment, 'submission': comment.submission}
                 yield drawing
@@ -79,6 +76,7 @@ class Picker:
     def run(self):
         self.replied_to = File(self.settings['general']['replied_to'])
         for drawing in self.get_drawings():
+            print('The bot is on!')
             submission = drawing['submission']
             comment = drawing['comment']
             Picker.print_current_submission(submission)
@@ -106,14 +104,17 @@ class Picker:
 
     def get_results(self):
         results = []
+        prefixed = self.args.links
+        profile_prefix = self.reddit.get_profile_prefix() if prefixed else ''
         if self.violators:
             violations = self._get_violations()
-            results.append('Users that violate rules:{}\n'.format(violations))
+            results.append('Users that violate rules:{}.\n'.format(violations))
         if self.eligible:
-            results.append('Users eligible for drawing: ' + ', '.join(self.eligible.keys()) + '.\n')
+            eligible = self.reddit.get_usernames(self.eligible.keys(), prefixed)
+            results.append('Users eligible for a drawing: ' + ', '.join(eligible) + '.\n')
             not_entering = self._get_not_entering()
             results.append(not_entering)
-            if len(self.winners):
+            if len(self.winners) is 1:
                 s = ''
             else:
                 s = 's'
@@ -121,8 +122,8 @@ class Picker:
             for user, times in self.winners.items():
                 t = ' (x{})'.format(times) if times > 1 else ''
                 winners.append(user + t)
-            winners = ', '.join(winners)
-            results.append('Winner' + s + ': ' + winners + '.')
+            winners = [profile_prefix + winner for winner in winners]
+            results.append('Winner' + s + ': ' + ', '.join(winners) + '.')
         if results:
             results = ['Results:\n'] + results
         else:
@@ -130,19 +131,21 @@ class Picker:
         return ''.join(results)
 
     def _get_violations(self):
+        prefixed = self.args.links
         if not self.args.verbose:
-            users = self.violators.keys()
+            users = self.reddit.get_usernames(self.violators.keys(), prefixed)
             return ' ' + ', '.join(users)
         reasons = []
         for user, reason in self.violators.items():
             user_reason = '{} ({})'.format(user, reason)
             reasons.append(user_reason)
-        return '\n' + ',\n'.join(reasons) + '.'
+        users = self.reddit.get_usernames(reasons, prefixed)
+        return '\n' + ',\n'.join(users)
 
     def _get_not_entering(self):
         not_entering = ''
-        if self.args.verbose:
-            not_entering = 'Not entering: ' + ', '.join(self.not_entering) + '\n'
+        if self.args.verbose and self.not_entering:
+            not_entering = 'Not entering: ' + ', '.join(self.not_entering) + '.\n'
         return not_entering
 
     def pick(self):
@@ -210,7 +213,18 @@ class Picker:
             return False
         return True
 
-    def filter(self, submission):
+    def get_submission(self, thread=None):
+        if not thread:
+            url = self.args.url
+            return self.reddit.get_submission(url)
+        if isinstance(thread, str):
+            return self.reddit.get_submission(thread)
+        if isinstance(thread, praw.models.Submission):
+            return thread
+
+    def filter(self, thread=None):
+        pool = Pool()
+        submission = self.get_submission(thread)
         if not self.has_required_keywords(submission.title):
             return
         self.scrap_comments(submission)
@@ -218,8 +232,8 @@ class Picker:
 
         for user in self.eligible.copy():
             url = self.eligible[user].pop('url')
-            self.eligible[user]['steam_id'] = self.pool.apply_async(self.steam.get_id, [url])
-            self.eligible[user]['karma'] = self.pool.apply_async(self.reddit.get_karma, [user])
+            self.eligible[user]['steam_id'] = pool.apply_async(self.steam.get_id, [url])
+            self.eligible[user]['karma'] = pool.apply_async(self.reddit.get_karma, [user])
         for user, data in self.eligible.copy().items():
             steam_id = data['steam_id'].get()
             if steam_id:
@@ -229,8 +243,8 @@ class Picker:
         self.remove_users_with_inaccessible_steam_profiles()
         self.remove_users_with_hidden_steam_games()
         for user in self.eligible.copy():
-            self.eligible[user]['level'] = self.pool.apply_async(self.steam.get_level,
-                                                                 [self.eligible[user]['steam_id']])
+            self.eligible[user]['level'] = pool.apply_async(self.steam.get_level,
+                                                            [self.eligible[user]['steam_id']])
 
         for user in self.eligible.copy():
             level = self.eligible[user]['level'] = self.eligible[user]['level'].get()
@@ -282,59 +296,99 @@ class Picker:
 
     def set_args(self, args):
         if self._validate_args(args):
-            self.args = args
+            self.args.update(args)
         else:
-            exit(1)
+            sys.exit(1)
 
-    @staticmethod
-    def _validate_args(args):
-        if args.number < 1:
-            print('Error: invalid value of --number argument (must be >= 1).')
+    def _validate_args(self, args):
+        number_error = 'Error: invalid value of number argument (must be >= 1).'
+        if args.number is not None and args.number < 1:
+            print(number_error)
+            return False
+        if self.args.number is None or self.args.number < 1:
+            print(number_error)
             return False
         return True
+
+    def send_messages(self):
+        if not self.args.message:
+            return
+        with open(self.messager['keys']) as keys_file, open(self.messager['message']) as message_file:
+            keys = list(filter(None, keys_file.read().strip('\n').split('\n')))
+            if len(keys) < len(self.winners):
+                print('Not enough keys ({} found, {} are needed). '
+                      'No messages were sent.'.format(str(len(keys)),
+                                                      str(len(self.winners))))
+                return
+            body = message_file.read()
+        subject = self.messager['subject']
+        params = {}
+        if self.messager['title']:
+            params['title'] = self.messager['title']
+        if self.messager['thread']:
+            params['thread'] = self.messager['thread']
+        for winner in self.winners:
+            params['key'] = keys.pop()
+            message = body.format(**params)
+            self.reddit.send_message(winner, subject, message)
+            if self.args.verbose:
+                prefix = self.settings['reddit']['profile_prefix'] if self.args.links else ''
+                print('Sent a message to {}{}.'.format(prefix, winner))
+        with open(self.messager['keys'], 'w') as keys_file:
+            keys_file.write('\n'.join(keys))
 
     @classmethod
     def from_cli(cls):
         picker = cls()
         subreddit = picker.reddit.get_subreddit()
+        profile_prefix = picker.reddit.get_profile_prefix()
         parser = argparse.ArgumentParser(
             description="Picks a winner of r/" + subreddit + " drawing in accordance with subreddit's rules.",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-        parser.add_argument('-u', '--url',
-                            help='runs the script only for the given thread')
+        parser.add_argument('url',
+                            nargs='?',
+                            help='runs the script only for the given thread',
+                            default=None)
         parser.add_argument('-r', '--replacement',
                             help='Users can win multiple times. Ignored if --number was not specified.',
-                            action='store_true')
+                            action='store_true',
+                            default=None)
         parser.add_argument('-a', '--all',
                             help='Ensures that every user wins at least once (given that there are enough of them) ' \
                                  'if used with --replacement flag. Ignored if --number was not specified.',
-                            action='store_true')
+                            action='store_true',
+                            default=None)
         parser.add_argument('-n', '--number',
                             help='Number of winners to pick.',
                             type=int,
-                            default=1)
+                            default=None)
         parser.add_argument('-v', '--verbose', help='increase output verbosity',
-                            action='store_true')
+                            action='store_true',
+                            default=None)
+        parser.add_argument('-l', '--links', help='Prepends usernames with "' + profile_prefix +
+                                                  '" in a drawing results.',
+                            action='store_true',
+                            default=None)
+        parser.add_argument('-m', '--message', help='Send a direct message to winners with keys that they have won.',
+                            action='store_true',
+                            default=None)
         parser_args = parser.parse_args()
         args = Args.from_namespace(parser_args)
         picker.set_args(args)
         url = args.url
-        if url is None:
-            picker.run()
-        else:
-            submission = picker.reddit.get_submission(url)
-            picker.filter(submission)
+        if url:
+            picker.filter(url)
             picker.pick()
             print(picker.get_results())
+            picker.send_messages()
+        else:
+            picker.run()
 
     @classmethod
     def from_args(cls, args):
         picker = cls()
         picker.set_args(args)
         return picker
-
-    def __init__(self):
-        self.pool = Pool()
 
 
 if __name__ == "__main__":
