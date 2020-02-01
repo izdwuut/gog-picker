@@ -76,7 +76,7 @@ An optional message can be sent to winners. To do so, run the script with `-m` (
 $ python picker.py https://www.reddit.com/r/GiftofGames/comments/9n7ywa/offersteam_n/ -m
 ``` 
 
-See [messager](#messager) config section for more details.
+See messager [config](#configuration) section for more details.
 
 ## Bot
 
