@@ -27,5 +27,5 @@ class Random:
     def _get_max(items):
         return len(items) - 1
 
-    def __init__(self, settings):
-        self.api = RandomOrgClient(settings['api_key'])
+    def __init__(self, api_key):
+        self.api = RandomOrgClient(api_key)
