@@ -1,5 +1,5 @@
 from unittest import TestCase
-from picker import Picker, Args
+from app.picker.picker import Picker, Args
 from unittest.mock import patch
 import io
 

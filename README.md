@@ -201,10 +201,10 @@ There are also a few utility classes:
 
 The `Picker` class is designed to be instantiated using one of these factory methods:
 
-* `from_cli` - run as a CLI tool. It is run by default when you run the script from CLI. Provided arguments are directly mapped into an [`Args`](args.py)  object.
-* `from_args` - builds a `Picker` object using provided [`Args`](args.py) object.
+* `from_cli` - run as a CLI tool. It is run by default when you run the script from CLI. Provided arguments are directly mapped into an [`Args`](app/args.py)  object.
+* `from_args` - builds a `Picker` object using provided [`Args`](app/args.py) object.
 
-If run using an initializer, the value of `Picker.args` variable gets assigned to an instance of [`Args`](args.py) class with default attributes values left.
+If run using an initializer, the value of `Picker.args` variable gets assigned to an instance of [`Args`](app/args.py) class with default attributes values left.
  
 ## Running a drawing
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import patch, Mock
-from picker import Steam
+from app.picker.picker import Steam
 import configparser
 
 
