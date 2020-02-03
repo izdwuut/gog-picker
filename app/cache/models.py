@@ -8,6 +8,7 @@ class RedditComment(db.Model):
     thread = db.Column(db.String())
     author_id = db.Column(db.Integer, db.ForeignKey('reddit_users.id'), nullable=False)
     comment_id = db.Column(db.String())
+    # body = db.Column(db.String())
     entering = db.Column(db.Boolean)
     steam_profile = db.relationship('SteamUser', backref='comment', lazy=True, uselist=False)
 
