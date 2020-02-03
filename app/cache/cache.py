@@ -7,13 +7,12 @@ from app._errors import Errors
 from app.cache.models import RedditComment, RedditUser, SteamUser
 from flask_jwt_extended import jwt_required
 import logging
+import requests
 
 cache = Blueprint('cache', __name__, url_prefix='/cache')
 
 
 class GogCache:
-    steam = Steam(current_app.config['STEAM'])
-    reddit = Reddit(steam, current_app.config['REDDIT'])
     not_included_keywords = []
 
     def remove_comments_in_db(self, db_comments, scrapped_comments):
@@ -206,6 +205,10 @@ class GogCache:
             self.filter_comment(comment)
             print('Scrapped edited comment: {}.'.format(comment.id))
 
+    def __init__(self):
+        self.steam = Steam(current_app.config['STEAM'])
+        self.reddit = Reddit(self.steam, current_app.config['REDDIT'])
+
 
 @cache.route('', methods=['POST'])
 @jwt_required
@@ -215,5 +218,8 @@ def get_cached_url():
     url = request.json.get('url', None)
     if not url:
         return {'error': 'No required JSON field: url.'}
-    gog_cache = GogCache()
+    try:
+        gog_cache = GogCache()
+    except requests.exceptions.HTTPError as e:
+        return e.response.content, e.response.status_code
     return gog_cache.run_thread(url)
