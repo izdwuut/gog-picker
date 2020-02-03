@@ -4,6 +4,7 @@ from app.extensions import db
 from app import create_app
 from app.cache import models
 
+
 app = create_app()
 migrate = Migrate(app, db)
 manager = Manager(app)
