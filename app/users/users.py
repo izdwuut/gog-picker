@@ -1,38 +1,43 @@
-from flask import Blueprint, jsonify
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity
+from flask import request, Blueprint, jsonify
 from flask import current_app
-import requests
-import json
+from app.extensions import bcrypt, jwt_manager
 
 users = Blueprint('user', __name__, url_prefix='/users')
 
 
-def _login_to_cache():
-    response = requests.post(current_app.config['CACHE_URL'] + 'users/login',
-                             json={'username': current_app.config['CACHE_USER'],
-                                   'password': current_app.config['CACHE_PASSWORD']})
-    tokens = json.loads(response.text)
-    if 'error' in tokens:
-        return jsonify(response)
-    current_app.config['CACHE_TOKEN'] = tokens['access_token']
-    current_app.config['CACHE_REFRESH_TOKEN'] = tokens['refresh_token']
+@users.route('/login', methods=['POST'])
+def login():
+    if not request.is_json:
+        return jsonify({"error": "Missing JSON in request."}), 400
 
-    return tokens
+    username = request.json.get('username', None)
+    password = request.json.get('password', None)
+    if not username:
+        return jsonify({"error": "Missing username parameter."}), 400
+    if not password:
+        return jsonify({"error": "Missing password parameter."}), 400
+
+    if username != current_app.config['JWT_USER'] or not bcrypt.check_password_hash(current_app.config['JWT_PASSWORD'], password):
+        return jsonify({"error": "Bad username or password."}), 401
+
+    tokens = {
+        'access_token': create_access_token(identity=username),
+        'refresh_token': create_refresh_token(identity=username)
+    }
+    return jsonify(tokens), 200
 
 
-def get_cache_token():
-    if not current_app.config['CACHE_TOKEN']:
-        tokens = _login_to_cache()
-        if 'error' in tokens:
-            return tokens
+@users.route('/refresh', methods=['POST'])
+@jwt_refresh_token_required
+def refresh():
+    token = {
+        'access_token': create_access_token(identity=get_jwt_identity())
+    }
+    return jsonify(token), 200
 
-    return current_app.config['CACHE_TOKEN']
 
-
-def refresh_cache_token():
-    response = requests.post(current_app.config['CACHE_URL'] + 'users/refresh', headers={'Authorization': 'Bearer ' + current_app.config['CACHE_REFRESH_TOKEN']})
-    if response.status_code == 401:
-        _login_to_cache()
-    else:
-        current_app.config['CACHE_TOKEN'] = json.loads(response.text)['access_token']
-
-    return current_app.config['CACHE_TOKEN']
+@jwt_manager.expired_token_loader
+def expired_token_callback(expired_token):
+    token_type = expired_token['type']
+    return jsonify({'error': 'The {} token has expired.'.format(token_type)}), 401
