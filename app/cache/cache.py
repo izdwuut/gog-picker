@@ -210,8 +210,10 @@ class GogCache:
 @cache.route('', methods=['POST'])
 @jwt_required
 def get_cached_url():
-    if 'url' not in request.form:
-        return {'error': 'No required parameter: url.'}
-    url = request.form['url']
+    if not request.is_json:
+        return jsonify({"error": "Missing JSON in request."}), 400
+    url = request.json.get('url', None)
+    if not url:
+        return {'error': 'No required JSON field: url.'}
     gog_cache = GogCache()
     return gog_cache.run_thread(url)
