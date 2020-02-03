@@ -65,4 +65,3 @@ class Steam:
     def __init__(self, settings):
         self.api = steam.WebAPI(settings.API_KEY)
         self.steam_url = settings.URL
-        self.min_level = settings.MIN_LEVEL

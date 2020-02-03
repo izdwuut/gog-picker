@@ -11,18 +11,18 @@ class RedditConfig:
     PASSWORD = os.environ['GOG_PICKER_REDDIT_PASSWORD']
     USER_AGENT = 'python:gog-picker:v0.5.0 (by /u/izdwuut)'
     NOT_ENTERING = 'not entering'
+    MIN_KARMA = 300
 
 
 class SteamConfig:
     URL = 'steamcommunity.com'
     API_KEY = os.environ['GOG_PICKER_STEAM_API_KEY']
-    MIN_LEVEL = 2
 
 
 class Config(object):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ['GOG_PICKER_DATABASE_URL']
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     REDDIT = RedditConfig()
     STEAM = SteamConfig()
     JWT_SECRET_KEY = os.environ['GOG_PICKER_JWT_SECRET_KEY']
@@ -43,6 +43,5 @@ class DevelopmentConfig(Config):
     DEBUG = True
     Config.REDDIT.SUBREDDIT = 'test'
     Config.REDDIT.MIN_KARMA = 0
-    Config.STEAM.MIN_LEVEL = 0
     # JWT_ACCESS_TOKEN_EXPIRES = 5
     # JWT_REFRESH_TOKEN_EXPIRES = 30
