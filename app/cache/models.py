@@ -8,15 +8,16 @@ class RedditComment(db.Model):
     thread = db.Column(db.String())
     author_id = db.Column(db.Integer, db.ForeignKey('reddit_users.id'), nullable=False)
     comment_id = db.Column(db.String())
-    # body = db.Column(db.String())
+    body = db.Column(db.String())
     entering = db.Column(db.Boolean)
     steam_profile = db.relationship('SteamUser', backref='comment', lazy=True, uselist=False)
 
-    def __init__(self, thread=None, author=None, comment_id=None, entering=None):
+    def __init__(self, thread=None, author=None, comment_id=None, entering=None, body=None):
         self.thread = thread
         self.author = author
         self.comment_id = comment_id
         self.entering = entering
+        self.body = body
 
 
 class RedditUser(db.Model):
