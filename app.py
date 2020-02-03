@@ -17,6 +17,8 @@ def create_app(config=os.environ['GOG_PICKER_APP_SETTINGS']):
         app.register_blueprint(users)
         from app.mailer.mailer import mailer
         app.register_blueprint(mailer)
+        from app.picker.picker import picker
+        app.register_blueprint(picker)
     app.app_context().push()
     jwt_manager.init_app(app)
     bcrypt.init_app(app)
