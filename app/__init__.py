@@ -11,8 +11,6 @@ def create_app(config=os.environ['GOG_PICKER_APP_SETTINGS']):
         register_extensions(app)
         from app.cache.cache import cache
         app.register_blueprint(cache)
-        from worker import worker
-        app.register_blueprint(worker)
         from app.users.users import users
         app.register_blueprint(users)
         from app.mailer.mailer import mailer
@@ -23,6 +21,8 @@ def create_app(config=os.environ['GOG_PICKER_APP_SETTINGS']):
     jwt_manager.init_app(app)
     bcrypt.init_app(app)
     logging.basicConfig(format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
+    from worker import worker_cli
+    app.cli.add_command(worker_cli)
 
     return app
 

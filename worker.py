@@ -1,17 +1,18 @@
 from app.cache.cache import GogCache
-from flask import Blueprint
+from flask.cli import AppGroup
+import click
 
-worker = Blueprint('worker', __name__)
+worker_cli = AppGroup('worker')
 
 
-@worker.cli.command()
+@worker_cli.command("listen")
 def listen():
     gog_cache = GogCache()
     print('Listens for non-edited comments...')
     gog_cache.run_stream()
 
 
-@worker.cli.command()
+@worker_cli.command('listen-edited')
 def listen_edited():
     gog_cache = GogCache()
     gog_cache.run_edited_stream()
