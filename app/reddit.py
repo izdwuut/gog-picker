@@ -48,7 +48,7 @@ class Reddit:
         return api
 
     def get_comment_karma(self, user):
-        return self.api.redditor(user).comment_karma
+        return self.api.redditor(str(user)).comment_karma
 
     def get_submission(self, url):
         return self.api.submission(url=url)

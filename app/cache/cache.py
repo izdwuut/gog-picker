@@ -65,6 +65,7 @@ class GogCache:
             logging.info('Comment {} already exists. Updating...'.format(comment.id))
             logging.info('Is comment {} entering: {}.'.format(comment.id, entering))
             result.entering = entering
+            result.body = comment.body_html
             db.session.commit()
             db.session.flush()
             logging.info('Comment {} updated.'.format(comment.id))
@@ -74,7 +75,8 @@ class GogCache:
         reddit_comment = RedditComment(thread=comment.submission.url,
                                        author=author,
                                        comment_id=comment.id,
-                                       entering=entering)
+                                       entering=entering,
+                                       body=comment.body_html)
         db.session.add(reddit_comment)
         db.session.commit()
         db.session.flush()
@@ -169,7 +171,8 @@ class GogCache:
             json_comment = {'comment_id': comment.comment_id,
                             'entering': comment.entering,
                             'author': {'name': reddit_user.name,
-                                       'karma': reddit_user.karma}}
+                                       'karma': reddit_user.karma},
+                            'body': comment.body}
             if steam_profile:
                 json_comment['steam_profile'] = {'existent': steam_profile.existent,
                                                  'games_visible': steam_profile.games_visible,
