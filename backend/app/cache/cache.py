@@ -5,7 +5,6 @@ import praw
 from app.extensions import db
 from app._errors import Errors
 from app.cache.models import RedditComment, RedditUser, SteamUser
-from flask_jwt_extended import jwt_required
 import logging
 import requests
 
@@ -107,7 +106,7 @@ class GogCache:
         steam_user.steam_id = self.steam.get_id(self.steam.get_steam_profile(comment))
         if not steam_user.steam_id:
             logging.error('{}. Setting "public", "existent" and "games_visible" to False. Setting level to None.'.format(Errors.NONEXISTENT_STEAM_PROFILE))
-            steam_user.public = False
+            steam_user.public_profile = False
             steam_user.existent = False
             steam_user.games_visible = False
             steam_user.level = None
@@ -126,8 +125,8 @@ class GogCache:
         summary = self.steam.get_player_summary(steam_user.steam_id)[0]
         steam_user.existent = Steam.is_profile_existent(summary)
         logging.info('Steam profile existent: {}.'.format(steam_user.existent))
-        steam_user.public = Steam.is_profile_visible(summary)
-        logging.info('Steam profile public: {}.'.format(steam_user.public))
+        steam_user.public_profile = Steam.is_profile_visible(summary)
+        logging.info('Steam profile public: {}.'.format(steam_user.public_profile))
         games = self.steam.get_user_games(steam_user.steam_id)
         if 'game_count' in games:
             steam_user.games_count = games['game_count']
@@ -171,7 +170,7 @@ class GogCache:
                 json_comment['steam_profile'] = {'existent': steam_profile.existent,
                                                  'games_visible': steam_profile.games_visible,
                                                  'level': steam_profile.level,
-                                                 'public': steam_profile.public,
+                                                 'public_profile': steam_profile.public_profile,
                                                  'games_count': steam_profile.games_count}
             else:
                 json_comment['steam_profile'] = None
@@ -209,7 +208,6 @@ class GogCache:
 
 
 @cache.route('', methods=['POST'])
-@jwt_required
 def get_cached_url():
     if not request.is_json:
         return jsonify({"error": Errors.MISSING_JSON}), 400

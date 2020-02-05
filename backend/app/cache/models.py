@@ -40,14 +40,14 @@ class SteamUser(db.Model):
     reddit_comment_id = db.Column(db.Integer, db.ForeignKey('reddit_comments.id'), nullable=False)
     steam_id = db.Column(db.String())
     level = db.Column(db.Integer)
-    public = db.Column(db.Boolean)
+    public_profile = db.Column(db.Boolean)
     existent = db.Column(db.Boolean)
     games_visible = db.Column(db.Boolean)
     games_count = db.Column(db.Integer)
 
     def __init__(self, level=None, public=None, steam_id=None, reddit_user=None, games_count=None):
         self.level = level
-        self.public = public
+        self.public_profile = public
         self.steam_id = steam_id
         self.reddit_user = reddit_user
         self.games_count = games_count

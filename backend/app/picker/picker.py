@@ -1,5 +1,4 @@
 from flask import Blueprint, request, current_app, jsonify
-from flask_jwt_extended import jwt_required
 from app.picker.random_org import Random
 from app.reddit import Reddit
 from app._errors import Errors
@@ -21,7 +20,6 @@ class GogPicker:
 
 
 @picker.route('/pick', methods=['POST'])
-@jwt_required
 def pick_winners():
     if not request.is_json:
         return jsonify({"error": Errors.MISSING_JSON}), 400
@@ -37,7 +35,6 @@ def pick_winners():
 
 
 @picker.route('/url/valid', methods=['POST'])
-@jwt_required
 def is_url_valid():
     if not request.is_json:
         return jsonify({"error": Errors.MISSING_JSON}), 400

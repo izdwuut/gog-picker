@@ -11,8 +11,6 @@ def create_app(config=os.environ['GOG_PICKER_APP_SETTINGS']):
         register_extensions(app)
         from app.cache.cache import cache
         app.register_blueprint(cache)
-        from app.users.users import users
-        app.register_blueprint(users)
         from app.mailer.mailer import mailer
         app.register_blueprint(mailer)
         from app.picker.picker import picker
