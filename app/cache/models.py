@@ -43,9 +43,11 @@ class SteamUser(db.Model):
     public = db.Column(db.Boolean)
     existent = db.Column(db.Boolean)
     games_visible = db.Column(db.Boolean)
+    games_count = db.Column(db.Integer)
 
-    def __init__(self, level=None, public=None, steam_id=None, reddit_user=None):
+    def __init__(self, level=None, public=None, steam_id=None, reddit_user=None, games_count=None):
         self.level = level
         self.public = public
         self.steam_id = steam_id
         self.reddit_user = reddit_user
+        self.games_count = games_count

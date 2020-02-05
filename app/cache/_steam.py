@@ -12,8 +12,7 @@ class Steam:
                              include_played_free_games=False,
                              appids_filter=None)['response']
 
-    def is_games_list_visible(self, steamid):
-        games = self.get_user_games(steamid)
+    def is_games_list_visible(self, games):
         return bool(games)
 
     def get_id(self, url):

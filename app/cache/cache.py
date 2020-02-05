@@ -56,7 +56,7 @@ class GogCache:
             db.session.commit()
             db.session.flush()
             logging.info('Comment {} updated.'.format(comment.id))
-            return result, 200
+            return result
         logging.info('Adding comment {}.'.format(comment.id))
         logging.info('Is comment {} entering: {}.'.format(comment.id, entering))
         reddit_comment = RedditComment(thread=comment.submission.url,
@@ -68,7 +68,7 @@ class GogCache:
         db.session.commit()
         db.session.flush()
         logging.info('Added comment {}.'.format(comment.id))
-        return reddit_comment, 200
+        return reddit_comment
 
     def add_user_to_db(self, comment):
         logging.info('Adding user to database...')
@@ -87,7 +87,7 @@ class GogCache:
                 logging.info('Updated user {}.'.format(author))
             else:
                 logging.info('Same karma as before. Skipping...')
-            return result, 200
+            return result
         logging.info('Adding new user {}.'.format(author))
         reddit_user = RedditUser(name=author.name,
                                  karma=self.reddit.get_comment_karma(author))
@@ -95,7 +95,7 @@ class GogCache:
         db.session.commit()
         db.session.flush()
         logging.info('Added new user {}.'.format(author))
-        return reddit_user, 200
+        return reddit_user
 
     def scrap_steam_profile(self, comment, reddit_comment):
         logging.info('Adding Steam profile to database...')
@@ -111,6 +111,7 @@ class GogCache:
             steam_user.existent = False
             steam_user.games_visible = False
             steam_user.level = None
+            steam_user.games_count = 0
             if not steam_user.id:
                 logging.info('Steam user already exists. Updating.')
                 db.session.add(steam_user)
@@ -126,8 +127,14 @@ class GogCache:
         steam_user.existent = Steam.is_profile_existent(summary)
         logging.info('Steam profile existent: {}.'.format(steam_user.existent))
         steam_user.public = Steam.is_profile_visible(summary)
-        logging.info('Steam profile public: {}.'.format(steam_user.public ))
-        steam_user.games_visible = self.steam.is_games_list_visible(steam_user.steam_id)
+        logging.info('Steam profile public: {}.'.format(steam_user.public))
+        games = self.steam.get_user_games(steam_user.steam_id)
+        if 'game_count' in games:
+            steam_user.games_count = games['game_count']
+        else:
+            steam_user.games_count = 0
+        logging.info('Steam profile games count: {}.'.format(steam_user.games_count))
+        steam_user.games_visible = self.steam.is_games_list_visible(games)
         logging.info('Games list visible: {}.'.format(steam_user.games_visible))
         steam_user.level = self.steam.get_level(steam_user.steam_id)
         logging.info('Steam profile level: {}.'.format(steam_user.level))
@@ -164,7 +171,8 @@ class GogCache:
                 json_comment['steam_profile'] = {'existent': steam_profile.existent,
                                                  'games_visible': steam_profile.games_visible,
                                                  'level': steam_profile.level,
-                                                 'public': steam_profile.public}
+                                                 'public': steam_profile.public,
+                                                 'games_count': steam_profile.games_count}
             else:
                 json_comment['steam_profile'] = None
             json_comments.append(json_comment)
@@ -179,7 +187,7 @@ class GogCache:
         submission = result['success']
         db_comments = self.get_comments_from_db(thread)
         scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}
-        self.remove_comments_in_db(db_comments, scrapped_comments)
+        # self.remove_comments_in_db(db_comments, scrapped_comments)
         for id, comment in scrapped_comments.items():
             self.filter_comment(comment)
         logging.info('Processed thread. Returning response...')
