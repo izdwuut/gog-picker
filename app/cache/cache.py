@@ -204,10 +204,10 @@ class GogCache:
 @jwt_required
 def get_cached_url():
     if not request.is_json:
-        return jsonify({"error": "Missing JSON in request."}), 400
+        return jsonify({"error": Errors.MISSING_JSON}), 400
     url = request.json.get('url', None)
     if not url:
-        return jsonify({'error': 'No required JSON field: url.'}), 400
+        return jsonify({'error': Errors.NO_REQUIRED_FIELD + 'url.'}), 400
     try:
         gog_cache = GogCache()
     except requests.exceptions.HTTPError as e:

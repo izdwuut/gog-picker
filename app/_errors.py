@@ -14,3 +14,11 @@ class Errors:
     # General
     BLACKLISTED = 'Blacklisted.'
 
+    # JSON
+    MISSING_JSON = 'Missing JSON in request.'
+    NO_REQUIRED_FIELD = 'No required JSON field: '
+
+    # Auth
+    BAD_CREDENTIALS = 'Bad username or password.'
+    TOKEN_EXPIRED = 'The {} token has expired.'
+
