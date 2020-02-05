@@ -3,7 +3,7 @@ import prawcore
 import sys
 from app.cache.list import List
 from praw.models.util import stream_generator
-
+from app._errors import Errors
 
 class Reddit:
     not_included_keywords = ''
@@ -51,7 +51,17 @@ class Reddit:
         return self.api.redditor(str(user)).comment_karma
 
     def get_submission(self, url):
-        return self.api.submission(url=url)
+        response = {}
+        try:
+            submission = self.api.submission(url=url)
+        except praw.exceptions.ClientException:
+            response['error'] = Errors.BAD_URL
+            return response
+        if not self.has_required_keywords(submission.title):
+            response['error'] = Errors.NO_REQUIRED_KEYWORDS + self.reddit.not_included_keywords
+            return response
+        response['success'] = submission
+        return response
 
     def is_karma_valid(self, karma):
         return karma >= self.min_karma

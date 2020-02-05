@@ -21,19 +21,6 @@ class GogCache:
                 scrapped_comments.pop(comment.comment_id)
         logging.info('Filtered overlapping comments.')
 
-    def get_submission(self, thread):
-        response = {}
-        try:
-            submission = self.reddit.get_submission(thread)
-        except praw.exceptions.ClientException:
-            response['error'] = Errors.BAD_URL
-            return response
-        if not self.reddit.has_required_keywords(submission.title):
-            response['error'] = Errors.NO_REQUIRED_KEYWORDS + self.reddit.not_included_keywords
-            return response
-        response['success'] = submission
-        return response
-
     def scrap_comment(self, submission, comment):
         user = Reddit.get_author(comment)
         if user == submission.author.name or self.reddit.is_comment_deleted(comment) or self.reddit.is_user_special(user):
@@ -69,7 +56,7 @@ class GogCache:
             db.session.commit()
             db.session.flush()
             logging.info('Comment {} updated.'.format(comment.id))
-            return result
+            return result, 200
         logging.info('Adding comment {}.'.format(comment.id))
         logging.info('Is comment {} entering: {}.'.format(comment.id, entering))
         reddit_comment = RedditComment(thread=comment.submission.url,
@@ -81,7 +68,7 @@ class GogCache:
         db.session.commit()
         db.session.flush()
         logging.info('Added comment {}.'.format(comment.id))
-        return reddit_comment
+        return reddit_comment, 200
 
     def add_user_to_db(self, comment):
         logging.info('Adding user to database...')
@@ -100,7 +87,7 @@ class GogCache:
                 logging.info('Updated user {}.'.format(author))
             else:
                 logging.info('Same karma as before. Skipping...')
-            return result
+            return result, 200
         logging.info('Adding new user {}.'.format(author))
         reddit_user = RedditUser(name=author.name,
                                  karma=self.reddit.get_comment_karma(author))
@@ -108,7 +95,7 @@ class GogCache:
         db.session.commit()
         db.session.flush()
         logging.info('Added new user {}.'.format(author))
-        return reddit_user
+        return reddit_user, 200
 
     def scrap_steam_profile(self, comment, reddit_comment):
         logging.info('Adding Steam profile to database...')
@@ -133,7 +120,7 @@ class GogCache:
                 logging.info('Updated Steam user.')
             else:
                 logging.info('Added Steam user to database.')
-            return {'error': Errors.NONEXISTENT_STEAM_PROFILE}
+            return {'success': Errors.NONEXISTENT_STEAM_PROFILE}
         logging.info('Getting Steam user summary.')
         summary = self.steam.get_player_summary(steam_user.steam_id)[0]
         steam_user.existent = Steam.is_profile_existent(summary)
@@ -185,10 +172,10 @@ class GogCache:
 
     def run_thread(self, thread):
         logging.info('Proccesing thread {}.'.format(thread))
-        result = self.get_submission(thread)
+        result = self.reddit.get_submission(thread)
         if 'error' in result:
             logging.error(result['error'])
-            return result
+            return result, 400
         submission = result['success']
         db_comments = self.get_comments_from_db(thread)
         scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}
@@ -196,7 +183,7 @@ class GogCache:
         for id, comment in scrapped_comments.items():
             self.filter_comment(comment)
         logging.info('Processed thread. Returning response...')
-        return self.get_json(self.get_comments_from_db(thread))
+        return self.get_json(self.get_comments_from_db(thread)), 200
 
     def run_stream(self):
         for comment in self.reddit.get_regular_comment():
