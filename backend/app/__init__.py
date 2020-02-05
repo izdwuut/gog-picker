@@ -1,7 +1,8 @@
 import os
 from flask import Flask
-from app.extensions import jwt_manager, bcrypt
+from app.extensions import jwt_manager
 import logging
+from flask_cors import CORS
 
 
 def create_app(config=os.environ['GOG_PICKER_APP_SETTINGS']):
@@ -17,10 +18,10 @@ def create_app(config=os.environ['GOG_PICKER_APP_SETTINGS']):
         app.register_blueprint(picker)
     app.app_context().push()
     jwt_manager.init_app(app)
-    bcrypt.init_app(app)
     logging.basicConfig(format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
     from worker import worker_cli
     app.cli.add_command(worker_cli)
+    CORS(app)
 
     return app
 
