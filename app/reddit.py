@@ -58,7 +58,7 @@ class Reddit:
             response['error'] = Errors.BAD_URL
             return response
         if not self.has_required_keywords(submission.title):
-            response['error'] = Errors.NO_REQUIRED_KEYWORDS + self.reddit.not_included_keywords
+            response['error'] = Errors.NO_REQUIRED_KEYWORDS + self.not_included_keywords
             return response
         response['success'] = submission
         return response

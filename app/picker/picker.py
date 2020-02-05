@@ -28,9 +28,9 @@ def pick_winners():
     usernames = request.json.get('usernames', None)
     n = request.json.get('n', None)
     if not usernames:
-        return {'error': 'No required JSON field: usernames.'}, 400
+        return jsonify({'error': 'No required JSON field: usernames.'}), 400
     if not n:
-        return {'error': 'No required JSON fied: n.'}, 400
+        return jsonify({'error': 'No required JSON fied: n.'}), 400
     gog_picker = GogPicker()
 
     return jsonify(gog_picker.pick_winners(usernames, n)), 200
@@ -43,8 +43,8 @@ def is_url_valid():
         return jsonify({"error": "Missing JSON in request."}), 400
     url = request.json.get('url', None)
     if not url:
-        return {'error': 'No required JSON field: url.'}
-    reddit = Reddit(current_app.config['REDDIT'])
+        return jsonify({'error': 'No required JSON field: url.'}), 400
+    reddit = Reddit(None, current_app.config['REDDIT'])
     submission = reddit.get_submission(url)
     if 'error' in submission:
         return jsonify(submission), 400

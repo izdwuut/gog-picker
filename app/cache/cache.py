@@ -207,9 +207,9 @@ def get_cached_url():
         return jsonify({"error": "Missing JSON in request."}), 400
     url = request.json.get('url', None)
     if not url:
-        return {'error': 'No required JSON field: url.'}
+        return jsonify({'error': 'No required JSON field: url.'}), 400
     try:
         gog_cache = GogCache()
     except requests.exceptions.HTTPError as e:
-        return e.response.content, e.response.status_code
+        return jsonify({'error': e.response.content}), e.response.status_code
     return gog_cache.run_thread(url)
