@@ -4,6 +4,8 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { RedditComment } from '../models/reddit-comment.model';
 import { environment } from '../../environments/environment'
+import { RedditProfile } from '../models/reddit-profile.model';
+import { SteamProfile } from '../models/steam-profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +21,22 @@ export class RestService {
 
   constructor(private http: HttpClient ) { }
 
-  getCachedComments(url): Observable<any> {
+  getCachedComments(url): Observable<RedditComment[]> {
     const payload = {'url': url}
-    return this.http.post(this.apiUrl + 'cache', payload)
+    return this.http.post<any[]>(this.apiUrl + 'cache', payload).pipe(map(results => {
+      let comments = new Array<RedditComment>()
+      results.forEach(record => {
+        const redditProfile = new RedditProfile(record.author.karma, record.author.name)
+        let steamProfile
+        if(record.steam_profile) {
+          steamProfile = new SteamProfile(record.steam_profile.existent, record.steam_profile.games_count,
+            record.steam_profile.games_visible, record.steam_profile.level, record.steam_profile.public_profile)
+        }
+        let comment = new RedditComment(record.body, record.comment_id, record.entering, redditProfile, steamProfile)
+        comments.push(comment)
+      })
+      return comments
+    }))
   }
 
   pickWinners(users: Array<String>, n: Number): Observable<any> {
