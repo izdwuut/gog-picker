@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RestService } from '../services/rest.service'
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router'
+import { ThreadSubjectService } from '../services/thread-subject.service';
 
 @Component({
   selector: 'app-home',
@@ -14,8 +15,10 @@ export class HomeComponent implements OnInit {
   hasThreadErrors = true
 
   n = 1
+  nInputHint = ''
+  hasNErrors = false
 
-  constructor(private rest: RestService, private router: Router) { }
+  constructor(private rest: RestService, private router: Router, private threadSubject: ThreadSubjectService) { }
 
   ngOnInit() {
   }
@@ -35,13 +38,29 @@ export class HomeComponent implements OnInit {
       })
   }
 
+  onNChange(): void {
+    if(this.n < 1) {
+      if(!this.n) {
+        this.nInputHint = 'Required.'
+      } else {
+        this.nInputHint = 'N must be positive.'
+      }
+      this.hasNErrors = true
+    } else {
+      this.nInputHint = ''
+      this.hasNErrors = false
+    }
+  }
+
   send(): void {
-    if (this.hasThreadErrors) {
+    if (this.hasThreadErrors || this.hasNErrors) {
       if(!this.thread) {
         this.threadInputHint = 'No URL.'
       }
       return
     }
+    this.threadSubject.changeThread(this.thread)
+    this.threadSubject.changeN(this.n)
     this.router.navigate(['/thread'])
   }
 }

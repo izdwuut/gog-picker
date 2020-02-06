@@ -7,7 +7,8 @@
         </mat-form-field>
         <mat-form-field appearance="outline" class="n-input">
             <mat-label>Winners</mat-label>
-            <input matInput type="number" min="1" [(ngModel)]="n">
+            <input matInput type="number" min="1" [(ngModel)]="n" (ngModelChange)="onNChange()">
+            <mat-hint [ngClass]="{'error': hasNErrors, 'success': !hasNErrors}">{{ nInputHint }}</mat-hint>
         </mat-form-field>
         <button mat-button mat-stroked-button class="send-button" (click)="send()">SEND</button>
     </div>
