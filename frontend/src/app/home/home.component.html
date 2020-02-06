@@ -1,5 +1,5 @@
 <mat-form-field appearance="outline">
-    <mat-label>Thread</mat-label>
-    <input matInput [(ngModel)]='thread'>
-    <mat-hint>Hint</mat-hint>
+    <mat-label>Gift of Games thread</mat-label>
+    <input matInput [(ngModel)]='thread' (ngModelChange)="onSearchChange()">
+    <mat-hint [ngClass]="{'error': hasErrors, 'success': !hasErrors}">{{ inputHint }}</mat-hint>
 </mat-form-field>
