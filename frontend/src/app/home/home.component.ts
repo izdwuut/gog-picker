@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../services/rest.service'
-import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router'
 import { ThreadSubjectService } from '../services/thread-subject.service';
 
@@ -10,15 +9,16 @@ import { ThreadSubjectService } from '../services/thread-subject.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  thread = ''
-  threadInputHint = ''
-  hasThreadErrors = true
+  thread: string = ''
+  threadInputHint: String = ''
+  hasThreadErrors: Boolean = true
 
-  n = 1
-  nInputHint = ''
-  hasNErrors = false
+  n: number = 1
+  nInputHint: String = ''
+  hasNErrors: Boolean = false
 
-  constructor(private rest: RestService, private router: Router, private threadSubject: ThreadSubjectService) { }
+  constructor(private rest: RestService, private router: Router, 
+    private threadSubject: ThreadSubjectService) { }
 
   ngOnInit() {
   }
