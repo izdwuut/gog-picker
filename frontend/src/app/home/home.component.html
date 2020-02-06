@@ -1,5 +1,14 @@
-<mat-form-field appearance="outline">
-    <mat-label>Gift of Games thread</mat-label>
-    <input matInput [(ngModel)]='thread' (ngModelChange)="onSearchChange()">
-    <mat-hint [ngClass]="{'error': hasErrors, 'success': !hasErrors}">{{ inputHint }}</mat-hint>
-</mat-form-field>
+<div class="container">
+    <div class="process">
+        <mat-form-field appearance="outline" class="thread-input">
+            <mat-label>r/GiftofGames thread</mat-label>
+            <input matInput [(ngModel)]='thread' (ngModelChange)="onThreadChange()">
+            <mat-hint [ngClass]="{'error': hasThreadErrors, 'success': !hasThreadErrors}">{{ threadInputHint }}</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="n-input">
+            <mat-label>Winners</mat-label>
+            <input matInput type="number" min="1" [(ngModel)]="n">
+        </mat-form-field>
+        <button mat-button mat-stroked-button class="send-button" (click)="send()">SEND</button>
+    </div>
+</div>

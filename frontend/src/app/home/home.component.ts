@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../services/rest.service'
 import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-home',
@@ -9,27 +10,38 @@ import { catchError } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
   thread = ''
-  inputHint = ''
-  hasErrors = false
-  
-  constructor(private rest: RestService) { }
+  threadInputHint = ''
+  hasThreadErrors = true
+
+  n = 1
+
+  constructor(private rest: RestService, private router: Router) { }
 
   ngOnInit() {
   }
 
-  onSearchChange(): void {  
+  onThreadChange(): void {
     this.rest.isUrlValid(this.thread).subscribe(data => {
-      this.hasErrors = false
-      this.inputHint = data['success']
+      this.hasThreadErrors = false
+      this.threadInputHint = data['success']
     },
-    error => {
-      this.hasErrors = true
-      if(this.thread === '') {
-        this.inputHint = ''
-      } else {
-        this.inputHint = error['error']['error']
-      }
-    })
+      error => {
+        this.hasThreadErrors = true
+        if (this.thread === '') {
+          this.threadInputHint = ''
+        } else {
+          this.threadInputHint = error['error']['error']
+        }
+      })
   }
 
+  send(): void {
+    if (this.hasThreadErrors) {
+      if(!this.thread) {
+        this.threadInputHint = 'No URL.'
+      }
+      return
+    }
+    this.router.navigate(['/thread'])
+  }
 }
