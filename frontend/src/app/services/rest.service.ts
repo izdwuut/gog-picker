@@ -31,7 +31,7 @@ export class RestService {
 
   isUrlValid(url: String): Observable<any> {
     const payload = {'url': url}
-    return this.http.post(this.apiUrl + 'url/valid', payload)
+    return this.http.post(this.apiUrl + 'picker/url/valid', payload)
   }
 
   sendMessage(username: String, subject: String, body: String): Observable<any> {
