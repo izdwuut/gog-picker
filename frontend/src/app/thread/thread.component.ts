@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./thread.component.scss']
 })
 export class ThreadComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit() {

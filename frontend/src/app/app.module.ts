@@ -8,6 +8,9 @@ import { HomeComponent } from './home/home.component';
 import { ThreadComponent } from './thread/thread.component';
 import { MailerComponent } from './mailer/mailer.component';
 import { RouterModule, Routes } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatFormFieldModule, MatIconModule, MatInputModule } from '@angular/material'
+import { FormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -28,8 +31,14 @@ const appRoutes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(
       appRoutes
-    )
+    ),
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    FormsModule
   ],
+  
   providers: [],
   bootstrap: [AppComponent]
 })
