@@ -1,20 +1,24 @@
 <div class="container">
     <div class="disclaimer">
-        Check comments in yellow as they need your attention. Sometimes there are problems that a human resolves better than a machine.
+        Check comments in yellow as they need your attention. Sometimes there are problems that a human resolves better
+        than a machine.
     </div>
     <div class="results">
         <mat-card *ngFor="let comment of comments" class="comment"
             [ngClass]="{'not-entering': !comment.entering, 'warning': isWarning(comment), 'error': isError(comment)}">
-            <mat-card-title><a
-                    href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+            <mat-card-title>
+                <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
             </mat-card-title>
             <mat-card-subtitle>
                 Comment karma: {{ comment.author.karma }}<br />
                 <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
                 <div *ngIf='hasErrors(comment)'>Errors: {{ getErrors(comment).join(', ') }}</div>
+                <div *ngIf='hasWarnings(comment)'>Warnings: {{ getWarnings(comment).join(', ') }}</div>
             </mat-card-subtitle>
             <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
-            <mat-card-actions>aa</mat-card-actions>
+            <mat-card-actions>
+                <mat-checkbox *ngIf="!hasErrors(comment) && comment.entering" [checked]='isParticipating(comment)'>Participating</mat-checkbox>
+            </mat-card-actions>
         </mat-card>
     </div>
 </div>

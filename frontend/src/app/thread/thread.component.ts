@@ -56,9 +56,6 @@ export class ThreadComponent implements OnInit {
         errors.push('no Steam profile')
       } else {
         if(comment.steamProfile.publicProfile) {
-          if(comment.steamProfile.gamesCount >= environment.hoarderNumber) {
-            errors.push('potential hoarder (' + comment.steamProfile.gamesCount + ' games)')
-          }
           if(comment.steamProfile.level < environment.minLevel) {
             errors.push('Steam level too low')
           }
@@ -102,5 +99,24 @@ export class ThreadComponent implements OnInit {
       profile.push('nonexistent')
     }
     return profile.join(', ')
+  }
+
+  isParticipating(comment: RedditComment): Boolean {
+    return !this.hasErrors(comment) && comment.entering && !this.hasWarnings(comment)
+  }
+
+  getWarnings(comment: RedditComment): String[] {
+    let warnings = Array<String>()
+    if(comment.steamProfile == null) {
+      return warnings
+    }
+    if(comment.steamProfile.gamesCount >= environment.hoarderNumber) {
+      warnings.push('potential hoarder (' + comment.steamProfile.gamesCount + ' games)')
+    }
+    return warnings
+  }
+
+  hasWarnings(comment: RedditComment): Boolean {
+    return this.getWarnings(comment).length > 0
   }
 }

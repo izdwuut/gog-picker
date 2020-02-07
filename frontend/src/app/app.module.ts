@@ -10,7 +10,7 @@ import { MailerComponent } from './mailer/mailer.component';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule, MatIconModule, MatInputModule, 
-  MatButtonModule, MatCardModule, MatListModule } from '@angular/material'
+  MatButtonModule, MatCardModule, MatCheckboxModule } from '@angular/material'
 import { FormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
@@ -40,7 +40,7 @@ const appRoutes: Routes = [
     FormsModule,
     MatButtonModule,
     MatCardModule,
-    MatListModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]
