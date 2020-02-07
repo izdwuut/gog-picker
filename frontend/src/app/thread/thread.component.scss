@@ -1,15 +1,15 @@
 .container {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-rows: auto;
     grid-template-areas: 
-    ". main ."
+    ". header ."
     ". main . "
     ". main .";
 }
 
 .disclaimer {
-    grid-area: main;
+    grid-area: header;
 }
 
 .results {
