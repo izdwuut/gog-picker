@@ -9,7 +9,7 @@ import { ThreadComponent } from './thread/thread.component';
 import { MailerComponent } from './mailer/mailer.component';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule, MatIconModule, MatInputModule, MatButtonModule } from '@angular/material'
+import { MatFormFieldModule, MatIconModule, MatInputModule, MatButtonModule, MatCardModule } from '@angular/material'
 import { FormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
@@ -37,7 +37,8 @@ const appRoutes: Routes = [
     MatIconModule,
     MatInputModule,
     FormsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
