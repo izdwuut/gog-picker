@@ -10,8 +10,8 @@
             </mat-card-title>
             <mat-card-subtitle>
                 Comment karma: {{ comment.author.karma }}<br />
-                <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}.</div>
-                <div *ngIf='hasErrors(comment)'>Errors: {{ getErrors(comment).join(', ') }}.</div>
+                <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
+                <div *ngIf='hasErrors(comment)'>Errors: {{ getErrors(comment).join(', ') }}</div>
             </mat-card-subtitle>
             <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
             <mat-card-actions>aa</mat-card-actions>
