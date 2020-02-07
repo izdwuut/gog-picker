@@ -91,6 +91,7 @@ export class ThreadComponent implements OnInit {
         profile.push('level ' + comment.steamProfile.level) 
         if(comment.steamProfile.gamesVisible) {
           profile.push('Steam games visible')
+          profile.push(comment.steamProfile.gamesCount + ' games')
         } else {
           profile.push('Steam games not visible')
         }

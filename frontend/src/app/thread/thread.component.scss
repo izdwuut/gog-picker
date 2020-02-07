@@ -1,5 +1,19 @@
-.comment {
-    
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-areas: 
+    ". main ."
+    ". main . "
+    ". main .";
+}
+
+.disclaimer {
+    grid-area: main;
+}
+
+.results {
+    grid-area: main;
 }
 
 .warning {
