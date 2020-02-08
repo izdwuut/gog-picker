@@ -4,7 +4,7 @@ from app.reddit import Reddit
 from app._errors import Errors
 from app.extensions import db
 from app.models import Results
-from random import Random
+import random
 import hashlib
 
 picker = Blueprint('picker', __name__, url_prefix='/picker')
@@ -23,9 +23,9 @@ class GogPicker:
         return self.random.items(no_duplicates, n)
 
     def add_results(self, eligible, winners):
-        hash = self.get_hash(current_app.config['MD5_SECRET'] + str(Random()))
         session = db.session
         while True:
+            hash = self.get_hash(current_app.config['MD5_SECRET'] + str(random.getrandbits(128)))
             results = session.query(Results).filter(Results.hash == hash).first()
             if not results:
                 break
@@ -33,7 +33,7 @@ class GogPicker:
         db.session.add(results)
         db.session.commit()
         db.session.flush()
-        return {'hash': hash, 'eligible': eligible, 'winners': winners}
+        return hash
 
     def get_hash(self, s):
         m = hashlib.md5()
@@ -53,9 +53,9 @@ def pick_winners():
         return jsonify({'error': Errors.NO_REQUIRED_FIELD + ' n.'}), 400
     gog_picker = GogPicker()
     winners = gog_picker.pick_winners(usernames, n)
-    results = gog_picker.add_results(usernames, winners)
+    hash = gog_picker.add_results(usernames, winners)
 
-    return jsonify(results), 200
+    return jsonify({'results_hash': hash}), 200
 
 
 @picker.route('/url/valid', methods=['POST'])
