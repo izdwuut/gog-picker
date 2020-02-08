@@ -16,22 +16,24 @@ export class ThreadComponent implements OnInit {
   n: Number = 1
   comments: RedditComment[]
   @ViewChildren(MatCheckbox) results: QueryList<MatCheckbox>;
+  isAllToggled = false
+  isEmptySelect = false
 
   constructor(private rest: RestService, private threadSubject: ThreadSubjectService, 
     private router: Router) { }
 
   ngOnInit() {
-    this.threadSubject.thread.subscribe(thread => {
-      this.thread = thread
-      if (!this.comments) {
-        this.rest.getCachedComments(thread).subscribe(results => this.comments = results)
-      }
-    })
-    this.threadSubject.n.subscribe(n => this.n = n)
-    // this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
-    // .subscribe(results => {
-    //   this.comments = results
+    // this.threadSubject.thread.subscribe(thread => {
+    //   this.thread = thread
+    //   if (!this.comments) {
+    //     this.rest.getCachedComments(thread).subscribe(results => this.comments = results)
+    //   }
     // })
+    // this.threadSubject.n.subscribe(n => this.n = n)
+    this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
+    .subscribe(results => {
+      this.comments = results
+    })
   }
 
   unescapeQuotes(s: String): String {
@@ -134,12 +136,19 @@ export class ThreadComponent implements OnInit {
         winners.push(item.value)
       }
     })
-    console.log(winners)
-    this.rest.pickWinners(winners, this.n).subscribe(results => {
-      this.router.navigate(['results', results['results_hash']])
-    },
-    error => {
-      console.log(error)
+    if(winners.length === 0) {
+      this.isEmptySelect = true
+    } else {
+      this.rest.pickWinners(winners, this.n).subscribe(results => {
+        this.router.navigate(['results', results['results_hash']])
+      })
+    }
+  }
+
+  toggleAll(): void {
+    this.isAllToggled = !this.isAllToggled
+    this.results.forEach(item => {
+      item.checked = this.isAllToggled
     })
   }
 }
