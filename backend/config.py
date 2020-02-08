@@ -29,6 +29,7 @@ class Config(object):
     JWT_USER = os.environ['GOG_PICKER_JWT_USER']
     JWT_PASSWORD = os.environ['GOG_PICKER_JWT_PASSWORD']
     RANDOM_ORG_API_KEY = os.environ['GOG_PICKER_RANDOM_ORG_API_KEY']
+    MD5_SECRET = os.environ['GOG_PICKER_MD5_SECRET']
 
 
 class ProductionConfig(Config):

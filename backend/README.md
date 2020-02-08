@@ -82,6 +82,7 @@ General settings that don't fall into more specific categories.
 * `JWT_USER` - JWT username required to login (there is no registration)
 * `JWT_PASSWORD` - JWT user password, hashed with BCrypt
 * `RANDOM_ORG_API_KEY` - [Random.org](https://www.random.org/) API key. The wrapper is documented [here](https://pypi.org/project/rdoclient-py3/).
+* `MD5_SECRET` - secret key to generate MD5 hashes
 
 ### StagingConfig
 

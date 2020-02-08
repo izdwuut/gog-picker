@@ -1,9 +1,9 @@
 from rdoclient_py3 import RandomOrgClient
 
 
-class Random:
+class RandomOrg:
     def items(self, items, n=1, replacement=False):
-        max = Random._get_max(items)
+        max = RandomOrg._get_max(items)
         integers = self._get_integers(n, max, replacement=replacement)
         return [items[i] for i in integers]
 

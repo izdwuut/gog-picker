@@ -51,3 +51,17 @@ class SteamUser(db.Model):
         self.steam_id = steam_id
         self.reddit_user = reddit_user
         self.games_count = games_count
+
+
+class Results(db.Model):
+    __tablename__ = 'results'
+
+    id = db.Column(db.Integer, primary_key=True)
+    hash = db.Column(db.String())
+    eligible = db.Column(db.ARRAY(db.String))
+    winners = db.Column(db.ARRAY(db.String))
+
+    def __init__(self, hash=None, eligible=None, winners=None):
+        self.hash = hash
+        self.eligible = eligible
+        self.winners = winners

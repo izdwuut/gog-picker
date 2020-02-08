@@ -1,10 +1,9 @@
 from flask import Blueprint, current_app, request, jsonify
 from app.reddit import Reddit
 from app.cache._steam import Steam
-import praw
 from app.extensions import db
 from app._errors import Errors
-from app.cache.models import RedditComment, RedditUser, SteamUser
+from app.models import RedditComment, RedditUser, SteamUser
 import logging
 import requests
 
