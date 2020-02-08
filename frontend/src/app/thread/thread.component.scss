@@ -4,12 +4,15 @@
     grid-template-rows: auto;
     grid-template-areas: 
     ". header ."
+    ". actions ."
     ". main . "
-    ". main .";
+    ". main ."
+    ". bottom ."
 }
 
 .disclaimer {
     grid-area: header;
+    margin: 5% 0;
 }
 
 .results {
@@ -21,13 +24,23 @@
 }
 
 .warning {
-    background-color: yellow;
+    background-color: #ffffab;
 }
 
 .error {
-    background-color: red;
+    background-color: #ffe5e5;
 }
 
 .not-entering {
-    background-color: lightgrey;
+    background-color: #eaeaea;
+}
+
+.actions {
+    margin: 1% 0;
+    grid-area: actions;
+}
+
+.actions-bottom {
+    grid-area: bottom;
+    margin-bottom: 5%
 }

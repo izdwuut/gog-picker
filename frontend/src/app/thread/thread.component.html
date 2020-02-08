@@ -1,9 +1,17 @@
 <div class="container">
     <div class="disclaimer">
-        Check comments in yellow as they need your attention. Sometimes there are problems that a human resolves better
-        than a machine.
-        <button mat-button mat-stroked-button class="send-button" (click)="pickWinners()">SEND</button>
+        <h1>Scrapped comments</h1>
+        Check comments in yellow as they need your attention (they are displayed at the top; if there are none, you are free to go). Sometimes there are problems that a human resolves better
+        than a machine. Non entering comments and comments with errors are displayed at the bottom. They are automatically excluded as they can't participate in a drawing.
+        
+
     </div>
+    <div class="actions">
+        <button mat-stroked-button mat-stroked-button class="send-button" (click)="pickWinners()">
+            Pick winners
+        </button>
+    </div>
+    
     <div class="results">
         <div *ngFor="let comment of comments">
             <mat-card class="comment warning" *ngIf="hasWarnings(comment) && comment.entering">
@@ -13,7 +21,7 @@
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
-                    <div>Warnings: {{ getWarnings(comment).join(', ') }}</div>
+                    <div><br />Warnings: {{ getWarnings(comment).join(', ') }}</div>
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
                 <mat-card-actions>
@@ -56,10 +64,15 @@
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div>Steam profile: {{ getSteamProfile(comment) }}</div>
-                    <div>Errors: {{ getErrors(comment).join(', ') }}</div>
+                    <div><br />Errors: {{ getErrors(comment).join(', ') }}</div>
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
             </mat-card>
         </div>
+    </div>
+    <div class="actions-bottom">
+        <button mat-stroked-button mat-stroked-button class="send-button" (click)="pickWinners()">
+            Pick winners
+        </button>
     </div>
 </div>

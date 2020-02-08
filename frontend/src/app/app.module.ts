@@ -10,7 +10,7 @@ import { MailerComponent } from './mailer/mailer.component';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule, MatIconModule, MatInputModule, 
-  MatButtonModule, MatCardModule, MatCheckboxModule } from '@angular/material'
+  MatButtonModule, MatCardModule, MatCheckboxModule, } from '@angular/material'
 import { FormsModule } from '@angular/forms';
 import { ResultsComponent } from './results/results.component';
 
