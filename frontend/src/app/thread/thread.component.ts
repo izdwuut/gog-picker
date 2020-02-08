@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { ThreadSubjectService } from '../services/thread-subject.service';
 import { RestService } from '../services/rest.service';
 import { RedditComment } from '../models/reddit-comment.model';
 import { environment } from '../../environments/environment'
+import { MatCheckbox } from '@angular/material';
 
 @Component({
   selector: 'app-cached',
@@ -13,6 +14,7 @@ export class ThreadComponent implements OnInit {
   thread: String = ''
   n: Number = 1
   comments: RedditComment[]
+  @ViewChildren(MatCheckbox) results: QueryList<MatCheckbox>;
 
   constructor(private rest: RestService, private threadSubject: ThreadSubjectService) { }
 
@@ -24,7 +26,20 @@ export class ThreadComponent implements OnInit {
     //   }
     // })
     // this.threadSubject.n.subscribe(n => this.n = n)
-    this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/').subscribe(results => this.comments = results)
+    this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
+    .subscribe(results => {
+      this.comments = results
+    })
+  }
+
+  pickWinners() {
+    let winners = Array<String>()
+    this.results.forEach(item => {
+      if(item.checked) {
+        winners.push(item.value)
+      }
+    })
+    console.log(winners)
   }
 
   unescapeQuotes(s: String): String {

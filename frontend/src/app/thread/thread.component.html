@@ -2,23 +2,64 @@
     <div class="disclaimer">
         Check comments in yellow as they need your attention. Sometimes there are problems that a human resolves better
         than a machine.
+        <button mat-button mat-stroked-button class="send-button" (click)="pickWinners()">SEND</button>
     </div>
     <div class="results">
-        <mat-card *ngFor="let comment of comments" class="comment"
-            [ngClass]="{'not-entering': !comment.entering, 'warning': isWarning(comment), 'error': isError(comment)}">
-            <mat-card-title>
-                <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
-            </mat-card-title>
-            <mat-card-subtitle>
-                Comment karma: {{ comment.author.karma }}<br />
-                <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
-                <div *ngIf='hasErrors(comment)'>Errors: {{ getErrors(comment).join(', ') }}</div>
-                <div *ngIf='hasWarnings(comment)'>Warnings: {{ getWarnings(comment).join(', ') }}</div>
-            </mat-card-subtitle>
-            <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
-            <mat-card-actions>
-                <mat-checkbox *ngIf="!hasErrors(comment) && comment.entering" [checked]='isParticipating(comment)'>Participating</mat-checkbox>
-            </mat-card-actions>
-        </mat-card>
+        <div *ngFor="let comment of comments">
+            <mat-card class="comment warning" *ngIf="hasWarnings(comment) && comment.entering">
+                <mat-card-title>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Comment karma: {{ comment.author.karma }}<br />
+                    <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
+                    <div>Warnings: {{ getWarnings(comment).join(', ') }}</div>
+                </mat-card-subtitle>
+                <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
+                <mat-card-actions>
+                    <mat-checkbox [checked]='false' [value]="comment.author.name">Participating</mat-checkbox>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div *ngFor="let comment of comments">
+            <mat-card class="comment" *ngIf="!hasWarnings(comment) && !hasErrors(comment) && comment.entering">
+                <mat-card-title>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Comment karma: {{ comment.author.karma }}<br />
+                    <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
+                </mat-card-subtitle>
+                <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
+                <mat-card-actions>
+                    <mat-checkbox [checked]='true' [value]="comment.author.name" class="participating">Participating</mat-checkbox>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div *ngFor="let comment of comments">
+            <mat-card class="comment not-entering" *ngIf="!comment.entering">
+                <mat-card-title>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Comment karma: {{ comment.author.karma }}<br />
+                    <div>Steam profile: {{ getSteamProfile(comment) }}</div>
+                </mat-card-subtitle>
+                <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
+            </mat-card>
+        </div>
+        <div *ngFor="let comment of comments">
+            <mat-card class="comment error" *ngIf="hasErrors(comment) && comment.entering">
+                <mat-card-title>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Comment karma: {{ comment.author.karma }}<br />
+                    <div>Steam profile: {{ getSteamProfile(comment) }}</div>
+                    <div>Errors: {{ getErrors(comment).join(', ') }}</div>
+                </mat-card-subtitle>
+                <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
+            </mat-card>
+        </div>
     </div>
 </div>
