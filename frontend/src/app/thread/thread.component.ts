@@ -21,17 +21,17 @@ export class ThreadComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    // this.threadSubject.thread.subscribe(thread => {
-    //   this.thread = thread
-    //   if (!this.comments) {
-    //     this.rest.getCachedComments(thread).subscribe(results => this.comments = results)
-    //   }
-    // })
-    // this.threadSubject.n.subscribe(n => this.n = n)
-    this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
-    .subscribe(results => {
-      this.comments = results
+    this.threadSubject.thread.subscribe(thread => {
+      this.thread = thread
+      if (!this.comments) {
+        this.rest.getCachedComments(thread).subscribe(results => this.comments = results)
+      }
     })
+    this.threadSubject.n.subscribe(n => this.n = n)
+    // this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
+    // .subscribe(results => {
+    //   this.comments = results
+    // })
   }
 
   unescapeQuotes(s: String): String {
