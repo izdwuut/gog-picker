@@ -121,4 +121,4 @@ The wrapper is documented [here](https://steam.readthedocs.io/en/latest/).
 
 # License
 
-The GoG Picker is licensed under a permissive [MIT License](LICENSE).
+The GoG Picker is licensed under a permissive [MIT License](https://github.com/izdwuut/gog-picker/blob/dev/LICENSE).
