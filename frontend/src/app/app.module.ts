@@ -12,11 +12,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule, MatIconModule, MatInputModule, 
   MatButtonModule, MatCardModule, MatCheckboxModule } from '@angular/material'
 import { FormsModule } from '@angular/forms';
+import { ResultsComponent } from './results/results.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'thread', component: ThreadComponent },
   { path: 'mailer', component: MailerComponent },
+  { path: 'results/:hash', component: ResultsComponent },
 ];
 
 @NgModule({
@@ -24,7 +26,8 @@ const appRoutes: Routes = [
     AppComponent,
     HomeComponent,
     ThreadComponent,
-    MailerComponent
+    MailerComponent,
+    ResultsComponent
   ],
   imports: [
     BrowserModule,

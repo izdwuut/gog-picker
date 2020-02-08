@@ -4,6 +4,7 @@ import { RestService } from '../services/rest.service';
 import { RedditComment } from '../models/reddit-comment.model';
 import { environment } from '../../environments/environment'
 import { MatCheckbox } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cached',
@@ -16,7 +17,8 @@ export class ThreadComponent implements OnInit {
   comments: RedditComment[]
   @ViewChildren(MatCheckbox) results: QueryList<MatCheckbox>;
 
-  constructor(private rest: RestService, private threadSubject: ThreadSubjectService) { }
+  constructor(private rest: RestService, private threadSubject: ThreadSubjectService, 
+    private router: Router) { }
 
   ngOnInit() {
     // this.threadSubject.thread.subscribe(thread => {
@@ -30,16 +32,6 @@ export class ThreadComponent implements OnInit {
     .subscribe(results => {
       this.comments = results
     })
-  }
-
-  pickWinners() {
-    let winners = Array<String>()
-    this.results.forEach(item => {
-      if(item.checked) {
-        winners.push(item.value)
-      }
-    })
-    console.log(winners)
   }
 
   unescapeQuotes(s: String): String {
@@ -133,5 +125,21 @@ export class ThreadComponent implements OnInit {
 
   hasWarnings(comment: RedditComment): Boolean {
     return this.getWarnings(comment).length > 0
+  }
+
+  pickWinners() {
+    let winners = Array<String>()
+    this.results.forEach(item => {
+      if(item.checked) {
+        winners.push(item.value)
+      }
+    })
+    console.log(winners)
+    this.rest.pickWinners(winners, this.n).subscribe(results => {
+      this.router.navigate(['results', results['results_hash']])
+    },
+    error => {
+      console.log(error)
+    })
   }
 }

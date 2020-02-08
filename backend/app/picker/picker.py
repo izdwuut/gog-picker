@@ -75,7 +75,6 @@ def is_url_valid():
 
 @picker.route('/results/<hash>', methods=['GET'])
 def get_results(hash):
-    print('aaa')
     session = db.session
     results = session.query(Results).filter(Results.hash == hash).first()
     if not results:

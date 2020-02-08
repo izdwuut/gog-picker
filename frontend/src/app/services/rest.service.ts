@@ -6,6 +6,7 @@ import { RedditComment } from '../models/reddit-comment.model';
 import { environment } from '../../environments/environment'
 import { RedditProfile } from '../models/reddit-profile.model';
 import { SteamProfile } from '../models/steam-profile.model';
+import { Results } from '../models/results.model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +53,9 @@ export class RestService {
   sendMessage(username: String, subject: String, body: String): Observable<any> {
     const payload = {'username': username, 'subject': subject, 'body': body}
     return this.http.post(this.apiUrl + 'mailer/send', payload)
+  }
+
+  getResults(hash: String): Observable<Results> {
+    return this.http.get<Results>(this.apiUrl + 'picker/results/' + hash)
   }
 }
