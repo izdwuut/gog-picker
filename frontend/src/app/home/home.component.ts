@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../services/rest.service'
-import { Router } from '@angular/router'
+import { Router } from '@angular/router';
 import { ThreadSubjectService } from '../services/thread-subject.service';
-
+import { Location } from '@angular/common';
+import { ThreadGuard } from '../guards/thread.guard';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -17,8 +18,9 @@ export class HomeComponent implements OnInit {
   nInputHint: String = ''
   hasNErrors: Boolean = false
 
-  constructor(private rest: RestService, private router: Router, 
-    private threadSubject: ThreadSubjectService) { }
+  constructor(private rest: RestService, private router: Router,
+    private threadSubject: ThreadSubjectService,
+    private guard: ThreadGuard) { }
 
   ngOnInit() {
   }
@@ -39,8 +41,8 @@ export class HomeComponent implements OnInit {
   }
 
   onNChange(): void {
-    if(this.n < 1) {
-      if(!this.n) {
+    if (this.n < 1) {
+      if (!this.n) {
         this.nInputHint = 'Required.'
       } else {
         this.nInputHint = 'N must be positive.'
@@ -54,13 +56,14 @@ export class HomeComponent implements OnInit {
 
   send(): void {
     if (this.hasThreadErrors || this.hasNErrors) {
-      if(!this.thread) {
+      if (!this.thread) {
         this.threadInputHint = 'No URL.'
       }
       return
     }
     this.threadSubject.changeThread(this.thread)
     this.threadSubject.changeN(this.n)
+    this.guard.allow = true
     this.router.navigate(['/thread'])
   }
 }

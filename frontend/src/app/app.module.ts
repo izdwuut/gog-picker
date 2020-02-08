@@ -13,10 +13,12 @@ import { MatFormFieldModule, MatIconModule, MatInputModule,
   MatButtonModule, MatCardModule, MatCheckboxModule, } from '@angular/material'
 import { FormsModule } from '@angular/forms';
 import { ResultsComponent } from './results/results.component';
+import { ThreadGuard } from './guards/thread.guard';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'thread', component: ThreadComponent },
+  { path: 'thread', component: ThreadComponent,
+canActivate: [ThreadGuard] },
   { path: 'mailer', component: MailerComponent },
   { path: 'results/:hash', component: ResultsComponent },
 ];
@@ -45,7 +47,7 @@ const appRoutes: Routes = [
     MatCardModule,
     MatCheckboxModule
   ],
-  providers: [],
+  providers: [HomeComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
