@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss']
 })
-export class ThreadComponent implements OnInit, OnChanges {
+export class ThreadComponent implements OnInit {
   thread: String = ''
   n: Number = 1
   comments: RedditComment[]
@@ -34,10 +34,6 @@ export class ThreadComponent implements OnInit, OnChanges {
     // .subscribe(results => {
     //   this.comments = results
     // })
-  }
-
-  ngOnChanges() {
-    console.log(this)
   }
 
   unescapeQuotes(s: String): String {
@@ -133,6 +129,7 @@ export class ThreadComponent implements OnInit, OnChanges {
     return this.getWarnings(comment).length > 0
   }
 
+
   pickWinners() {
     let winners = Array<String>()
     this.results.forEach(item => {
@@ -140,10 +137,22 @@ export class ThreadComponent implements OnInit, OnChanges {
         winners.push(item.value)
       }
     })
+    let violators = Array<String>()
+    let notEntering = Array<String>()
+    this.comments.forEach(comment => {
+      const author = comment.author.name
+      if(comment.entering) {
+        if(this.hasErrors(comment)) {
+          violators.push(author)
+        }
+      } else {
+        notEntering.push(author)
+      }
+    })
     if(winners.length === 0) {
       this.isEmptySelect = true
     } else {
-      this.rest.pickWinners(winners, this.n).subscribe(results => {
+      this.rest.pickWinners(winners, this.n, violators, notEntering, this.thread).subscribe(results => {
         this.router.navigate(['results', results['results_hash']])
       })
     }

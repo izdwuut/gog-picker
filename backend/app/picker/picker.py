@@ -22,14 +22,15 @@ class GogPicker:
             return self.random.items(no_duplicates, len(no_duplicates))
         return self.random.items(no_duplicates, n)
 
-    def add_results(self, eligible, winners):
+    def add_results(self, eligible, winners, violators, not_entering, thread):
         session = db.session
         while True:
             hash = self.get_hash(current_app.config['MD5_SECRET'] + str(random.getrandbits(128)))
             results = session.query(Results).filter(Results.hash == hash).first()
             if not results:
                 break
-        results = Results(hash=hash, eligible=eligible, winners=winners)
+        results = Results(hash=hash, eligible=eligible, winners=winners, violators=violators,
+                          not_entering=not_entering, thread=thread)
         db.session.add(results)
         db.session.commit()
         db.session.flush()
@@ -47,13 +48,22 @@ def pick_winners():
         return jsonify({"error": Errors.MISSING_JSON}), 400
     usernames = request.json.get('usernames', None)
     n = request.json.get('n', None)
+    violators = request.json.get('violators', None)
+    not_entering = request.json.get('not_entering', None)
+    thread = request.json.get('thread', None)
     if not usernames:
         return jsonify({'error': Errors.NO_REQUIRED_FIELD + 'usernames.'}), 400
     if not n:
-        return jsonify({'error': Errors.NO_REQUIRED_FIELD + ' n.'}), 400
+        return jsonify({'error': Errors.NO_REQUIRED_FIELD + 'n.'}), 400
+    if violators is None:
+        return jsonify({'error': Errors.NO_REQUIRED_FIELD + 'violators.'}), 400
+    if not_entering is None:
+        return jsonify({'error': Errors.NO_REQUIRED_FIELD + 'not_entering.'}), 400
+    if not thread:
+        return jsonify({'error': Errors.NO_REQUIRED_FIELD + 'thread.'}), 400
     gog_picker = GogPicker()
     winners = gog_picker.pick_winners(usernames, n)
-    hash = gog_picker.add_results(usernames, winners)
+    hash = gog_picker.add_results(usernames, winners, violators, not_entering, thread)
 
     return jsonify({'results_hash': hash}), 200
 
@@ -79,4 +89,6 @@ def get_results(hash):
     results = session.query(Results).filter(Results.hash == hash).first()
     if not results:
         return jsonify({'error': 'Invalid ID.'}), 400
-    return jsonify({'hash': results.hash, 'eligible': results.eligible, 'winners': results.winners}), 200
+    return jsonify({'hash': results.hash, 'eligible': results.eligible, 'winners': results.winners,
+                    'violators': results.violators, 'not_entering': results.not_entering,
+                    'thread': results.thread}), 200

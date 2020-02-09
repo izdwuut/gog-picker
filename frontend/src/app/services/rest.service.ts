@@ -40,8 +40,8 @@ export class RestService {
     }))
   }
 
-  pickWinners(users: Array<String>, n: Number): Observable<any> {
-    const payload = {'usernames': users, "n": n}
+  pickWinners(users: Array<String>, n: Number, violators: Array<String>, notEntering: Array<String>, thread: String): Observable<any> {
+    const payload = {'usernames': users, "n": n, "violators": violators, "not_entering": notEntering, "thread": thread}
     return this.http.post(this.apiUrl + 'picker/pick', payload)
   }
 
@@ -56,6 +56,9 @@ export class RestService {
   }
 
   getResults(hash: String): Observable<Results> {
-    return this.http.get<Results>(this.apiUrl + 'picker/results/' + hash)
+    return this.http.get<any>(this.apiUrl + 'picker/results/' + hash).pipe(map(results => {
+      return new Results(results.eligible, results.hash, results.winners, results.violators, results.not_entering,
+        results.thread)
+      }))
   }
 }

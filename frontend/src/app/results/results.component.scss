@@ -1,11 +1,14 @@
 .container {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-rows: 1fr auto auto auto auto auto 1fr;
     grid-template-areas: 
     ". . ."
+    ". thread ."
     ". winners ."
     ". eligible . "
+    ". not-entering ."
+    ". violators ."
     ". . .";
     height: 100%;
 }
@@ -14,10 +17,22 @@
     text-align: justify;
 }
 
+.thread {
+    grid-area: thread;
+}
+
 .eligible {
     grid-area: eligible;
 }
 
 .winners {
     grid-area: winners;
+}
+
+.not-entering {
+    grid-area: not-entering;
+}
+
+.violators {
+    grid-area: violators;
 }
