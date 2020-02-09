@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, AfterContentInit, OnChanges } from '@angular/core';
 import { ThreadSubjectService } from '../services/thread-subject.service';
 import { RestService } from '../services/rest.service';
 import { RedditComment } from '../models/reddit-comment.model';
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss']
 })
-export class ThreadComponent implements OnInit {
+export class ThreadComponent implements OnInit, OnChanges {
   thread: String = ''
   n: Number = 1
   comments: RedditComment[]
@@ -23,17 +23,21 @@ export class ThreadComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    // this.threadSubject.thread.subscribe(thread => {
-    //   this.thread = thread
-    //   if (!this.comments) {
-    //     this.rest.getCachedComments(thread).subscribe(results => this.comments = results)
-    //   }
-    // })
-    // this.threadSubject.n.subscribe(n => this.n = n)
-    this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
-    .subscribe(results => {
-      this.comments = results
+    this.threadSubject.thread.subscribe(thread => {
+      this.thread = thread
+      if (!this.comments) {
+        this.rest.getCachedComments(thread).subscribe(results => this.comments = results)
+      }
     })
+    this.threadSubject.n.subscribe(n => this.n = n)
+    // this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
+    // .subscribe(results => {
+    //   this.comments = results
+    // })
+  }
+
+  ngOnChanges() {
+    console.log(this)
   }
 
   unescapeQuotes(s: String): String {
