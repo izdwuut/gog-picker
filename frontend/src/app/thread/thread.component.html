@@ -1,0 +1,83 @@
+<div class="container">
+    <div class="disclaimer">
+        <h1>Scrapped comments</h1>
+        Check comments in yellow as they need your attention (they are displayed at the top; if there are none, you are free to go). Sometimes there are problems that a human resolves better
+        than a machine. Non entering comments and comments with errors are displayed at the bottom. They are automatically excluded as they can't participate in a drawing.
+        
+
+    </div>
+    <div class="actions">
+        <div>
+            <button mat-stroked-button mat-stroked-button class="send-button" (click)="pickWinners()">
+                Pick winners
+            </button>
+            <button mat-stroked-button mat-stroked-button class="toggle-button" (click)="toggleAll()">
+                Select/deselect all
+            </button>
+        </div>
+        <div class="error-text" *ngIf="isEmptySelect">No items selected</div>
+    </div>
+    
+    <div class="results">
+        <div *ngFor="let comment of comments">
+            <mat-card class="comment warning" *ngIf="hasWarnings(comment) && comment.entering">
+                <mat-card-title>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Comment karma: {{ comment.author.karma }}<br />
+                    <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
+                    <div><br />Warnings: {{ getWarnings(comment).join(', ') }}</div>
+                </mat-card-subtitle>
+                <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
+                <mat-card-actions>
+                    <mat-checkbox [checked]='false' [value]="comment.author.name">Participating</mat-checkbox>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div *ngFor="let comment of comments">
+            <mat-card class="comment" *ngIf="!hasWarnings(comment) && !hasErrors(comment) && comment.entering">
+                <mat-card-title>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Comment karma: {{ comment.author.karma }}<br />
+                    <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
+                </mat-card-subtitle>
+                <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
+                <mat-card-actions>
+                    <mat-checkbox [checked]='true' [value]="comment.author.name" class="participating">Participating</mat-checkbox>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div *ngFor="let comment of comments">
+            <mat-card class="comment not-entering" *ngIf="!comment.entering">
+                <mat-card-title>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Comment karma: {{ comment.author.karma }}<br />
+                </mat-card-subtitle>
+                <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
+            </mat-card>
+        </div>
+        <div *ngFor="let comment of comments">
+            <mat-card class="comment error" *ngIf="hasErrors(comment) && comment.entering">
+                <mat-card-title>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Comment karma: {{ comment.author.karma }}<br />
+                    <div>Steam profile: {{ getSteamProfile(comment) }}</div>
+                    <div><br />Errors: {{ getErrors(comment).join(', ') }}</div>
+                </mat-card-subtitle>
+                <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    <div class="actions-bottom">
+        <button mat-stroked-button mat-stroked-button class="send-button" (click)="pickWinners()">
+            Pick winners
+        </button>
+    </div>
+</div>

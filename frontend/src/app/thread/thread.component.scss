@@ -1,0 +1,57 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 
+    ". header ."
+    ". actions ."
+    ". main . "
+    ". main ."
+    ". bottom ."
+}
+
+.disclaimer {
+    grid-area: header;
+    margin: 5% 0;
+    text-align: justify;
+}
+
+.results {
+    grid-area: main;
+}
+
+.results > * {
+    margin: 2% 0;
+}
+
+.warning {
+    background-color: #ffffab;
+}
+
+.error {
+    background-color: #ffe5e5;
+}
+
+.not-entering {
+    background-color: #eaeaea;
+}
+
+.actions {
+    margin: 1% 0;
+    grid-area: actions;
+}
+
+.actions-bottom {
+    grid-area: bottom;
+    margin-bottom: 5%
+}
+
+.send-button {
+    margin-right: 5px;
+}
+
+.error-text {
+    font-size: small;
+    color: red;
+    margin: 5px;
+}

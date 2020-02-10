@@ -1,0 +1,46 @@
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-areas: 
+    ". . ."
+    ". main . "
+    ". . .";
+    height: 100%;
+    align-items: center;
+}
+
+.process {
+    grid-area: main;
+}
+
+.thread-input {
+    width: 79%;
+    margin-right: 1%
+}
+
+.n-input {
+    width: 19%;
+    margin-left: 1%;
+}
+
+.send-button {
+    $width: 20%;
+    $margin: (100% - $width) / 2;
+    width: $width;
+    margin-left: $margin;
+    margin-right: $margin;
+}
+
+.spinner {
+    height: 5px !important;
+    width: 5px !important;
+}
