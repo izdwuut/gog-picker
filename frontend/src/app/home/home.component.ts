@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
   thread: string = ''
   threadInputHint: String = ''
   hasThreadErrors: Boolean = true
+  isLoading = false
 
   n: number = 1
   nInputHint: String = ''
@@ -26,9 +27,11 @@ export class HomeComponent implements OnInit {
   }
 
   onThreadChange(): void {
+    this.isLoading = true
     this.rest.isUrlValid(this.thread).subscribe(data => {
       this.hasThreadErrors = false
       this.threadInputHint = data['success']
+      this.isLoading = false
     },
       error => {
         this.hasThreadErrors = true
@@ -37,6 +40,7 @@ export class HomeComponent implements OnInit {
         } else {
           this.threadInputHint = error['error']['error']
         }
+        this.isLoading = false
       })
   }
 

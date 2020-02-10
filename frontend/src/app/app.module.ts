@@ -9,8 +9,11 @@ import { ThreadComponent } from './thread/thread.component';
 import { MailerComponent } from './mailer/mailer.component';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule, MatIconModule, MatInputModule, 
-  MatButtonModule, MatCardModule, MatCheckboxModule, } from '@angular/material'
+import {
+  MatFormFieldModule, MatIconModule, MatInputModule,
+  MatButtonModule, MatCardModule, MatCheckboxModule,
+  MatProgressSpinnerModule
+} from '@angular/material'
 import { FormsModule } from '@angular/forms';
 import { ResultsComponent } from './results/results.component';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
@@ -40,7 +43,8 @@ import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor'
     FormsModule,
     MatButtonModule,
     MatCardModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     HomeComponent,
