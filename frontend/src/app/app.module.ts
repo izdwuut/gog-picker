@@ -13,6 +13,9 @@ import { MatFormFieldModule, MatIconModule, MatInputModule,
   MatButtonModule, MatCardModule, MatCheckboxModule, } from '@angular/material'
 import { FormsModule } from '@angular/forms';
 import { ResultsComponent } from './results/results.component';
+import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor'
 
 @NgModule({
   declarations: [
@@ -20,7 +23,8 @@ import { ResultsComponent } from './results/results.component';
     HomeComponent,
     ThreadComponent,
     MailerComponent,
-    ResultsComponent
+    ResultsComponent,
+    LoadingScreenComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +42,14 @@ import { ResultsComponent } from './results/results.component';
     MatCardModule,
     MatCheckboxModule
   ],
-  providers: [HomeComponent],
+  providers: [
+    HomeComponent,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingScreenInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
