@@ -19,7 +19,7 @@ def create_app(config=os.environ['GOG_PICKER_APP_SETTINGS']):
     logging.basicConfig(format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
     from worker import worker_cli
     app.cli.add_command(worker_cli)
-    CORS(app)
+    CORS(app, resources={r'/.*': {'origins': "*"}})
 
     return app
 
