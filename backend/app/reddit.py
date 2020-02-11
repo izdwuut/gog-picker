@@ -117,6 +117,9 @@ class Reddit:
     def send_message(self, username, subject, message):
         self.get_redditor(username).message(subject, message)
 
+    def is_author_comment(self, comment):
+        return comment.author.name == comment.submission.author.name
+
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.MIN_KARMA

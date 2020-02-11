@@ -45,6 +45,7 @@ import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor'
     MatCardModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
+    LoadingScreenComponent
   ],
   providers: [
     HomeComponent,

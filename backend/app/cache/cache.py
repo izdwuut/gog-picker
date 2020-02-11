@@ -147,11 +147,13 @@ class GogCache:
             logging.info('Added Steam profile: {}.'.format(steam_user.steam_id))
 
     def filter_comment(self, comment):
-        logging.info('Processing comment {}.'.format(comment.id))
+        logging.info('Processing comment {}. Thread: {}.'.format(comment.id, comment.submission.url))
         reddit_user = self.add_user_to_db(comment)
         reddit_comment = self.add_comment_to_db(comment, reddit_user)
         if not self.reddit.is_entering(comment):
             return reddit_comment
+        if self.reddit.is_author_comment(comment):
+            logging.info("This is the author's comment. Skipping...")
         self.scrap_steam_profile(comment, reddit_comment)
         logging.info('Processed comment {}'.format(comment.id))
         return reddit_comment
