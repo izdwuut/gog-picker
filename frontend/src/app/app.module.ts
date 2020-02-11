@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { ResultsComponent } from './results/results.component';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor'
+import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,7 @@ import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor'
     ThreadComponent,
     MailerComponent,
     ResultsComponent,
-    LoadingScreenComponent
+    LoadingScreenComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,7 +44,7 @@ import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor'
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   providers: [
     HomeComponent,
