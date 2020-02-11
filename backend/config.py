@@ -23,7 +23,6 @@ class Config(object):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ['GOG_PICKER_DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    REDDIT = RedditConfig()
     STEAM = SteamConfig()
     RANDOM_ORG_API_KEY = os.environ['GOG_PICKER_RANDOM_ORG_API_KEY']
     MD5_SECRET = os.environ['GOG_PICKER_MD5_SECRET']
@@ -32,15 +31,18 @@ class Config(object):
 
 class ProductionConfig(Config):
     pass
+    REDDIT = RedditConfig()
 
 
 class StagingConfig(Config):
     DEBUG = True
+    REDDIT = RedditConfig()
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    Config.REDDIT.SUBREDDIT = 'test'
-    Config.REDDIT.MIN_KARMA = 0
+    REDDIT = RedditConfig()
+    REDDIT.SUBREDDIT = 'test'
+    REDDIT.MIN_KARMA = 0
     # JWT_ACCESS_TOKEN_EXPIRES = 5
     # JWT_REFRESH_TOKEN_EXPIRES = 30
