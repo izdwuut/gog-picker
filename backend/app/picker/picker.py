@@ -6,6 +6,7 @@ from app.extensions import db
 from app.models import Results
 import random
 import hashlib
+from flask_cors import cross_origin
 
 picker = Blueprint('picker', __name__, url_prefix='/picker')
 
@@ -43,6 +44,7 @@ class GogPicker:
 
 
 @picker.route('/pick', methods=['POST'])
+@cross_origin()
 def pick_winners():
     if not request.is_json:
         return jsonify({"error": Errors.MISSING_JSON}), 400
@@ -69,6 +71,7 @@ def pick_winners():
 
 
 @picker.route('/url/valid', methods=['POST'])
+@cross_origin()
 def is_url_valid():
     if not request.is_json:
         return jsonify({"error": Errors.MISSING_JSON}), 400
@@ -84,6 +87,7 @@ def is_url_valid():
 
 
 @picker.route('/results/<hash>', methods=['GET'])
+@cross_origin()
 def get_results(hash):
     session = db.session
     results = session.query(Results).filter(Results.hash == hash).first()

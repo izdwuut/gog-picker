@@ -6,6 +6,7 @@ from app._errors import Errors
 from app.models import RedditComment, RedditUser, SteamUser
 import logging
 import requests
+from flask_cors import cross_origin
 
 cache = Blueprint('cache', __name__, url_prefix='/cache')
 
@@ -207,6 +208,7 @@ class GogCache:
 
 
 @cache.route('', methods=['POST'])
+@cross_origin()
 def get_cached_url():
     if not request.is_json:
         return jsonify({"error": Errors.MISSING_JSON}), 400

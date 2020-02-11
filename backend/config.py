@@ -27,6 +27,7 @@ class Config(object):
     STEAM = SteamConfig()
     RANDOM_ORG_API_KEY = os.environ['GOG_PICKER_RANDOM_ORG_API_KEY']
     MD5_SECRET = os.environ['GOG_PICKER_MD5_SECRET']
+    SERVER_ADDRESS = os.environ['GOG_PICKER_SERVER_ADDRESS']
 
 
 class ProductionConfig(Config):
