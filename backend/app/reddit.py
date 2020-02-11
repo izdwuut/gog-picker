@@ -9,14 +9,14 @@ class Reddit:
     not_included_keywords = ''
 
     @staticmethod
-    def is_comment_deleted(comment):
-        if comment.author:
+    def is_deleted(item):
+        if item.author:
             return False
         return True
 
     @classmethod
     def get_not_deleted_comments(cls, submission):
-        return [comment for comment in Reddit.get_comments(submission) if not cls.is_comment_deleted(comment)]
+        return [comment for comment in Reddit.get_comments(submission) if not cls.is_deleted(comment)]
 
     @staticmethod
     def get_comments(submission):
@@ -117,14 +117,13 @@ class Reddit:
     def send_message(self, username, subject, message):
         self.get_redditor(username).message(subject, message)
 
-    def is_author_comment(self, comment):
-        return comment.author.name == comment.submission.author.name
+    def is_submitter(self, comment):
+        return comment.is_submitter
 
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.MIN_KARMA
         self.api = self.get_api(settings)
         self.subreddit = self.api.subreddit(settings.SUBREDDIT)
-        print(settings.SUBREDDIT)
         self.not_entering = settings.NOT_ENTERING
         self.required_keywords = settings.REQUIRED_KEYWORDS

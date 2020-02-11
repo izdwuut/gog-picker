@@ -22,7 +22,7 @@ class GogCache:
 
     def scrap_comment(self, submission, comment):
         user = Reddit.get_author(comment)
-        if user == submission.author.name or self.reddit.is_comment_deleted(comment) or self.reddit.is_user_special(user):
+        if user == submission.author.name or self.reddit.is_deleted(comment) or self.reddit.is_user_special(user):
             return {}
         return comment
 
@@ -152,7 +152,7 @@ class GogCache:
         reddit_comment = self.add_comment_to_db(comment, reddit_user)
         if not self.reddit.is_entering(comment):
             return reddit_comment
-        if self.reddit.is_author_comment(comment):
+        if self.reddit.is_submitter(comment):
             logging.info("This is the author's comment. Skipping...")
         self.scrap_steam_profile(comment, reddit_comment)
         logging.info('Processed comment {}'.format(comment.id))
