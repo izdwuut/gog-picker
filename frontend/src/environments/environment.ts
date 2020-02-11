@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: "http://159.203.105.68:5000/",
+  apiUrl: "http://127.0.0.1:5000/",
   minKarma: 300,
   hoarderNumber: 500,
   minLevel: 2
