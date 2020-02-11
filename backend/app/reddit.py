@@ -122,5 +122,6 @@ class Reddit:
         self.min_karma = settings.MIN_KARMA
         self.api = self.get_api(settings)
         self.subreddit = self.api.subreddit(settings.SUBREDDIT)
+        print(settings.SUBREDDIT)
         self.not_entering = settings.NOT_ENTERING
         self.required_keywords = settings.REQUIRED_KEYWORDS
