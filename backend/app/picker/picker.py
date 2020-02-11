@@ -6,7 +6,6 @@ from app.extensions import db
 from app.models import Results
 import random
 import hashlib
-from flask_cors import cross_origin
 
 picker = Blueprint('picker', __name__, url_prefix='/picker')
 
@@ -70,7 +69,6 @@ def pick_winners():
 
 
 @picker.route('/url/valid', methods=['POST'])
-@cross_origin()
 def is_url_valid():
     if not request.is_json:
         return jsonify({"error": Errors.MISSING_JSON}), 400

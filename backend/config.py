@@ -29,6 +29,7 @@ class Config(object):
     MD5_SECRET = os.environ['GOG_PICKER_MD5_SECRET']
 
 
+
 class ProductionConfig(Config):
     pass
 
