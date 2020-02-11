@@ -198,12 +198,12 @@ class GogCache:
     def run_stream(self):
         for comment in self.reddit.get_regular_comment():
             self.filter_comment(comment)
-            print('Scrapped comment: {}.'.format(comment.id))
+            logging.info('Scrapped comment: {}.'.format(comment.id))
 
     def run_edited_stream(self):
         for comment in self.reddit.get_edited_comment():
             self.filter_comment(comment)
-            print('Scrapped edited comment: {}.'.format(comment.id))
+            logging.info('Scrapped edited comment: {}.'.format(comment.id))
 
     def __init__(self):
         self.steam = Steam(current_app.config['STEAM'])
