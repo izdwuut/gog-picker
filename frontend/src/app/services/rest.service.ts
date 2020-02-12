@@ -27,7 +27,6 @@ export class RestService {
     return this.http.post<any[]>(this.apiUrl + 'cache', payload).pipe(map(results => {
       let comments = new Array<RedditComment>()
       results.forEach(record => {
-        console.log(record)
         const redditProfile = new RedditProfile(record.author.karma, record.author.name)
         let steamProfile
         if(record.steam_profile) {
