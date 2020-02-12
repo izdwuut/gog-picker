@@ -28,7 +28,7 @@ export class ResultsComponent implements OnInit {
     }
     let links = Array<String>()
     users.forEach(item => {
-      const link = `<a href="https://reddit.com/u/${item}">${item}</a>`
+      const link = `<a href="https://reddit.com/u/${item}" target="_blank">${item}</a>`
       links.push(link)
     })
     return links.join(', ')
