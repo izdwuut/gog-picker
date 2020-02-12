@@ -23,7 +23,7 @@ class GogPicker:
             return self.random.items(no_duplicates, len(no_duplicates))
         return self.random.items(no_duplicates, n)
 
-    def add_results(self, eligible, winners, violators, not_entering, thread):
+    def add_results(self, eligible, winners, violators, not_entering, thread, title):
         session = db.session
         while True:
             hash = self.get_hash(current_app.config['MD5_SECRET'] + str(random.getrandbits(128)))
@@ -31,7 +31,7 @@ class GogPicker:
             if not results:
                 break
         results = Results(hash=hash, eligible=eligible, winners=winners, violators=violators,
-                          not_entering=not_entering, thread=thread)
+                          not_entering=not_entering, thread=thread, title=title)
         db.session.add(results)
         db.session.commit()
         db.session.flush()
@@ -65,7 +65,12 @@ def pick_winners():
         return jsonify({'error': Errors.NO_REQUIRED_FIELD + 'thread.'}), 400
     gog_picker = GogPicker()
     winners = gog_picker.pick_winners(usernames, n)
-    hash = gog_picker.add_results(usernames, winners, violators, not_entering, thread)
+    reddit = Reddit(None, current_app.config['REDDIT'])
+    submission = reddit.get_submission(thread)
+    if 'error' in submission:
+        return jsonify(submission), 400
+    title = reddit.get_submission_title(submission['success'])
+    hash = gog_picker.add_results(usernames, winners, violators, not_entering, thread, title)
 
     return jsonify({'results_hash': hash}), 200
 
@@ -95,4 +100,4 @@ def get_results(hash):
         return jsonify({'error': 'Invalid ID.'}), 400
     return jsonify({'hash': results.hash, 'eligible': results.eligible, 'winners': results.winners,
                     'violators': results.violators, 'not_entering': results.not_entering,
-                    'thread': results.thread}), 200
+                    'thread': results.thread, 'title': results.title}), 200

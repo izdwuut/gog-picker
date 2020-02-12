@@ -126,6 +126,9 @@ class Reddit:
     def is_submitter(self, comment):
         return comment.is_submitter
 
+    def get_submission_title(self, submission):
+        return submission.title
+
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.MIN_KARMA
