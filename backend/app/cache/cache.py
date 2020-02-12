@@ -170,7 +170,8 @@ class GogCache:
                                        'karma': reddit_user.karma},
                             'body': comment.body}
             if steam_profile:
-                json_comment['steam_profile'] = {'existent': steam_profile.existent,
+                json_comment['steam_profile'] = {'steam_id': steam_profile.steam_id,
+                                                 'existent': steam_profile.existent,
                                                  'games_visible': steam_profile.games_visible,
                                                  'level': steam_profile.level,
                                                  'public_profile': steam_profile.public_profile,
