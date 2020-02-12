@@ -26,7 +26,14 @@
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
-                    <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
+                    <div *ngIf='comment.entering'>
+                        <div *ngIf='comment.steamProfile.steamId'>
+                            <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/">Steam profile</a>: {{ getSteamProfile(comment) }}
+                        </div>
+                        <div *ngIf='!comment.steamProfile.steamId'>
+                            Steam profile: {{ getSteamProfile(comment) }}
+                        </div>
+                    </div>
                     <div><br />Warnings: {{ getWarnings(comment).join(', ') }}</div>
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
@@ -42,7 +49,12 @@
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
-                    <div *ngIf='comment.entering'>Steam profile: {{ getSteamProfile(comment) }}</div>
+                    <div *ngIf='comment.steamProfile.steamId'>
+                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/">Steam profile</a>: {{ getSteamProfile(comment) }}
+                    </div>
+                    <div *ngIf='!comment.steamProfile.steamId'>
+                        Steam profile: {{ getSteamProfile(comment) }}
+                    </div>
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
                 <mat-card-actions>
@@ -68,7 +80,12 @@
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
-                    <div>Steam profile: {{ getSteamProfile(comment) }}</div>
+                    <div *ngIf='comment.steamProfile.steamId'>
+                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/">Steam profile</a>: {{ getSteamProfile(comment) }}
+                    </div>
+                    <div *ngIf='!comment.steamProfile.steamId'>
+                        Steam profile: {{ getSteamProfile(comment) }}
+                    </div>
                     <div><br />Errors: {{ getErrors(comment).join(', ') }}</div>
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
