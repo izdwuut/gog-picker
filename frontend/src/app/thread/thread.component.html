@@ -81,7 +81,7 @@
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div *ngIf='comment.steamProfile.steamId'>
-                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/ target="_blank"">Steam profile</a>: {{ getSteamProfile(comment) }}
+                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/" target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                     </div>
                     <div *ngIf='!comment.steamProfile.steamId'>
                         Steam profile: {{ getSteamProfile(comment) }}
