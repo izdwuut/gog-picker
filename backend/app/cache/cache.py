@@ -189,7 +189,7 @@ class GogCache:
         submission = result['success']
         db_comments = self.get_comments_from_db(thread)
         scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}
-        self.remove_comments_in_db(db_comments, scrapped_comments)
+        # self.remove_comments_in_db(db_comments, scrapped_comments)
         for id, comment in scrapped_comments.items():
             self.filter_comment(comment)
         logging.info('Processed thread. Returning response...')
@@ -197,12 +197,14 @@ class GogCache:
 
     def run_stream(self):
         for comment in self.reddit.get_regular_comment():
-            self.filter_comment(comment)
+            if self.scrap_comment(comment):
+                self.filter_comment(comment)
             logging.info('Scrapped comment: {}.'.format(comment.id))
 
     def run_edited_stream(self):
         for comment in self.reddit.get_edited_comment():
-            self.filter_comment(comment)
+            if self.scrap_comment(comment):
+                self.filter_comment(comment)
             logging.info('Scrapped edited comment: {}.'.format(comment.id))
 
     def __init__(self):
