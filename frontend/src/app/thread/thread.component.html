@@ -22,13 +22,13 @@
         <div *ngFor="let comment of comments">
             <mat-card class="comment warning" *ngIf="hasWarnings(comment) && comment.entering">
                 <mat-card-title>
-                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}" target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div *ngIf='comment.entering'>
                         <div *ngIf='comment.steamProfile.steamId'>
-                            <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/">Steam profile</a>: {{ getSteamProfile(comment) }}
+                            <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/" target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                         </div>
                         <div *ngIf='!comment.steamProfile.steamId'>
                             Steam profile: {{ getSteamProfile(comment) }}
@@ -45,12 +45,12 @@
         <div *ngFor="let comment of comments">
             <mat-card class="comment" *ngIf="!hasWarnings(comment) && !hasErrors(comment) && comment.entering">
                 <mat-card-title>
-                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}" target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div *ngIf='comment.steamProfile.steamId'>
-                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/">Steam profile</a>: {{ getSteamProfile(comment) }}
+                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/" target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                     </div>
                     <div *ngIf='!comment.steamProfile.steamId'>
                         Steam profile: {{ getSteamProfile(comment) }}
@@ -65,7 +65,7 @@
         <div *ngFor="let comment of comments">
             <mat-card class="comment not-entering" *ngIf="!comment.entering">
                 <mat-card-title>
-                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}" target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
@@ -76,12 +76,12 @@
         <div *ngFor="let comment of comments">
             <mat-card class="comment error" *ngIf="hasErrors(comment) && comment.entering">
                 <mat-card-title>
-                    <a href="https://www.reddit.com/user/{{ comment.author.name }}">{{ comment.author.name }}</a>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}" target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div *ngIf='comment.steamProfile.steamId'>
-                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/">Steam profile</a>: {{ getSteamProfile(comment) }}
+                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/ target="_blank"">Steam profile</a>: {{ getSteamProfile(comment) }}
                     </div>
                     <div *ngIf='!comment.steamProfile.steamId'>
                         Steam profile: {{ getSteamProfile(comment) }}
