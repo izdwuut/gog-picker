@@ -20,16 +20,16 @@ class GogCache:
                 scrapped_comments.pop(comment.comment_id)
         logging.info('Filtered overlapping comments.')
 
-    def scrap_comment(self, submission, comment):
+    def scrap_comment(self, comment):
         user = Reddit.get_author(comment)
-        if user == submission.author.name or self.reddit.is_comment_deleted(comment) or self.reddit.is_user_special(user):
+        if self.reddit.is_deleted(comment) or self.reddit.is_user_special(user) or self.reddit.is_submitter(comment):
             return {}
         return comment
 
     def scrap_comments(self, submission):
         comments = []
         for comment in self.reddit.get_comments(submission):
-            scrapped = self.scrap_comment(submission, comment)
+            scrapped = self.scrap_comment(comment)
             if scrapped:
                 comments.append(scrapped)
         return comments
@@ -147,10 +147,13 @@ class GogCache:
             logging.info('Added Steam profile: {}.'.format(steam_user.steam_id))
 
     def filter_comment(self, comment):
-        logging.info('Processing comment {}.'.format(comment.id))
+        logging.info('Processing comment {}. Thread: {}.'.format(comment.id, comment.submission.url))
         reddit_user = self.add_user_to_db(comment)
         reddit_comment = self.add_comment_to_db(comment, reddit_user)
         if not self.reddit.is_entering(comment):
+            return reddit_comment
+        if self.reddit.is_submitter(comment):
+            logging.info("This is the author's comment. Skipping...")
             return reddit_comment
         self.scrap_steam_profile(comment, reddit_comment)
         logging.info('Processed comment {}'.format(comment.id))
@@ -167,7 +170,8 @@ class GogCache:
                                        'karma': reddit_user.karma},
                             'body': comment.body}
             if steam_profile:
-                json_comment['steam_profile'] = {'existent': steam_profile.existent,
+                json_comment['steam_profile'] = {'steam_id': steam_profile.steam_id,
+                                                 'existent': steam_profile.existent,
                                                  'games_visible': steam_profile.games_visible,
                                                  'level': steam_profile.level,
                                                  'public_profile': steam_profile.public_profile,
@@ -194,13 +198,15 @@ class GogCache:
 
     def run_stream(self):
         for comment in self.reddit.get_regular_comment():
-            self.filter_comment(comment)
-            print('Scrapped comment: {}.'.format(comment.id))
+            if self.scrap_comment(comment):
+                self.filter_comment(comment)
+            logging.info('Scrapped comment: {}.'.format(comment.id))
 
     def run_edited_stream(self):
         for comment in self.reddit.get_edited_comment():
-            self.filter_comment(comment)
-            print('Scrapped edited comment: {}.'.format(comment.id))
+            if self.scrap_comment(comment):
+                self.filter_comment(comment)
+            logging.info('Scrapped edited comment: {}.'.format(comment.id))
 
     def __init__(self):
         self.steam = Steam(current_app.config['STEAM'])

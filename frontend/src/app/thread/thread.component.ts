@@ -26,7 +26,9 @@ export class ThreadComponent implements OnInit {
     this.threadSubject.thread.subscribe(thread => {
       this.thread = thread
       if (!this.comments) {
-        this.rest.getCachedComments(thread).subscribe(results => this.comments = results)
+        this.rest.getCachedComments(thread).subscribe(results => {
+          this.comments = results
+        })
       }
     })
     this.threadSubject.n.subscribe(n => this.n = n)

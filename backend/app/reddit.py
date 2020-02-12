@@ -4,19 +4,20 @@ import sys
 from app.cache.list import List
 from praw.models.util import stream_generator
 from app._errors import Errors
+from app.extensions import retry_request
 
 class Reddit:
     not_included_keywords = ''
 
     @staticmethod
-    def is_comment_deleted(comment):
-        if comment.author:
+    def is_deleted(item):
+        if item.author:
             return False
         return True
 
     @classmethod
     def get_not_deleted_comments(cls, submission):
-        return [comment for comment in Reddit.get_comments(submission) if not cls.is_comment_deleted(comment)]
+        return [comment for comment in Reddit.get_comments(submission) if not cls.is_deleted(comment)]
 
     @staticmethod
     def get_comments(submission):
@@ -39,6 +40,7 @@ class Reddit:
         return None
 
     @staticmethod
+    @retry_request
     def get_api(settings):
         api = praw.Reddit(client_id=settings.CLIENT_ID,
                           client_secret=settings.CLIENT_SECRET,
@@ -47,9 +49,11 @@ class Reddit:
                           password=settings.PASSWORD)
         return api
 
+    @retry_request
     def get_comment_karma(self, user):
         return self.api.redditor(str(user)).comment_karma
 
+    @retry_request
     def get_submission(self, url):
         response = {}
         try:
@@ -107,6 +111,7 @@ class Reddit:
     def is_entering(self, comment):
         return self.not_entering not in comment.body.lower()
 
+    @retry_request
     def get_redditor(self, username):
         return self.api.redditor(username)
 
@@ -114,14 +119,17 @@ class Reddit:
     def is_top_level_comment(comment):
         return 't3' in comment.parent_id
 
+    @retry_request
     def send_message(self, username, subject, message):
         self.get_redditor(username).message(subject, message)
+
+    def is_submitter(self, comment):
+        return comment.is_submitter
 
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.MIN_KARMA
         self.api = self.get_api(settings)
         self.subreddit = self.api.subreddit(settings.SUBREDDIT)
-        print(settings.SUBREDDIT)
         self.not_entering = settings.NOT_ENTERING
         self.required_keywords = settings.REQUIRED_KEYWORDS

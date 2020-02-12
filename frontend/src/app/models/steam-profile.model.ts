@@ -1,5 +1,6 @@
 export class SteamProfile {
     constructor(
+        public steamId: String,
         public existent: Boolean,
         public gamesCount: Number,
         public gamesVisible: Boolean,
