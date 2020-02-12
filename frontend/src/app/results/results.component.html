@@ -1,8 +1,8 @@
 <div class="container">
     <div class="thread">
         <h1>
-            <a href="{{ results.thread }}" *ngIf="results.title">{{ results.title }}</a>
-            <a href="{{ results.thread }}" *ngIf="!results.title">{{ results.thread }}</a>
+            <a href="{{ results.thread }}" *ngIf="results.title" target="_blank">{{ results.title }}</a>
+            <a href="{{ results.thread }}" *ngIf="!results.title" target="_blank">{{ results.thread }}</a>
         </h1>
     </div>
     <div class="winners">
