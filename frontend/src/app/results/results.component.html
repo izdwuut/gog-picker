@@ -13,11 +13,11 @@
         <h1><mat-icon>thumb_up</mat-icon> Eligible</h1>
         <div [innerHtml]="getLinks(results.eligible)"></div>
     </div>
-    <div class="not-entering" *ngIf="results.notEntering">
+    <div class="not-entering" *ngIf="results.notEntering.length > 0">
         <h1><mat-icon>cancel</mat-icon> Not entering</h1>
         <div [innerHtml]="getLinks(results.notEntering)"></div>
     </div>
-    <div class="violators" *ngIf="results.violators">
+    <div class="violators" *ngIf="results.violators.length > 0">
         <h1><mat-icon>thumb_down</mat-icon> Violators</h1>
         <div [innerHtml]="getLinks(results.violators)"></div>
     </div>
