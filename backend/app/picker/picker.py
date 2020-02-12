@@ -19,7 +19,9 @@ class GogPicker:
 
     def pick_winners(self, items, n):
         no_duplicates = self._remove_duplicates(items)
-        if n >= len(no_duplicates):
+        if len(no_duplicates) == 1:
+            return no_duplicates
+        if n > len(no_duplicates):
             return self.random.items(no_duplicates, len(no_duplicates))
         return self.random.items(no_duplicates, n)
 
