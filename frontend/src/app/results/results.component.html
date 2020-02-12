@@ -1,6 +1,9 @@
 <div class="container">
     <div class="thread">
-        <h1>{{ results.thread }}</h1>
+        <h1>
+            <a href="{{ results.thread }}" *ngIf="results.title" target="_blank">{{ results.title }}</a>
+            <a href="{{ results.thread }}" *ngIf="!results.title" target="_blank">{{ results.thread }}</a>
+        </h1>
     </div>
     <div class="winners">
         <h1><mat-icon>insert_emoticon</mat-icon> Winners</h1>
@@ -10,11 +13,11 @@
         <h1><mat-icon>thumb_up</mat-icon> Eligible</h1>
         <div [innerHtml]="getLinks(results.eligible)"></div>
     </div>
-    <div class="not-entering" *ngIf="results.notEntering">
+    <div class="not-entering" *ngIf="results.notEntering.length > 0">
         <h1><mat-icon>cancel</mat-icon> Not entering</h1>
         <div [innerHtml]="getLinks(results.notEntering)"></div>
     </div>
-    <div class="violators" *ngIf="results.violators">
+    <div class="violators" *ngIf="results.violators.length > 0">
         <h1><mat-icon>thumb_down</mat-icon> Violators</h1>
         <div [innerHtml]="getLinks(results.violators)"></div>
     </div>

@@ -96,5 +96,6 @@
         <button mat-stroked-button mat-stroked-button class="send-button" (click)="pickWinners()">
             Pick winners
         </button>
+        <div class="error-text" *ngIf="isEmptySelect">No items selected</div>
     </div>
 </div>

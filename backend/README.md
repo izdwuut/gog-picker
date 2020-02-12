@@ -24,10 +24,19 @@ All comments are cached to provide blazing fast execution time. They are recorde
 The GoG Picker requires Python 3.6+ installed on your PC. To install the necessary dependencies, execute the following on the command line:
 
 ```
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 You will need Steam, Reddit, and Random.org API keys. Check [the configuration section](#configuration) for more details. 
+
+## Database
+GoG Picker uses [PostgreSQL](https://www.postgresql.org/) database. Invoke these commands in order to generate schema:
+
+```
+$ python manage.py db stamp heads
+$ python manage.py db migrate
+$ python manage.py db upgrade
+```
 
 # Run
 

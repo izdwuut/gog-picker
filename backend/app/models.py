@@ -63,11 +63,13 @@ class Results(db.Model):
     violators = db.Column(db.ARRAY(db.String))
     not_entering = db.Column(db.ARRAY(db.String))
     thread = db.Column(db.String())
+    title = db.Column(db.String())
 
-    def __init__(self, hash=None, eligible=None, winners=None, violators=None, not_entering=None, thread=None):
+    def __init__(self, hash=None, eligible=None, winners=None, violators=None, not_entering=None, thread=None, title=None):
         self.hash = hash
         self.eligible = eligible
         self.winners = winners
         self.violators = violators
         self.not_entering = not_entering
         self.thread = thread
+        self.title = title

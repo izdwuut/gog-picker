@@ -5,6 +5,7 @@ export class Results {
         public winners: Array<String>,
         public violators: Array<String>,
         public notEntering: Array<String>,
-        public thread: String
+        public thread: String,
+        public title: String
     ) {}
 }

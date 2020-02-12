@@ -27,7 +27,6 @@ export class RestService {
     return this.http.post<any[]>(this.apiUrl + 'cache', payload).pipe(map(results => {
       let comments = new Array<RedditComment>()
       results.forEach(record => {
-        console.log(record)
         const redditProfile = new RedditProfile(record.author.karma, record.author.name)
         let steamProfile
         if(record.steam_profile) {
@@ -59,7 +58,7 @@ export class RestService {
   getResults(hash: String): Observable<Results> {
     return this.http.get<any>(this.apiUrl + 'picker/results/' + hash).pipe(map(results => {
       return new Results(results.eligible, results.hash, results.winners, results.violators, results.not_entering,
-        results.thread)
+        results.thread, results.title)
       }))
   }
 }
