@@ -3,6 +3,7 @@ from prawcore import PrawcoreException
 from steam.webauth import WebAuthException
 import logging
 from app._errors import Errors
+from time import sleep
 
 db = SQLAlchemy()
 
@@ -15,6 +16,7 @@ def retry_request(func):
             except (PrawcoreException, WebAuthException):
                 counter += 1
                 logging.error(Errors.RETRY_REQUEST.format(str(counter)))
+                sleep(0.1)
                 continue
             return result
         return None

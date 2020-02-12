@@ -23,5 +23,5 @@ class Errors:
     TOKEN_EXPIRED = 'The {} token has expired.'
 
     # HTTP
-    RETRY_REQUEST = 'Retrying request: {}'
+    RETRY_REQUEST = 'Retrying request for {} time.'
 

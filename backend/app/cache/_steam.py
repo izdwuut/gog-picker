@@ -2,9 +2,10 @@ import steam
 import re
 from urllib.parse import urlparse
 import requests
-
+from app.extensions import retry_request
 
 class Steam:
+    @retry_request
     def get_user_games(self, steamid):
         return self.api.call('IPlayerService.GetOwnedGames',
                              steamid=steamid,
@@ -39,9 +40,11 @@ class Steam:
             url = 'https://' + result.group(0).replace(' ', '').replace('\n', '')
         return url
 
+    @retry_request
     def resolve_vanity_url(self, url):
         return self.api.call('ISteamUser.ResolveVanityURL', vanityurl=url)['response']
 
+    @retry_request
     def get_player_summary(self, steam_id):
         summary = self.api.call('ISteamUser.GetPlayerSummaries', steamids=steam_id)['response']['players']
         return summary
@@ -54,6 +57,7 @@ class Steam:
     def is_profile_visible(summary):
         return summary['communityvisibilitystate'] == 3
 
+    @retry_request
     def get_level(self, steam_id):
         try:
             level = self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
