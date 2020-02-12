@@ -20,16 +20,16 @@ class GogCache:
                 scrapped_comments.pop(comment.comment_id)
         logging.info('Filtered overlapping comments.')
 
-    def scrap_comment(self, submission, comment):
+    def scrap_comment(self, comment):
         user = Reddit.get_author(comment)
-        if user == submission.author.name or self.reddit.is_deleted(comment) or self.reddit.is_user_special(user) or self.reddit.is_submitter(comment):
+        if self.reddit.is_deleted(comment) or self.reddit.is_user_special(user) or self.reddit.is_submitter(comment):
             return {}
         return comment
 
     def scrap_comments(self, submission):
         comments = []
         for comment in self.reddit.get_comments(submission):
-            scrapped = self.scrap_comment(submission, comment)
+            scrapped = self.scrap_comment(comment)
             if scrapped:
                 comments.append(scrapped)
         return comments
