@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadingScreenSubjectService } from "../services/loading-screen-subject.service";
 import { Subscription } from "rxjs";
-import { debounceTime } from 'rxjs/operators';
+import { HttpRequest } from "@angular/common/http";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-loading-screen',
@@ -13,7 +14,7 @@ export class LoadingScreenComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   loadingSubscription: Subscription;
 
-  constructor(private loadingScreenSubjectService: LoadingScreenSubjectService) {
+  constructor(private loadingScreenSubjectService: LoadingScreenSubjectService, private router: Router) {
   }
 
   ngOnInit() {
@@ -25,5 +26,4 @@ export class LoadingScreenComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.loadingSubscription.unsubscribe();
   }
-
 }

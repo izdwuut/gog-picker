@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule, routes } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpRequest } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { ThreadComponent } from './thread/thread.component';
 import { MailerComponent } from './mailer/mailer.component';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatFormFieldModule, MatIconModule, MatInputModule,
