@@ -20,6 +20,8 @@ class Steam:
         url = url.strip('/')
         path = urlparse(url).path.strip('/').split('/')
         parts = [part for part in path if part]
+        if not parts:
+            return None
         if parts[0] == 'profiles':
             try:
                 id = parts[1]
