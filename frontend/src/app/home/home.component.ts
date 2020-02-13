@@ -65,6 +65,7 @@ export class HomeComponent implements OnInit {
       }
       return
     }
+    sessionStorage.clear()
     this.threadSubject.changeThread(this.thread)
     this.threadSubject.changeN(this.n)
     this.guard.allow = true

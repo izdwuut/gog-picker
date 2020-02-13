@@ -23,15 +23,28 @@ export class ThreadComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.threadSubject.thread.subscribe(thread => {
-      this.thread = thread
-      if (!this.comments) {
-        this.rest.getCachedComments(thread).subscribe(results => {
-          this.comments = results
-        })
-      }
-    })
-    this.threadSubject.n.subscribe(n => this.n = n)
+    if(sessionStorage.getItem('comments') === null || sessionStorage.getItem('n') === null || 
+    sessionStorage.getItem('thread') === null) {
+      this.threadSubject.thread.subscribe(thread => {
+        this.thread = thread
+        sessionStorage.setItem('thread', JSON.stringify(thread))
+        if (!this.comments) {
+          this.rest.getCachedComments(thread).subscribe(results => {
+            this.comments = results
+            sessionStorage.setItem('comments', JSON.stringify(results))
+          })
+        }
+      })
+      this.threadSubject.n.subscribe(n => {
+        this.n = n
+        sessionStorage.setItem('n', JSON.stringify(n))
+      })
+    } else {
+      this.thread = JSON.parse(sessionStorage.getItem('thread'))
+      this.comments = JSON.parse(sessionStorage.getItem('comments'))
+      this.n = JSON.parse(sessionStorage.getItem('n'))
+    }
+    
     // this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
     // .subscribe(results => {
     //   this.comments = results
