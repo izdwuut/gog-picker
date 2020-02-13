@@ -4,6 +4,7 @@ from steam.webauth import WebAuthException
 import logging
 from app._errors import Errors
 from time import sleep
+from requests.exceptions import HTTPError
 
 db = SQLAlchemy()
 
@@ -13,7 +14,7 @@ def retry_request(func):
         while counter < 10:
             try:
                 result = func(*args, **kwargs)
-            except (PrawcoreException, WebAuthException):
+            except (PrawcoreException, WebAuthException, HTTPError):
                 counter += 1
                 logging.error(Errors.RETRY_REQUEST.format(str(counter)))
                 sleep(0.1)
