@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RestService } from '../services/rest.service'
 import { Router } from '@angular/router';
 import { ThreadSubjectService } from '../services/thread-subject.service';
-import { Location } from '@angular/common';
 import { ThreadGuard } from '../guards/thread.guard';
+import { Subscription } from "rxjs";
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   thread: string = ''
   threadInputHint: String = ''
   hasThreadErrors: Boolean = true
@@ -18,6 +19,7 @@ export class HomeComponent implements OnInit {
   n: number = 1
   nInputHint: String = ''
   hasNErrors: Boolean = false
+  isUrlVaidSubscription: Subscription
 
   constructor(private rest: RestService, private router: Router,
     private threadSubject: ThreadSubjectService,
@@ -28,7 +30,7 @@ export class HomeComponent implements OnInit {
 
   onThreadChange(): void {
     this.isLoading = true
-    this.rest.isUrlValid(this.thread).subscribe(data => {
+    this.isUrlVaidSubscription = this.rest.isUrlValid(this.thread).subscribe(data => {
       this.hasThreadErrors = false
       this.threadInputHint = data['success']
       this.isLoading = false
@@ -70,5 +72,9 @@ export class HomeComponent implements OnInit {
     this.threadSubject.changeN(this.n)
     this.guard.allow = true
     this.router.navigate(['/thread'])
+  }
+
+  ngOnDestroy() {
+    this.isUrlVaidSubscription.unsubscribe()
   }
 }
