@@ -13,6 +13,10 @@ export class ThreadGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if (sessionStorage.getItem('comments') !== null && sessionStorage.getItem('n') !== null && 
+    sessionStorage.getItem('thread') !== null) {
+      return true;
+    }
     if (this.allow) {
       this.allow = false;
       return true;
