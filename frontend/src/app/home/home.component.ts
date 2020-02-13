@@ -75,6 +75,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.isUrlVaidSubscription.unsubscribe()
+    if(this.isUrlVaidSubscription) {
+      this.isUrlVaidSubscription.unsubscribe()
+    }
   }
 }
