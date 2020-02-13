@@ -1,41 +1,46 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, AfterContentInit, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, AfterContentInit, OnChanges, OnDestroy } from '@angular/core';
 import { ThreadSubjectService } from '../services/thread-subject.service';
 import { RestService } from '../services/rest.service';
 import { RedditComment } from '../models/reddit-comment.model';
 import { environment } from '../../environments/environment'
 import { MatCheckbox } from '@angular/material';
 import { Router } from '@angular/router';
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-cached',
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss']
 })
-export class ThreadComponent implements OnInit {
+export class ThreadComponent implements OnInit, OnDestroy {
   thread: String = ''
   n: Number = 1
   comments: RedditComment[]
   @ViewChildren(MatCheckbox) results: QueryList<MatCheckbox>;
   isAllToggled = false
   isEmptySelect = false
+  threadSubscription: Subscription
+  commentsSubscription: Subscription
+  nSubscription: Subscription
+  pickWinnersSubscription: Subscription
 
-  constructor(private rest: RestService, private threadSubject: ThreadSubjectService, 
+  constructor(private rest: RestService, private threadSubject: ThreadSubjectService,
     private router: Router) { }
 
   ngOnInit() {
-    if(sessionStorage.getItem('comments') === null || sessionStorage.getItem('n') === null || 
-    sessionStorage.getItem('thread') === null) {
-      this.threadSubject.thread.subscribe(thread => {
+    if (sessionStorage.getItem('comments') === null || sessionStorage.getItem('n') === null ||
+      sessionStorage.getItem('thread') === null) {
+      this.threadSubscription = this.threadSubject.thread.subscribe(thread => {
         this.thread = thread
         sessionStorage.setItem('thread', JSON.stringify(thread))
         if (!this.comments) {
-          this.rest.getCachedComments(thread).subscribe(results => {
+          this.commentsSubscription = this.rest.getCachedComments(thread).subscribe(results => {
             this.comments = results
             sessionStorage.setItem('comments', JSON.stringify(results))
           })
         }
       })
-      this.threadSubject.n.subscribe(n => {
+      this.nSubscription = this.threadSubject.n.subscribe(n => {
         this.n = n
         sessionStorage.setItem('n', JSON.stringify(n))
       })
@@ -44,7 +49,7 @@ export class ThreadComponent implements OnInit {
       this.comments = JSON.parse(sessionStorage.getItem('comments'))
       this.n = JSON.parse(sessionStorage.getItem('n'))
     }
-    
+
     // this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
     // .subscribe(results => {
     //   this.comments = results
@@ -60,34 +65,34 @@ export class ThreadComponent implements OnInit {
   }
 
   isError(comment: RedditComment): Boolean {
-    if(comment.steamProfile) {
+    if (comment.steamProfile) {
       return comment.author.karma < environment.minKarma ||
-      !comment.steamProfile.existent || 
-      comment.steamProfile.level < environment.minLevel ||
-      !comment.steamProfile.gamesVisible ||
-      !comment.steamProfile.publicProfile
+        !comment.steamProfile.existent ||
+        comment.steamProfile.level < environment.minLevel ||
+        !comment.steamProfile.gamesVisible ||
+        !comment.steamProfile.publicProfile
     }
     return comment.author.karma < environment.minKarma
   }
 
   getErrors(comment: RedditComment): String[] {
     let errors = Array<String>()
-    if(comment.entering) {
-      if(comment.author.karma < environment.minKarma) {
+    if (comment.entering) {
+      if (comment.author.karma < environment.minKarma) {
         errors.push('not enough karma')
       }
-      if(comment.steamProfile == null) {
+      if (comment.steamProfile == null) {
         errors.push('no Steam profile')
       } else {
-        if(comment.steamProfile.publicProfile) {
-          if(comment.steamProfile.level < environment.minLevel) {
+        if (comment.steamProfile.publicProfile) {
+          if (comment.steamProfile.level < environment.minLevel) {
             errors.push('Steam level too low')
           }
-          if(!comment.steamProfile.gamesVisible) {
+          if (!comment.steamProfile.gamesVisible) {
             errors.push('Steam games not visible')
           }
         } else {
-          if(!comment.steamProfile.existent) {
+          if (!comment.steamProfile.existent) {
             errors.push('nonexistent Steam profile')
           } else {
             errors.push('non public Steam profile')
@@ -104,13 +109,13 @@ export class ThreadComponent implements OnInit {
 
   getSteamProfile(comment: RedditComment): String {
     let profile = Array<String>()
-    if(comment.steamProfile == null) {
+    if (comment.steamProfile == null) {
       return ''
     }
-    if(comment.steamProfile.existent) {
-      if(comment.steamProfile.publicProfile) {
-        profile.push('level ' + comment.steamProfile.level) 
-        if(comment.steamProfile.gamesVisible) {
+    if (comment.steamProfile.existent) {
+      if (comment.steamProfile.publicProfile) {
+        profile.push('level ' + comment.steamProfile.level)
+        if (comment.steamProfile.gamesVisible) {
           profile.push('games visible')
           profile.push(comment.steamProfile.gamesCount + ' games')
         } else {
@@ -131,10 +136,10 @@ export class ThreadComponent implements OnInit {
 
   getWarnings(comment: RedditComment): String[] {
     let warnings = Array<String>()
-    if(comment.steamProfile == null) {
+    if (comment.steamProfile == null) {
       return warnings
     }
-    if(comment.steamProfile.gamesCount >= environment.hoarderNumber) {
+    if (comment.steamProfile.gamesCount >= environment.hoarderNumber) {
       warnings.push('potential hoarder (' + comment.steamProfile.gamesCount + ' games)')
     }
     return warnings
@@ -144,11 +149,10 @@ export class ThreadComponent implements OnInit {
     return this.getWarnings(comment).length > 0
   }
 
-
   pickWinners() {
     let winners = Array<String>()
     this.results.forEach(item => {
-      if(item.checked) {
+      if (item.checked) {
         winners.push(item.value)
       }
     })
@@ -156,18 +160,18 @@ export class ThreadComponent implements OnInit {
     let notEntering = Array<String>()
     this.comments.forEach(comment => {
       const author = comment.author.name
-      if(comment.entering) {
-        if(this.hasErrors(comment)) {
+      if (comment.entering) {
+        if (this.hasErrors(comment)) {
           violators.push(author)
         }
       } else {
         notEntering.push(author)
       }
     })
-    if(winners.length === 0) {
+    if (winners.length === 0) {
       this.isEmptySelect = true
     } else {
-      this.rest.pickWinners(winners, this.n, violators, notEntering, this.thread).subscribe(results => {
+      this.pickWinnersSubscription = this.rest.pickWinners(winners, this.n, violators, notEntering, this.thread).subscribe(results => {
         this.router.navigate(['results', results['results_hash']])
       })
     }
@@ -178,5 +182,20 @@ export class ThreadComponent implements OnInit {
     this.results.forEach(item => {
       item.checked = this.isAllToggled
     })
+  }
+
+  ngOnDestroy() {
+    if (this.threadSubscription) {
+      this.threadSubscription.unsubscribe()
+    }
+    if (this.commentsSubscription) {
+      this.commentsSubscription.unsubscribe()
+    }
+    if (this.nSubscription) {
+      this.nSubscription.unsubscribe()
+    }
+    if (this.pickWinnersSubscription) {
+      this.pickWinnersSubscription.unsubscribe()
+    }
   }
 }
