@@ -184,7 +184,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   isAgeValid(age: Date) {
-    if (new Date().getTime() - age.getTime() >= 1000/*ms*/ * 60/*s*/ * 60/*min*/ * 24/*h*/ * 30/*days*/ * environment.minAgeInMonths/*months*/) {
+    if (new Date().getTime() - new Date(age).getTime() >= 1000/*ms*/ * 60/*s*/ * 60/*min*/ * 24/*h*/ * 30/*days*/ * environment.minAgeInMonths/*months*/) {
       return true
     }
     return false
@@ -194,7 +194,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     if(age === null) {
       return ''
     }
-    let dateFrom = age
+    let dateFrom = new Date(age)
     let dateTo = new Date();
 
     let months = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()));
