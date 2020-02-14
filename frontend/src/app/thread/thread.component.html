@@ -1,10 +1,15 @@
 <div class="container">
     <div class="disclaimer">
         <h1>Scrapped comments</h1>
-        Check comments in yellow as they need your attention (they are displayed at the top; if there are none, you are free to go). Sometimes there are problems that a human resolves better
-        than a machine. Non entering comments and comments with errors are displayed at the bottom. They are automatically excluded as they can't participate in a drawing.
-        
-
+        <p>
+            Check comments in yellow as they need your attention (they are displayed at the top; if there are none, you
+            are free to go). Sometimes there are problems that a human resolves better
+            than a machine.
+        </p>
+        <p>
+            Non entering comments and comments with errors are displayed at the bottom. They are automatically excluded
+            as they can't participate in a drawing. Duplicate entries are ignored.
+        </p>
     </div>
     <div class="actions">
         <div>
@@ -17,18 +22,20 @@
         </div>
         <div class="error-text" *ngIf="isEmptySelect">No items selected</div>
     </div>
-    
+
     <div class="results">
         <div *ngFor="let comment of comments">
             <mat-card class="comment warning" *ngIf="hasWarnings(comment) && comment.entering">
                 <mat-card-title>
-                    <a href="https://www.reddit.com/user/{{ comment.author.name }}" target="_blank">{{ comment.author.name }}</a>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}"
+                        target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div *ngIf='comment.entering'>
                         <div *ngIf='comment.steamProfile.steamId'>
-                            <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/" target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
+                            <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
+                                target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                         </div>
                         <div *ngIf='!comment.steamProfile.steamId'>
                             Steam profile: {{ getSteamProfile(comment) }}
@@ -45,12 +52,14 @@
         <div *ngFor="let comment of comments">
             <mat-card class="comment" *ngIf="!hasWarnings(comment) && !hasErrors(comment) && comment.entering">
                 <mat-card-title>
-                    <a href="https://www.reddit.com/user/{{ comment.author.name }}" target="_blank">{{ comment.author.name }}</a>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}"
+                        target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div *ngIf='comment.steamProfile.steamId'>
-                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/" target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
+                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
+                            target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                     </div>
                     <div *ngIf='!comment.steamProfile.steamId'>
                         Steam profile: {{ getSteamProfile(comment) }}
@@ -58,14 +67,16 @@
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
                 <mat-card-actions>
-                    <mat-checkbox [checked]='true' [value]="comment.author.name" class="participating">Participating</mat-checkbox>
+                    <mat-checkbox [checked]='true' [value]="comment.author.name" class="participating">Participating
+                    </mat-checkbox>
                 </mat-card-actions>
             </mat-card>
         </div>
         <div *ngFor="let comment of comments">
             <mat-card class="comment not-entering" *ngIf="!comment.entering">
                 <mat-card-title>
-                    <a href="https://www.reddit.com/user/{{ comment.author.name }}" target="_blank">{{ comment.author.name }}</a>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}"
+                        target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
@@ -76,12 +87,14 @@
         <div *ngFor="let comment of comments">
             <mat-card class="comment error" *ngIf="hasErrors(comment) && comment.entering">
                 <mat-card-title>
-                    <a href="https://www.reddit.com/user/{{ comment.author.name }}" target="_blank">{{ comment.author.name }}</a>
+                    <a href="https://www.reddit.com/user/{{ comment.author.name }}"
+                        target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<br />
                     <div *ngIf='comment.steamProfile.steamId'>
-                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/" target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
+                        <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
+                            target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                     </div>
                     <div *ngIf='!comment.steamProfile.steamId'>
                         Steam profile: {{ getSteamProfile(comment) }}

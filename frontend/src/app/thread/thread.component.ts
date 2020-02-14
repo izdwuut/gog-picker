@@ -91,12 +91,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
           if (!comment.steamProfile.gamesVisible) {
             errors.push('Steam games not visible')
           }
-        } else {
-          if (!comment.steamProfile.existent) {
-            errors.push('nonexistent Steam profile')
-          } else {
-            errors.push('non public Steam profile')
-          }
         }
       }
     }
@@ -136,10 +130,10 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
   getWarnings(comment: RedditComment): String[] {
     let warnings = Array<String>()
-    if (comment.steamProfile == null) {
-      return warnings
+    if (comment.steamProfile && comment.steamProfile.steamId == null) {
+      warnings.push('no Steam profile detected')
     }
-    if (comment.steamProfile.gamesCount >= environment.hoarderNumber) {
+    if (comment.steamProfile && comment.steamProfile.gamesCount >= environment.hoarderNumber) {
       warnings.push('potential hoarder (' + comment.steamProfile.gamesCount + ' games)')
     }
     return warnings
