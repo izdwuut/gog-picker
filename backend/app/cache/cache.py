@@ -190,7 +190,7 @@ class GogCache:
         submission = result['success']
         db_comments = self.get_comments_from_db(thread)
         scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}
-        # self.remove_comments_in_db(db_comments, scrapped_comments)
+        self.remove_comments_in_db(db_comments, scrapped_comments)
         for id, comment in scrapped_comments.items():
             self.filter_comment(comment)
         logging.info('Processed thread. Returning response...')
