@@ -190,7 +190,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     return false
   }
 
-  getAge(age: Date) {
+  getAge(age) {
     if(age === null) {
       return ''
     }
