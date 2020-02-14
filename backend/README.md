@@ -18,6 +18,7 @@ All comments are cached to provide blazing fast execution time. They are recorde
 * is Steam profile public
 * is Steam profile existent
 * are Steam user games list visible
+* redditor's age
 
 # Installation
 
