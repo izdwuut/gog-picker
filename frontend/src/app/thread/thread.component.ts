@@ -93,8 +93,10 @@ export class ThreadComponent implements OnInit, OnDestroy {
           }
         }
       }
-      if(!this.isAgeValid(comment.author.age)) {
-        errors.push('age too low')
+      if(comment.author.age) {
+        if(!this.isAgeValid(comment.author.age)) {
+          errors.push('age too low')
+        }
       }
     }
     return errors
@@ -182,6 +184,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   isAgeValid(age: Date) {
+    if(age === null)
     if (new Date().getTime() - age.getTime() >= 1000/*ms*/ * 60/*s*/ * 60/*min*/ * 24/*h*/ * 30/*days*/ * environment.minAgeInMonths/*months*/) {
       return true
     }
