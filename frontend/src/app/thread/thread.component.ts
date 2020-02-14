@@ -93,6 +93,9 @@ export class ThreadComponent implements OnInit, OnDestroy {
           }
         }
       }
+      if(!this.isAgeValid(comment.author.age)) {
+        errors.push('age too low')
+      }
     }
     return errors
   }
@@ -176,6 +179,30 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.results.forEach(item => {
       item.checked = this.isAllToggled
     })
+  }
+
+  isAgeValid(age: Date) {
+    if (new Date().getTime() - age.getTime() >= 1000/*ms*/ * 60/*s*/ * 60/*min*/ * 24/*h*/ * 30/*days*/ * environment.minAgeInMonths/*months*/) {
+      return true
+    }
+    return false
+  }
+
+  getAge(age: Date) {
+    if(age === null) {
+      return ''
+    }
+    let dateFrom = age
+    let dateTo = new Date();
+
+    let months = dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear()));
+    let s = ''
+    if (months >= 12) {
+      s += (months - (months % 12)) / 12 + 'y '
+    } else {
+      s += months + 'm'
+    }
+    return s
   }
 
   ngOnDestroy() {

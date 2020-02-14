@@ -7,7 +7,8 @@ export const environment = {
   apiUrl: "http://127.0.0.1:5000/",
   minKarma: 300,
   hoarderNumber: 500,
-  minLevel: 2
+  minLevel: 2,
+  minAgeInMonths: 2
 };
 
 /*

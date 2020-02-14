@@ -22,7 +22,6 @@
         </div>
         <div class="error-text" *ngIf="isEmptySelect">No items selected</div>
     </div>
-
     <div class="results">
         <div *ngFor="let comment of comments">
             <mat-card class="comment warning" *ngIf="hasWarnings(comment) && comment.entering">
@@ -31,7 +30,7 @@
                         target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
-                    Comment karma: {{ comment.author.karma }}<br />
+                    Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br /><br />
                     <div *ngIf='comment.entering'>
                         <div *ngIf='comment.steamProfile.steamId'>
                             <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
@@ -56,7 +55,7 @@
                         target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
-                    Comment karma: {{ comment.author.karma }}<br />
+                    Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br />
                     <div *ngIf='comment.steamProfile.steamId'>
                         <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
                             target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
@@ -79,7 +78,7 @@
                         target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
-                    Comment karma: {{ comment.author.karma }}<br />
+                    Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br /><br />
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
             </mat-card>
@@ -91,7 +90,7 @@
                         target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
-                    Comment karma: {{ comment.author.karma }}<br />
+                    Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br /><br />
                     <div *ngIf='comment.steamProfile.steamId'>
                         <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
                             target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
