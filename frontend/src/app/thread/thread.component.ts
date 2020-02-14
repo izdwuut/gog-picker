@@ -184,7 +184,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   isAgeValid(age: Date) {
-    if(age === null)
     if (new Date().getTime() - age.getTime() >= 1000/*ms*/ * 60/*s*/ * 60/*min*/ * 24/*h*/ * 30/*days*/ * environment.minAgeInMonths/*months*/) {
       return true
     }
