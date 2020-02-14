@@ -27,10 +27,12 @@ class RedditUser(db.Model):
     name = db.Column(db.String())
     karma = db.Column(db.Integer)
     reddit_comments = db.relationship('RedditComment', backref='author', lazy=True)
+    age = db.Column(db.TIMESTAMP())
 
-    def __init__(self, name=None, karma=None):
+    def __init__(self, name=None, karma=None, age=None):
         self.name = name
         self.karma = karma
+        self.age = age
 
 
 class SteamUser(db.Model):

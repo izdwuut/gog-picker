@@ -74,22 +74,22 @@ class GogCache:
         session = db.session
         result = session.query(RedditUser).filter(RedditUser.name == comment.author.name).first()
         author = comment.author
+        logging.info('Fetching {} age.'.format(author))
+        age = self.reddit.get_redditor_age(author)
         if result:
             logging.info('User {} already exists. Updating...'.format(author))
             new_karma = self.reddit.get_comment_karma(author)
             logging.info("Fetched {}'s karma.".format(author))
-            if result.karma < new_karma:
-                logging.info('More karma than before. Updating...')
-                result.karma = new_karma
-                db.session.commit()
-                db.session.flush()
-                logging.info('Updated user {}.'.format(author))
-            else:
-                logging.info('Same karma as before. Skipping...')
+            result.karma = new_karma
+            result.age = age
+            db.session.commit()
+            db.session.flush()
+            logging.info('Updated user {}.'.format(author))
             return result
         logging.info('Adding new user {}.'.format(author))
         reddit_user = RedditUser(name=author.name,
-                                 karma=self.reddit.get_comment_karma(author))
+                                 karma=self.reddit.get_comment_karma(author),
+                                 age=age)
         db.session.add(reddit_user)
         db.session.commit()
         db.session.flush()
@@ -167,7 +167,8 @@ class GogCache:
             json_comment = {'comment_id': comment.comment_id,
                             'entering': comment.entering,
                             'author': {'name': reddit_user.name,
-                                       'karma': reddit_user.karma},
+                                       'karma': reddit_user.karma,
+                                       'age': reddit_user.age},
                             'body': comment.body}
             if steam_profile:
                 json_comment['steam_profile'] = {'steam_id': steam_profile.steam_id,

@@ -5,6 +5,7 @@ from app.cache.list import List
 from praw.models.util import stream_generator
 from app._errors import Errors
 from app.extensions import retry_request
+from datetime import datetime
 
 class Reddit:
     not_included_keywords = ''
@@ -128,6 +129,9 @@ class Reddit:
 
     def get_submission_title(self, submission):
         return submission.title
+
+    def get_redditor_age(self, redditor):
+        return datetime.fromtimestamp(self.get_redditor(redditor).created_utc)
 
     def __init__(self, steam, settings):
         self.steam_api = steam
