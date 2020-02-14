@@ -30,7 +30,7 @@
                         target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
-                    Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br /><br />
+                    Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br />
                     <div *ngIf='comment.entering'>
                         <div *ngIf='comment.steamProfile.steamId'>
                             <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
