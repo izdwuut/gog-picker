@@ -10,7 +10,7 @@ class RedditComment(db.Model):
     comment_id = db.Column(db.String())
     body = db.Column(db.String())
     entering = db.Column(db.Boolean)
-    steam_profile = db.relationship('SteamUser', backref='comment', lazy=True, uselist=False)
+    steam_profile = db.relationship('SteamUser', backref='comment', lazy=True, uselist=False, passive_deletes=True)
 
     def __init__(self, thread=None, author=None, comment_id=None, entering=None, body=None):
         self.thread = thread
@@ -39,7 +39,7 @@ class SteamUser(db.Model):
     __tablename__ = 'steam_users'
 
     id = db.Column(db.Integer, primary_key=True)
-    reddit_comment_id = db.Column(db.Integer, db.ForeignKey('reddit_comments.id'), nullable=False)
+    reddit_comment_id = db.Column(db.Integer, db.ForeignKey('reddit_comments.id', ondelete='CASCADE'), nullable=False, )
     steam_id = db.Column(db.String())
     level = db.Column(db.Integer)
     public_profile = db.Column(db.Boolean)

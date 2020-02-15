@@ -12,7 +12,7 @@ class Reddit:
 
     @staticmethod
     def is_deleted(item):
-        if item.author:
+        if item.author and item.body == '[deleted]':
             return False
         return True
 
