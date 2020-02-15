@@ -1,0 +1,24 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas: 
+    ". . ."
+    ". smile ."
+    ". disclaimer . "
+    ". . .";
+    height: 100%;
+    align-items: center;
+}
+
+.smile {
+    grid-area: smile;
+    font-size: 70pt;
+    text-align: center;
+}
+
+.disclaimer {
+    grid-area: disclaimer;
+    text-align: center;
+    margin-top: 5%
+}
