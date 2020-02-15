@@ -11,7 +11,7 @@
             as they can't participate in a drawing. Duplicate entries are ignored.
         </p>
     </div>
-    <div class="actions">
+    <div class="actions" *ngIf='comments && comments.length > 0'>
         <div>
             <button mat-stroked-button mat-stroked-button class="send-button" (click)="pickWinners()">
                 Pick winners
@@ -21,6 +21,9 @@
             </button>
         </div>
         <div class="error-text" *ngIf="isEmptySelect">No items selected</div>
+    </div>
+    <div *ngIf='comments && comments.length === 0' class="no-results">
+        No comments detected!
     </div>
     <div class="results">
         <div *ngFor="let comment of comments">
@@ -104,7 +107,7 @@
             </mat-card>
         </div>
     </div>
-    <div class="actions-bottom">
+    <div class="actions-bottom" *ngIf='comments && comments.length > 0'>
         <button mat-stroked-button mat-stroked-button class="send-button" (click)="pickWinners()">
             Pick winners
         </button>

@@ -22,6 +22,8 @@ class GogCache:
 
     def scrap_comment(self, comment):
         user = Reddit.get_author(comment)
+        if self.reddit.is_deleted(comment):
+            return comment
         if self.reddit.is_user_special(user) or self.reddit.is_submitter(comment):
             return {}
         return comment
