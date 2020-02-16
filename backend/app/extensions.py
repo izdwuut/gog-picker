@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from prawcore import PrawcoreException
+from prawcore import PrawcoreException, ResponseException
 from steam.webauth import WebAuthException
 import logging
 from app._errors import Errors
@@ -15,7 +15,7 @@ def retry_request(func):
             try:
                 result = func(*args, **kwargs)
             except (PrawcoreException, WebAuthException, HTTPError,
-                    ConnectionError):
+                    ConnectionError, ResponseException):
                 counter += 1
                 logging.error(Errors.RETRY_REQUEST.format(str(counter)))
                 sleep(0.1)

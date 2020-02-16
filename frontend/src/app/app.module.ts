@@ -19,6 +19,7 @@ import { ResultsComponent } from './results/results.component';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { LoadingScreenInterceptor } from './loading-screen/loading.interceptor';
     MailerComponent,
     ResultsComponent,
     LoadingScreenComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,

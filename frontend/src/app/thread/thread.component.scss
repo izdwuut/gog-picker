@@ -16,7 +16,7 @@
     text-align: justify;
 }
 
-.results {
+.results, .no-results {
     grid-area: main;
 }
 
@@ -54,4 +54,8 @@
     font-size: small;
     color: red;
     margin: 5px;
+}
+
+.no-results {
+    color: red;
 }

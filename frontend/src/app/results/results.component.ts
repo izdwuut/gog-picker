@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RestService } from '../services/rest.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Results } from '../models/results.model';
 import { Subscription } from "rxjs";
+import { ResultsComment } from '../models/results-comment.model';
 
 @Component({
   selector: 'app-results',
@@ -14,22 +15,41 @@ export class ResultsComponent implements OnInit, OnDestroy {
   results: Results
   resultsSubscription: Subscription
 
-  constructor(private rest: RestService, private route: ActivatedRoute) { }
+  constructor(private rest: RestService, private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit() {
     this.hash = this.route.snapshot.paramMap.get('hash')
     this.resultsSubscription = this.rest.getResults(this.hash).subscribe(results => {
       this.results = results
+      console.log(results)
+    },
+    error => {
+      if(error.status === 404) {
+        this.router.navigate(['404'])
+      }
     })
   }
 
-  getLinks(users: String[]): String {
+  getLinksFromStrings(users: String[]): String {
     if(!users) {
       return
     }
     let links = Array<String>()
     users.forEach(item => {
-      const link = `<a href="https://reddit.com/u/${item}" target="_blank">${item}</a>`
+      links.push(`<a href="https://reddit.com/u/${item}" target="_blank">${item}</a>`)
+    })
+    return links.join(', ')
+  }
+
+  getLinksFromResultsComments(comments: ResultsComment[], thread: String): String {
+    if(!comments) {
+      return
+    }
+    let links = Array<String>()
+    comments.forEach(item => {
+      let link = `<a href="https://reddit.com/u/${item.author}" target="_blank">${item.author}</a>
+<a href="${thread}${item.commentId}" target="_blank"><span class="comment material-icons">comment</span></a>`
       links.push(link)
     })
     return links.join(', ')

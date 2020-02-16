@@ -12,7 +12,7 @@ class Reddit:
 
     @staticmethod
     def is_deleted(item):
-        if item.author:
+        if item.author and item.body != '[deleted]':
             return False
         return True
 
@@ -81,17 +81,21 @@ class Reddit:
             return False
         return True
 
+    @retry_request
     def get_regular_comments_stream(self):
         return self.subreddit.stream.comments()
 
+    @retry_request
     def get_regular_comment(self):
         for comment in self.get_regular_comments_stream():
             if Reddit.is_top_level_comment(comment) and self.has_required_keywords(comment.submission.title):
                 yield comment
 
+    @retry_request
     def get_edited_comments_stream(self):
         return stream_generator(self.subreddit.mod.edited, pause_after=-1)
 
+    @retry_request
     def get_edited_comment(self):
         for comment in self.get_edited_comments_stream():
             if Reddit.is_top_level_comment(comment) and self.has_required_keywords(comment.submission.title):

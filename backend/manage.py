@@ -34,6 +34,7 @@ def drop():
     models.SteamUser.__table__.drop(engine)
     models.RedditComment.__table__.drop(engine)
     models.RedditUser.__table__.drop(engine)
+    models.Results.__table__.drop(engine)
 
 
 if __name__ == '__main__':

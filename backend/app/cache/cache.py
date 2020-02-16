@@ -22,7 +22,9 @@ class GogCache:
 
     def scrap_comment(self, comment):
         user = Reddit.get_author(comment)
-        if self.reddit.is_deleted(comment) or self.reddit.is_user_special(user) or self.reddit.is_submitter(comment):
+        if self.reddit.is_deleted(comment):
+            return comment
+        if self.reddit.is_user_special(user) or self.reddit.is_submitter(comment):
             return {}
         return comment
 
@@ -40,7 +42,7 @@ class GogCache:
         logging.info('Fetched comments from database.')
         return results
 
-    def add_comment_to_db(self, comment, author):
+    def add_comment_to_db(self, comment, author=None):
         logging.info('Adding comment to database...')
         session = db.session
         result = session.query(RedditComment).filter(RedditComment.comment_id == comment.id).first()
@@ -147,18 +149,28 @@ class GogCache:
         else:
             logging.info('Added Steam profile: {}.'.format(steam_user.steam_id))
 
+    def delete_comment_from_db(self, comment):
+        session = db.session
+        result = session.query(RedditComment).filter(RedditComment.comment_id == comment.id).first()
+        if result:
+            db.session.delete(result)
+            db.session.commit()
+            db.session.flush()
+
     def filter_comment(self, comment):
         logging.info('Processing comment {}. Thread: {}.'.format(comment.id, comment.submission.url))
+        if self.reddit.is_deleted(comment):
+            self.delete_comment_from_db(comment)
+            return
         reddit_user = self.add_user_to_db(comment)
         reddit_comment = self.add_comment_to_db(comment, reddit_user)
         if not self.reddit.is_entering(comment):
-            return reddit_comment
+            return
         if self.reddit.is_submitter(comment):
             logging.info("This is the author's comment. Skipping...")
-            return reddit_comment
+            return
         self.scrap_steam_profile(comment, reddit_comment)
         logging.info('Processed comment {}'.format(comment.id))
-        return reddit_comment
 
     def get_json(self, comments):
         json_comments = []
@@ -191,7 +203,7 @@ class GogCache:
             return result, 400
         submission = result['success']
         db_comments = self.get_comments_from_db(thread)
-        scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}
+        scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}  # inc. deleted
         self.remove_comments_in_db(db_comments, scrapped_comments)
         for id, comment in scrapped_comments.items():
             self.filter_comment(comment)
