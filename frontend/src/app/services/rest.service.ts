@@ -45,8 +45,17 @@ export class RestService {
     }))
   }
 
-  pickWinners(users: Array<ResultsComment>, n: Number, violators: Array<String>, notEntering: Array<String>, thread: String): Observable<any> {
-    const payload = {'usernames': users, "n": n, "violators": violators, "not_entering": notEntering, "thread": thread}
+  getBackendResultsComments(comments: Array<ResultsComment>): any[] {
+    let resultsComments: any[] = Array<any>()
+    comments.forEach((comment: ResultsComment) => {
+      resultsComments.push({'author': comment.author, 'comment_id': comment.commentId})
+    })
+    return resultsComments
+  }
+
+  pickWinners(users: Array<ResultsComment>, n: Number, violators: Array<ResultsComment>, notEntering: Array<ResultsComment>, thread: String): Observable<any> {
+    const payload = {'usernames': this.getBackendResultsComments(users), "n": n, "violators": this.getBackendResultsComments(violators), 
+    "not_entering": this.getBackendResultsComments(notEntering), "thread": thread}
     console.log(payload)
     return this.http.post(this.apiUrl + 'picker/pick', payload)
   }
@@ -61,9 +70,18 @@ export class RestService {
     return this.http.post(this.apiUrl + 'mailer/send', payload)
   }
 
+  getResultsComments(comments: any[]): ResultsComment[] {
+    let resultsComments: ResultsComment[] = new Array<ResultsComment>()
+    comments.forEach(comment => {
+      resultsComments.push(new ResultsComment(comment.author, comment.comment_id))
+    })
+    return resultsComments
+  }
+
   getResults(hash: String): Observable<Results> {
     return this.http.get<any>(this.apiUrl + 'picker/results/' + hash).pipe(map(results => {
-      return new Results(results.eligible, results.hash, results.winners, results.violators, results.not_entering,
+      return new Results(this.getResultsComments(results.eligible), results.hash, this.getResultsComments(results.winners), 
+      this.getResultsComments(results.violators), this.getResultsComments(results.not_entering),
         results.thread, results.title)
       }))
   }

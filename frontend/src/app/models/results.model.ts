@@ -5,8 +5,8 @@ export class Results {
         public eligible: Array<ResultsComment>,
         public hash: String,
         public winners: Array<ResultsComment>,
-        public violators: Array<String>,
-        public notEntering: Array<String>,
+        public violators: Array<ResultsComment>,
+        public notEntering: Array<ResultsComment>,
         public thread: String,
         public title: String
     ) {}

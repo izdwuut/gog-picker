@@ -31,18 +31,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     })
   }
 
-  getLinksFromStrings(users: String[]): String {
-    if(!users) {
-      return
-    }
-    let links = Array<String>()
-    users.forEach(item => {
-      links.push(`<a href="https://reddit.com/u/${item}" target="_blank">${item}</a>`)
-    })
-    return links.join(', ')
-  }
-
-  getLinksFromResultsComments(comments: ResultsComment[], thread: String): String {
+  getLinks(comments: ResultsComment[], thread: String): String {
     if(!comments) {
       return
     }
