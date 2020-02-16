@@ -15,7 +15,11 @@ class GogPicker:
     random = RandomOrg(current_app.config['RANDOM_ORG_API_KEY'])
 
     def _remove_duplicates(self, items):
-        return list(dict.fromkeys(items))
+        new_items = []
+        for item in items:
+            if item not in new_items:
+                new_items.append(item)
+        return new_items
 
     def pick_winners(self, items, n):
         no_duplicates = self._remove_duplicates(items)
