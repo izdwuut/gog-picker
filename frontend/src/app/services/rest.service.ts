@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment'
 import { RedditProfile } from '../models/reddit-profile.model';
 import { SteamProfile } from '../models/steam-profile.model';
 import { Results } from '../models/results.model';
-import { WinnerComment } from '../models/winner-comment.model';
+import { ResultsComment } from '../models/results-comment.model';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +45,7 @@ export class RestService {
     }))
   }
 
-  pickWinners(users: Array<WinnerComment>, n: Number, violators: Array<String>, notEntering: Array<String>, thread: String): Observable<any> {
+  pickWinners(users: Array<ResultsComment>, n: Number, violators: Array<String>, notEntering: Array<String>, thread: String): Observable<any> {
     const payload = {'usernames': users, "n": n, "violators": violators, "not_entering": notEntering, "thread": thread}
     console.log(payload)
     return this.http.post(this.apiUrl + 'picker/pick', payload)

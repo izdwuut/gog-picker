@@ -4,22 +4,27 @@
             <a href="{{ results.thread }}" *ngIf="results.title" target="_blank">{{ results.title }}</a>
             <a href="{{ results.thread }}" *ngIf="!results.title" target="_blank">{{ results.thread }}</a>
         </h1>
-        You are almost done. Remember to check winners post history and then send the games!
+        You are almost done. Remember about a couple of things:
+        <ol>
+            <li>Check winners post history.</li>
+            <li>Check if a redditor still participates in a drawing (a comment is not deleted or edited).</li>
+            <li>Send games!</li>
+        </ol>
     </div>
     <div class="winners">
         <h1><mat-icon>insert_emoticon</mat-icon> Winners</h1>
-        <div [innerHtml]="getLinks(results.winners)"></div>
+        <div [innerHtml]="getLinksFromResultsComments(results.winners, results.thread)"></div>
     </div>
     <div class="eligible">
         <h1><mat-icon>thumb_up</mat-icon> Eligible</h1>
-        <div [innerHtml]="getLinks(results.eligible)"></div>
+        <div [innerHtml]="getLinksFromResultsComments(results.eligible, results.thread)"></div>
     </div>
     <div class="not-entering" *ngIf="results.notEntering.length > 0">
         <h1><mat-icon>cancel</mat-icon> Not entering</h1>
-        <div [innerHtml]="getLinks(results.notEntering)"></div>
+        <div [innerHtml]="getLinksFromStrings(results.notEntering)"></div>
     </div>
     <div class="violators" *ngIf="results.violators.length > 0">
         <h1><mat-icon>thumb_down</mat-icon> Violators</h1>
-        <div [innerHtml]="getLinks(results.violators)"></div>
+        <div [innerHtml]="getLinksFromStrings(results.violators)"></div>
     </div>
 </div>
