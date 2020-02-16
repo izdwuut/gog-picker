@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RestService } from '../services/rest.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Results } from '../models/results.model';
 import { Subscription } from "rxjs";
 
@@ -14,12 +14,18 @@ export class ResultsComponent implements OnInit, OnDestroy {
   results: Results
   resultsSubscription: Subscription
 
-  constructor(private rest: RestService, private route: ActivatedRoute) { }
+  constructor(private rest: RestService, private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit() {
     this.hash = this.route.snapshot.paramMap.get('hash')
     this.resultsSubscription = this.rest.getResults(this.hash).subscribe(results => {
       this.results = results
+    },
+    error => {
+      if(error.status === 404) {
+        this.router.navigate(['404'])
+      }
     })
   }
 

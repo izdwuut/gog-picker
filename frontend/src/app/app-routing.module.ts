@@ -10,11 +10,14 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'thread', component: ThreadComponent,
-canActivate: [ThreadGuard] },
+  {
+    path: 'thread', component: ThreadComponent,
+    canActivate: [ThreadGuard]
+  },
   { path: 'mailer', component: MailerComponent },
   { path: 'results/:hash', component: ResultsComponent },
-  { path: '**', component: PageNotFoundComponent },
+  { path: '404', component: PageNotFoundComponent },
+  { path: '**', redirectTo: '/404' },
 ];
 
 @NgModule({
