@@ -60,10 +60,10 @@ class Results(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     hash = db.Column(db.String())
-    eligible = db.Column(db.ARRAY(db.String))
+    eligible = db.Column(db.JSON)
     winners = db.Column(db.JSON)
-    violators = db.Column(db.ARRAY(db.String))
-    not_entering = db.Column(db.ARRAY(db.String))
+    violators = db.Column(db.JSON)
+    not_entering = db.Column(db.JSON)
     thread = db.Column(db.String())
     title = db.Column(db.String())
 
