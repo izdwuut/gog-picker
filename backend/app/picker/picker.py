@@ -99,7 +99,7 @@ def get_results(hash):
     session = db.session
     results = session.query(Results).filter(Results.hash == hash).first()
     if not results:
-        return jsonify({'error': 'Invalid ID.'}), 400
+        return jsonify({'error': 'Invalid ID.'}), 404
     return jsonify({'hash': results.hash, 'eligible': results.eligible, 'winners': results.winners,
                     'violators': results.violators, 'not_entering': results.not_entering,
                     'thread': results.thread, 'title': results.title}), 200
