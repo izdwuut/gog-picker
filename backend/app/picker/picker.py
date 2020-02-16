@@ -14,7 +14,7 @@ picker = Blueprint('picker', __name__, url_prefix='/picker')
 class GogPicker:
     random = RandomOrg(current_app.config['RANDOM_ORG_API_KEY'])
 
-    def _remove_duplicates(self, items):
+    def remove_duplicates(self, items):
         new_items = []
         for item in items:
             if item not in new_items:
@@ -22,12 +22,11 @@ class GogPicker:
         return new_items
 
     def pick_winners(self, items, n):
-        no_duplicates = self._remove_duplicates(items)
-        if len(no_duplicates) == 1:
-            return no_duplicates
-        if n > len(no_duplicates):
-            return self.random.items(no_duplicates, len(no_duplicates))
-        return self.random.items(no_duplicates, n)
+        if len(items) == 1:
+            return items
+        if n > len(items):
+            return self.random.items(items, len(items))
+        return self.random.items(items, n)
 
     def add_results(self, eligible, winners, violators, not_entering, thread, title):
         session = db.session
@@ -70,13 +69,14 @@ def pick_winners():
     if not thread:
         return jsonify({'error': Errors.NO_REQUIRED_FIELD + 'thread.'}), 400
     gog_picker = GogPicker()
-    winners = gog_picker.pick_winners(usernames, n)
+    eligible = gog_picker.remove_duplicates(usernames)
+    winners = gog_picker.pick_winners(eligible, n)
     reddit = Reddit(None, current_app.config['REDDIT'])
     submission = reddit.get_submission(thread)
     if 'error' in submission:
         return jsonify(submission), 400
     title = reddit.get_submission_title(submission['success'])
-    hash = gog_picker.add_results(usernames, winners, violators, not_entering, thread, title)
+    hash = gog_picker.add_results(eligible, winners, violators, not_entering, thread, title)
 
     return jsonify({'results_hash': hash}), 200
 
