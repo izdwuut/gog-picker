@@ -16,9 +16,11 @@ class GogPicker:
 
     def remove_duplicates(self, items):
         new_items = []
+        users = []
         for item in items:
-            if item not in new_items:
+            if item['author'] not in users:
                 new_items.append(item)
+                users.append(item['author'])
         return new_items
 
     def pick_winners(self, items, n):
