@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment'
 import { MatCheckbox } from '@angular/material';
 import { Router } from '@angular/router';
 import { Subscription } from "rxjs";
+import { WinnerComment } from '../models/winner-comment.model';
 
 @Component({
   selector: 'app-cached',
@@ -149,10 +150,11 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   pickWinners() {
-    let winners = Array<String>()
+    let winners = Array<any>()
     this.results.forEach(item => {
+      console.log()
       if (item.checked) {
-        winners.push(item.value)
+        winners.push(new WinnerComment(item.value, item._elementRef.nativeElement.getAttribute('data-commentid')))
       }
     })
     let violators = Array<String>()
