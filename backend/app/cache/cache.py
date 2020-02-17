@@ -99,6 +99,13 @@ class GogCache:
         logging.info('Added new user {}.'.format(author))
         return reddit_user
 
+    def commit_not_scrapped_steam_user(self, steam_user):
+        steam_user.not_scrapped = True
+        db.session.add(steam_user)
+        db.session.commit()
+        db.session.flush()
+        logging.error(Errors.STEAM_PROFILE_NOT_SCRAPPED)
+
     def scrap_steam_profile(self, comment, reddit_comment):
         logging.info('Adding Steam profile to database...')
         session = db.session
@@ -124,22 +131,53 @@ class GogCache:
             else:
                 logging.info('Added Steam user to database.')
             return {'success': Errors.NONEXISTENT_STEAM_PROFILE}
+
         logging.info('Getting Steam user summary.')
-        summary = self.steam.get_player_summary(steam_user.steam_id)[0]
-        steam_user.existent = Steam.is_profile_existent(summary)
+        summary = self.steam.get_player_summary(steam_user.steam_id)
+        if summary is None:
+            self.commit_not_scrapped_steam_user(steam_user)
+            return
+        else:
+            summary = summary[0]
+
+        existent = Steam.is_profile_existent(summary)
+        if existent is None:
+            self.commit_not_scrapped_steam_user(steam_user)
+            return
+        steam_user.existent = existent
         logging.info('Steam profile existent: {}.'.format(steam_user.existent))
-        steam_user.public_profile = Steam.is_profile_visible(summary)
+
+        is_profile_visible = Steam.is_profile_visible(summary)
+        if is_profile_visible is None:
+            self.commit_not_scrapped_steam_user(steam_user)
+            return
+        steam_user.public_profile = is_profile_visible
         logging.info('Steam profile public: {}.'.format(steam_user.public_profile))
+
         games = self.steam.get_user_games(steam_user.steam_id)
+        if games is None:
+            self.commit_not_scrapped_steam_user(steam_user)
+            return
         if 'game_count' in games:
             steam_user.games_count = games['game_count']
         else:
             steam_user.games_count = 0
         logging.info('Steam profile games count: {}.'.format(steam_user.games_count))
-        steam_user.games_visible = self.steam.is_games_list_visible(games)
+
+        games_visible = self.steam.is_games_list_visible(games)
+        if games_visible is None:
+            self.commit_not_scrapped_steam_user(steam_user)
+            return
+        steam_user.games_visible = games_visible
         logging.info('Games list visible: {}.'.format(steam_user.games_visible))
-        steam_user.level = self.steam.get_level(steam_user.steam_id)
+
+        level = self.steam.get_level(steam_user.steam_id)
+        if level is None:
+            self.commit_not_scrapped_steam_user(steam_user)
+            return
+        steam_user.level = level
         logging.info('Steam profile level: {}.'.format(steam_user.level))
+
         if not steam_user.id:
             db.session.add(steam_user)
         db.session.commit()
@@ -189,7 +227,8 @@ class GogCache:
                                                  'games_visible': steam_profile.games_visible,
                                                  'level': steam_profile.level,
                                                  'public_profile': steam_profile.public_profile,
-                                                 'games_count': steam_profile.games_count}
+                                                 'games_count': steam_profile.games_count,
+                                                 'not_scrapped': steam_profile.not_scrapped}
             else:
                 json_comment['steam_profile'] = None
             json_comments.append(json_comment)
@@ -203,7 +242,7 @@ class GogCache:
             return result, 400
         submission = result['success']
         db_comments = self.get_comments_from_db(thread)
-        scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}  # inc. deleted
+        scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}
         self.remove_comments_in_db(db_comments, scrapped_comments)
         for id, comment in scrapped_comments.items():
             self.filter_comment(comment)

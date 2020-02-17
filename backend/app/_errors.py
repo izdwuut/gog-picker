@@ -5,6 +5,7 @@ class Errors:
     HIDDEN_STEAM_PROFILE = 'Private Steam profile.'
     STEAM_LEVEL_TOO_LOW = 'Steam profile level too low.'
     HIDDEN_STEAM_GAMES = 'Hidden Steam games list.'
+    STEAM_PROFILE_NOT_SCRAPPED = "Couldn't scrap Steam profile."
 
     # Reddit
     REDDIT_KARMA_TOO_LOW = 'Karma too low.'

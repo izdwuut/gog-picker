@@ -46,6 +46,7 @@ class SteamUser(db.Model):
     existent = db.Column(db.Boolean)
     games_visible = db.Column(db.Boolean)
     games_count = db.Column(db.Integer)
+    not_scrapped = db.Column(db.Boolean, default=False)
 
     def __init__(self, level=None, public=None, steam_id=None, reddit_user=None, games_count=None):
         self.level = level

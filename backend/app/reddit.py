@@ -26,7 +26,7 @@ class Reddit:
             submission.comments.replace_more(limit=None)
             comments = submission.comments
         except prawcore.exceptions.NotFound:
-            sys.exit(1)
+            return []
         return comments
 
     @classmethod
@@ -52,7 +52,7 @@ class Reddit:
 
     @retry_request
     def get_comment_karma(self, user):
-        return self.api.redditor(str(user)).comment_karma
+        return self.get_redditor(str(user)).comment_karma
 
     @retry_request
     def get_submission(self, url):
@@ -134,6 +134,7 @@ class Reddit:
     def get_submission_title(self, submission):
         return submission.title
 
+    @retry_request
     def get_redditor_age(self, redditor):
         return datetime.fromtimestamp(self.get_redditor(redditor).created_utc)
 

@@ -5,6 +5,7 @@ export class SteamProfile {
         public gamesCount: Number,
         public gamesVisible: Boolean,
         public level: Number,
-        public publicProfile: Boolean
+        public publicProfile: Boolean,
+        public notScrapped: Boolean
     ) { }
 }
