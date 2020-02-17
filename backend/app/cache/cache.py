@@ -178,6 +178,7 @@ class GogCache:
         steam_user.level = level
         logging.info('Steam profile level: {}.'.format(steam_user.level))
 
+        steam_user.not_scrapped = False
         if not steam_user.id:
             db.session.add(steam_user)
         db.session.commit()
