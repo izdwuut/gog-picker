@@ -35,12 +35,9 @@
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br />
                     <div *ngIf='comment.entering'>
-                        <div *ngIf='comment.steamProfile.steamId'>
+                        <div *ngIf='comment.steamProfile && comment.steamProfile.steamId'>
                             <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
                                 target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
-                        </div>
-                        <div *ngIf='!comment.steamProfile.steamId'>
-                            Steam profile: {{ getSteamProfile(comment) }}
                         </div>
                     </div>
                     <div><br />Warnings: {{ getWarnings(comment).join(', ') }}</div>
@@ -59,12 +56,9 @@
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br />
-                    <div *ngIf='comment.steamProfile.steamId'>
+                    <div *ngIf='comment.steamProfile && comment.steamProfile.steamId'>
                         <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
                             target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
-                    </div>
-                    <div *ngIf='!comment.steamProfile.steamId'>
-                        Steam profile: {{ getSteamProfile(comment) }}
                     </div>
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
@@ -93,13 +87,10 @@
                         target="_blank">{{ comment.author.name }}</a>
                 </mat-card-title>
                 <mat-card-subtitle>
-                    Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br /><br />
-                    <div *ngIf='comment.steamProfile.steamId'>
+                    Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br />
+                    <div *ngIf='comment.steamProfile && comment.steamProfile.steamId'>
                         <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
                             target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
-                    </div>
-                    <div *ngIf='!comment.steamProfile.steamId'>
-                        Steam profile: {{ getSteamProfile(comment) }}
                     </div>
                     <div><br />Errors: {{ getErrors(comment).join(', ') }}</div>
                 </mat-card-subtitle>

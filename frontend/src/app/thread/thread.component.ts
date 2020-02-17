@@ -82,9 +82,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
       if (comment.author.karma < environment.minKarma) {
         errors.push('not enough karma')
       }
-      if (comment.steamProfile == null) {
-        errors.push('no Steam profile')
-      } else {
+      if (comment.steamProfile) {
         if (comment.steamProfile.publicProfile) {
           if (comment.steamProfile.level < environment.minLevel) {
             errors.push('Steam level too low')
@@ -140,7 +138,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
       warnings.push("couldn't scrap comment")
       return warnings
     }
-    if (comment.steamProfile && comment.steamProfile.steamId == null) {
+    if ((comment.steamProfile && comment.steamProfile.steamId == null) || !comment.steamProfile) {
       warnings.push('no Steam profile detected')
     }
     if (comment.steamProfile && comment.steamProfile.gamesCount >= environment.hoarderNumber) {
