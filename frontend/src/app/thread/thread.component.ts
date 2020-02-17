@@ -36,6 +36,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('thread', JSON.stringify(thread))
         if (!this.comments) {
           this.commentsSubscription = this.rest.getCachedComments(thread).subscribe(results => {
+            console.log(results)
             this.comments = results
             sessionStorage.setItem('comments', JSON.stringify(results))
           })
