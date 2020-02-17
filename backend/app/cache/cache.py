@@ -172,7 +172,7 @@ class GogCache:
         logging.info('Games list visible: {}.'.format(steam_user.games_visible))
 
         level = self.steam.get_level(steam_user.steam_id)
-        if level is None:
+        if level is None and steam_user.public_profile:
             self.commit_not_scrapped_steam_user(steam_user)
             return
         steam_user.level = level
@@ -244,7 +244,7 @@ class GogCache:
         submission = result['success']
         db_comments = self.get_comments_from_db(thread)
         scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}
-        self.remove_comments_in_db(db_comments, scrapped_comments)
+        # self.remove_comments_in_db(db_comments, scrapped_comments)
         for id, comment in scrapped_comments.items():
             self.filter_comment(comment)
         logging.info('Processed thread. Returning response...')
