@@ -84,15 +84,22 @@ export class ThreadComponent implements OnInit, OnDestroy {
         errors.push('not enough karma')
       }
       if (comment.steamProfile) {
-        if (comment.steamProfile.publicProfile) {
-          if (comment.steamProfile.level < environment.minLevel) {
-            errors.push('Steam level too low')
+        if (comment.steamProfile.existent) {
+          if (comment.steamProfile.publicProfile) {
+            if (comment.steamProfile.level < environment.minLevel) {
+              errors.push('Steam level too low')
+            }
+            if (!comment.steamProfile.gamesVisible) {
+              errors.push('Steam games not visible')
+            }
+          } else {
+            errors.push('non public Steam profile')
           }
-          if (!comment.steamProfile.gamesVisible) {
-            errors.push('Steam games not visible')
-          }
+        } else {
+          errors.push('nonexistent Steam profile')
         }
       }
+
       if(comment.author.age) {
         if(!this.isAgeValid(comment.author.age)) {
           errors.push('age too low')
@@ -109,6 +116,9 @@ export class ThreadComponent implements OnInit, OnDestroy {
   getSteamProfile(comment: RedditComment): String {
     let profile = Array<String>()
     if (comment.steamProfile == null) {
+      return ''
+    }
+    if(comment.steamProfile.notScrapped) {
       return ''
     }
     if (comment.steamProfile.existent) {
@@ -133,13 +143,17 @@ export class ThreadComponent implements OnInit, OnDestroy {
     return !this.hasErrors(comment) && comment.entering && !this.hasWarnings(comment)
   }
 
+  canScrapSteamProfile(comment: RedditComment): Boolean {
+    return comment.steamProfile && !comment.steamProfile.notScrapped
+  }
+
   getWarnings(comment: RedditComment): String[] {
     let warnings = Array<String>()
-    if (comment.steamProfile && comment.steamProfile.notScrapped) {
+    if (!this.canScrapSteamProfile(comment)) {
       warnings.push("couldn't scrap comment")
       return warnings
     }
-    if ((comment.steamProfile && comment.steamProfile.steamId == null) || !comment.steamProfile) {
+    if (!comment.steamProfile) {
       warnings.push('no Steam profile detected')
     }
     if (comment.steamProfile && comment.steamProfile.gamesCount >= environment.hoarderNumber) {
