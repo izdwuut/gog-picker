@@ -132,10 +132,14 @@ export class ThreadComponent implements OnInit, OnDestroy {
     return !this.hasErrors(comment) && comment.entering && !this.hasWarnings(comment)
   }
 
+  canScrapSteamProfile(comment: RedditComment): Boolean {
+    return comment.steamProfile && !comment.steamProfile.notScrapped
+  }
+
   getWarnings(comment: RedditComment): String[] {
     let warnings = Array<String>()
     console.log(comment)
-    if (comment.steamProfile && comment.steamProfile.notScrapped) {
+    if (!this.canScrapSteamProfile(comment)) {
       warnings.push("couldn't scrap comment")
       return warnings
     }
