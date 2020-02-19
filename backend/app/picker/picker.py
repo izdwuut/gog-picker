@@ -78,7 +78,7 @@ def pick_winners():
     if 'error' in submission:
         return jsonify(submission), 400
     title = reddit.get_submission_title(submission['success'])
-    hash = gog_picker.add_results(eligible, winners, violators, not_entering, thread, title)
+    hash = gog_picker.add_results(eligible, winners, violators, not_entering, submission['success'].url, title)
 
     return jsonify({'results_hash': hash}), 200
 

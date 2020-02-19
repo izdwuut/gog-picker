@@ -1,61 +1,70 @@
+@import "../../variables.scss";
+
 .container {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: auto;
-    grid-template-areas: 
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
     ". header ."
     ". actions ."
     ". main . "
     ". main ."
-    ". bottom ."
+    ". bottom .";
+
+  @media only screen and (max-width: $largeTabletWidth) {
+    grid-template-columns: 0.25fr 2fr 0.25fr;
+
+    
+  }
 }
 
 .disclaimer {
-    grid-area: header;
-    margin: 5% 0;
-    text-align: justify;
+  grid-area: header;
+  margin: 5% 0;
+  text-align: justify;
 }
 
-.results, .no-results {
-    grid-area: main;
+.results,
+.no-results {
+  grid-area: main;
 }
 
 .results > * {
-    margin: 2% 0;
+  margin: 2% 0;
 }
 
 .warning {
-    background-color: #ffffab;
+  background-color: #ffffab;
 }
 
 .error {
-    background-color: #ffe5e5;
+  background-color: #ffe5e5;
 }
 
 .not-entering {
-    background-color: #eaeaea;
+  background-color: #eaeaea;
 }
 
 .actions {
-    margin: 1% 0;
-    grid-area: actions;
+  margin: 1% 0;
+  grid-area: actions;
 }
 
 .actions-bottom {
-    grid-area: bottom;
-    margin-bottom: 5%
+  grid-area: bottom;
+  margin-bottom: 5%;
 }
 
 .send-button {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 .error-text {
-    font-size: small;
-    color: red;
-    margin: 5px;
+  font-size: small;
+  color: red;
+  margin: 5px;
 }
 
 .no-results {
-    color: red;
+  color: red;
 }

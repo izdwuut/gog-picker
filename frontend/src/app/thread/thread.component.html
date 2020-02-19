@@ -44,7 +44,7 @@
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
                 <mat-card-actions>
-                    <mat-checkbox [checked]='false' [value]="comment.author.name" [attr.data-commentid]="comment.commentId">Participating</mat-checkbox>
+                    <mat-checkbox [checked]='false' [value]="comment.author.name" [attr.data-comment-id]="comment.commentId" [attr.data-has-warnings]="hasWarnings(comment)">Participating</mat-checkbox>
                 </mat-card-actions>
             </mat-card>
         </div>
@@ -63,7 +63,7 @@
                 </mat-card-subtitle>
                 <mat-card-content [innerHTML]="unescapeQuotes(comment.body)"></mat-card-content>
                 <mat-card-actions>
-                    <mat-checkbox [checked]='true' [value]="comment.author.name" class="participating" [attr.data-commentid]="comment.commentId">Participating
+                    <mat-checkbox [checked]='true' [value]="comment.author.name" class="participating" [attr.data-comment-id]="comment.commentId">Participating
                     </mat-checkbox>
                 </mat-card-actions>
             </mat-card>

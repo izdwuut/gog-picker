@@ -30,7 +30,7 @@ class Steam:
             except ValueError:
                 return None
         response = self.resolve_vanity_url(parts[1])
-        if response['success'] == 1:
+        if response is not None and response['success'] == 1:
             return response['steamid']
         return None
 

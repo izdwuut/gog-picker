@@ -1,46 +1,67 @@
+@import '../../variables.scss';
+
 .error {
-    color: red;
+  color: red;
 }
 
 .success {
-    color: green;
+  color: green;
 }
 
 .container {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 1fr 2fr 1fr;
-    grid-template-areas: 
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: 1fr auto auto 1fr;
+  grid-template-areas:
     ". . ."
     ". main . "
+    ". disclaimer ."
     ". . .";
-    height: 100%;
-    align-items: center;
+  height: 100%;
+  align-items: center;
+
+  @media only screen and (max-width: $largeTabletWidth) {
+    grid-template-columns: 0.25fr 2fr 0.25fr;
+
+    .thread-input {
+      width: 100%;
+      margin: 0
+    }
+  }
+}
+
+.disclaimer {
+  grid-area: disclaimer;
+  text-align: center;
+  color: #dad6d6;
+  font-style: italic;
+  margin-top: 4%;
+  font-size: small;
 }
 
 .process {
-    grid-area: main;
+  grid-area: main;
 }
 
 .thread-input {
-    width: 79%;
-    margin-right: 1%
+  width: 79%;
+  margin-right: 1%;
 }
 
 .n-input {
-    width: 19%;
-    margin-left: 1%;
+  width: 19%;
+  margin-left: 1%;
 }
 
 .send-button {
-    $width: 20%;
-    $margin: (100% - $width) / 2;
-    width: $width;
-    margin-left: $margin;
-    margin-right: $margin;
+  $width: 20%;
+  $margin: (100% - $width) / 2;
+  width: $width;
+  margin-left: $margin;
+  margin-right: $margin;
 }
 
 .spinner {
-    height: 5px !important;
-    width: 5px !important;
+  height: 5px !important;
+  width: 5px !important;
 }

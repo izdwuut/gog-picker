@@ -168,12 +168,16 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
   pickWinners() {
     let winners = Array<any>()
+    let violators = Array<ResultsComment>()
     this.results.forEach(item => {
       if (item.checked) {
-        winners.push(new ResultsComment(item.value, item._elementRef.nativeElement.getAttribute('data-commentid')))
+        winners.push(new ResultsComment(item.value, item._elementRef.nativeElement.getAttribute('data-comment-id')))
+      } else {
+        if(item._elementRef.nativeElement.getAttribute('data-has-warnings')) {
+          violators.push(new ResultsComment(item.value, item._elementRef.nativeElement.getAttribute('data-comment-id')))
+        }
       }
     })
-    let violators = Array<ResultsComment>()
     let notEntering = Array<ResultsComment>()
     this.comments.forEach(comment => {
       const author = comment.author.name
