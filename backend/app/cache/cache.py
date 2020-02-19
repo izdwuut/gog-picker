@@ -242,13 +242,13 @@ class GogCache:
             logging.error(result['error'])
             return result, 400
         submission = result['success']
-        db_comments = self.get_comments_from_db(thread)
+        db_comments = self.get_comments_from_db(submission.url)
         scrapped_comments = {comment.id: comment for comment in self.scrap_comments(submission)}
         self.remove_comments_in_db(db_comments, scrapped_comments)
         for id, comment in scrapped_comments.items():
             self.filter_comment(comment)
         logging.info('Processed thread. Returning response...')
-        return self.get_json(self.get_comments_from_db(thread)), 200
+        return self.get_json(self.get_comments_from_db(submission.url)), 200
 
     def run_stream(self):
         for comment in self.reddit.get_regular_comment():
@@ -279,4 +279,8 @@ def get_cached_url():
         gog_cache = GogCache()
     except requests.exceptions.HTTPError as e:
         return jsonify({'error': e.response.content}), e.response.status_code
-    return gog_cache.run_thread(url)
+    reddit = Reddit(None, current_app.config['REDDIT'])
+    submission = reddit.get_submission(url)
+    if 'error' in submission:
+        return jsonify(submission), 400
+    return gog_cache.run_thread(submission['success'].url)
