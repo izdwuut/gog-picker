@@ -38,7 +38,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     let links = Array<String>()
     comments.forEach(item => {
       let link = `<a href="https://reddit.com/u/${item.author}" target="_blank">${item.author}</a>
-<a href="${thread}${item.commentId}" target="_blank"><span class="comment material-icons">comment</span></a>`
+<a href="${thread}${item.commentId}" target="_blank"><span class="material-icons">comment</span></a>`
       links.push(link)
     })
     return links.join(', ')

@@ -9,13 +9,23 @@
 .container {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-rows: 1fr auto auto 1fr;
     grid-template-areas: 
     ". . ."
     ". main . "
+    ". disclaimer ."
     ". . .";
     height: 100%;
     align-items: center;
+}
+
+.disclaimer {
+    grid-area: disclaimer;
+    text-align: center;
+    color: #dad6d6;
+    font-style: italic;
+    margin-top: 4%;
+    font-size: small;
 }
 
 .process {

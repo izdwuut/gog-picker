@@ -1,7 +1,7 @@
 <div class="container">
     <div class="process">
         <mat-form-field appearance="outline" class="thread-input">
-            <mat-label>r/GiftofGames thread</mat-label>
+            <mat-label>r/GiftofGames thread*</mat-label>
             <input matInput [(ngModel)]='thread' (ngModelChange)="onThreadChange()">
             <mat-hint [ngClass]="{'error': hasThreadErrors, 'success': !hasThreadErrors}">
                 {{ threadInputHint }}
@@ -18,4 +18,5 @@
         </mat-form-field>
         <button mat-button mat-stroked-button class="send-button" (click)="send()">SEND</button>
     </div>
+    <div class="disclaimer">*Only Steam giveaways are supported.</div>
 </div>
