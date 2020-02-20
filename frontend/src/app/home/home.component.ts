@@ -48,10 +48,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onNChange(): void {
     if (this.n < 1) {
-      if (!this.n) {
+      if (this.n === null) {
         this.nInputHint = 'Required.'
       } else {
-        this.nInputHint = 'N must be positive.'
+        this.nInputHint = 'Must be positive.'
       }
       this.hasNErrors = true
     } else {
