@@ -122,8 +122,9 @@ class GogCache:
             steam_user.level = None
             steam_user.games_count = 0
             if not steam_user.id:
-                logging.info('Steam user already exists. Updating.')
                 db.session.add(steam_user)
+            else:
+                logging.info('Steam user already exists. Updating.')
             db.session.commit()
             db.session.flush()
             if steam_user.id:
@@ -134,7 +135,7 @@ class GogCache:
 
         logging.info('Getting Steam user summary.')
         summary = self.steam.get_player_summary(steam_user.steam_id)
-        if summary is None:
+        if not summary:
             self.commit_not_scrapped_steam_user(steam_user)
             return
         else:
