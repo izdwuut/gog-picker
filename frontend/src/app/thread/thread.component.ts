@@ -25,6 +25,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
   nSubscription: Subscription
   pickWinnersSubscription: Subscription
   selection: Array<String> = []
+  isHttpError: Boolean = false
 
   constructor(private rest: RestService, private threadSubject: ThreadSubjectService,
     private router: Router, private cdRef: ChangeDetectorRef) { }
@@ -40,6 +41,9 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
             this.comments = results
             sessionStorage.setItem('comments', JSON.stringify(results))
             this.initSelected()
+          },
+          error => {
+            this.isHttpError = true
           })
         } else {
           this.initSelected()
