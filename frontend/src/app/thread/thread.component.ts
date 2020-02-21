@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, AfterContentInit, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, AfterContentInit, OnChanges, OnDestroy, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { ThreadSubjectService } from '../services/thread-subject.service';
 import { RestService } from '../services/rest.service';
 import { RedditComment } from '../models/reddit-comment.model';
@@ -13,7 +13,7 @@ import { ResultsComment } from '../models/results-comment.model';
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.scss']
 })
-export class ThreadComponent implements OnInit, OnDestroy {
+export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
   thread: String = ''
   n: Number = 1
   comments: RedditComment[]
@@ -24,38 +24,80 @@ export class ThreadComponent implements OnInit, OnDestroy {
   commentsSubscription: Subscription
   nSubscription: Subscription
   pickWinnersSubscription: Subscription
+  selection: Array<String> = []
 
   constructor(private rest: RestService, private threadSubject: ThreadSubjectService,
-    private router: Router) { }
+    private router: Router, private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     if (sessionStorage.getItem('comments') === null || sessionStorage.getItem('n') === null ||
-      sessionStorage.getItem('thread') === null) {
+      sessionStorage.getItem('thread') === null || sessionStorage.getItem('selection') === null) {
       this.threadSubscription = this.threadSubject.thread.subscribe(thread => {
         this.thread = thread
         sessionStorage.setItem('thread', JSON.stringify(thread))
         if (!this.comments) {
           this.commentsSubscription = this.rest.getCachedComments(thread).subscribe(results => {
-            console.log(results)
             this.comments = results
             sessionStorage.setItem('comments', JSON.stringify(results))
+            this.initSelected()
           })
+        } else {
+          this.initSelected()
         }
       })
       this.nSubscription = this.threadSubject.n.subscribe(n => {
         this.n = n
         sessionStorage.setItem('n', JSON.stringify(n))
       })
-    } else {
-      this.thread = JSON.parse(sessionStorage.getItem('thread'))
-      this.comments = JSON.parse(sessionStorage.getItem('comments'))
-      this.n = JSON.parse(sessionStorage.getItem('n'))
     }
+  }
 
-    // this.rest.getCachedComments('https://www.reddit.com/r/GiftofGames/comments/eltt4p/offersteam_bad_north_jotunn_edition/')
-    // .subscribe(results => {
-    //   this.comments = results
-    // })
+  ngAfterViewInit() {
+    this.results.changes.subscribe(() => {
+      setTimeout(() => {
+        this.setSelected()
+      });
+    })
+    setTimeout(() => {
+      if (sessionStorage.getItem('comments') && sessionStorage.getItem('n') &&
+        sessionStorage.getItem('thread') && sessionStorage.getItem('selection')) {
+        this.thread = JSON.parse(sessionStorage.getItem('thread'))
+        this.comments = JSON.parse(sessionStorage.getItem('comments'))
+        this.n = JSON.parse(sessionStorage.getItem('n'))
+      }
+    });
+  }
+
+  initSelected() {
+    this.comments.forEach((comment: RedditComment) => {
+      if (this.isParticipating(comment)) {
+        this.selection.push(comment.commentId)
+      }
+    })
+    sessionStorage.setItem('selection', JSON.stringify(this.selection))
+  }
+
+  setSelected() {
+    this.selection = JSON.parse(sessionStorage.getItem('selection'))
+    this.results.forEach(item => {
+      console.log(true)
+      const commentId = item._elementRef.nativeElement.getAttribute('data-comment-id')
+      if (this.selection.includes(commentId)) {
+        item.checked = true
+      } else {
+        item.checked = false
+      }
+    })
+  }
+
+  saveSelection(commentId: String, $event) {
+    const index = this.selection.indexOf(commentId)
+    if($event.checked && index == -1) {
+      this.selection.push(commentId)
+    } else {
+      this.selection.splice(index, 1)
+    }
+    sessionStorage.setItem('selection', JSON.stringify(this.selection))
   }
 
   unescapeQuotes(s: String): String {
@@ -200,9 +242,14 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
   toggleAll(): void {
     this.isAllToggled = !this.isAllToggled
+    this.selection = []
     this.results.forEach(item => {
       item.checked = this.isAllToggled
+      if(this.isAllToggled) {
+        this.selection.push(item._elementRef.nativeElement.getAttribute('data-comment-id'))
+      }
     })
+    sessionStorage.setItem('selection', JSON.stringify(this.selection))
   }
 
   isAgeValid(age: Date) {
