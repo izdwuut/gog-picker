@@ -83,7 +83,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
       if (comment.author.karma < environment.minKarma) {
         errors.push('not enough karma')
       }
-      if (comment.steamProfile) {
+      if (comment.steamProfile && comment.steamProfile.steamId) {
         if (comment.steamProfile.existent) {
           if (comment.steamProfile.publicProfile) {
             if (comment.steamProfile.level < environment.minLevel) {
@@ -100,8 +100,8 @@ export class ThreadComponent implements OnInit, OnDestroy {
         }
       }
 
-      if(comment.author.age) {
-        if(!this.isAgeValid(comment.author.age)) {
+      if (comment.author.age) {
+        if (!this.isAgeValid(comment.author.age)) {
           errors.push('age too low')
         }
       }
@@ -118,7 +118,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     if (comment.steamProfile == null) {
       return ''
     }
-    if(comment.steamProfile.notScrapped) {
+    if (comment.steamProfile.notScrapped) {
       return ''
     }
     if (comment.steamProfile.existent) {
@@ -150,11 +150,11 @@ export class ThreadComponent implements OnInit, OnDestroy {
   getWarnings(comment: RedditComment): String[] {
     let warnings = Array<String>()
     if (!this.canScrapSteamProfile(comment)) {
-      warnings.push("couldn't scrap comment")
+      warnings.push("couldn't scrap comment/nonexistent Steam profile")
       return warnings
     }
-    if (!comment.steamProfile) {
-      warnings.push('no Steam profile detected')
+    if (!comment.steamProfile.steamId) {
+      warnings.push('no Steam profile detected/nonexistent profile')
     }
     if (comment.steamProfile && comment.steamProfile.gamesCount >= environment.hoarderNumber) {
       warnings.push('potential hoarder (' + comment.steamProfile.gamesCount + ' games)')
@@ -173,7 +173,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
       if (item.checked) {
         winners.push(new ResultsComment(item.value, item._elementRef.nativeElement.getAttribute('data-comment-id')))
       } else {
-        if(item._elementRef.nativeElement.getAttribute('data-has-warnings')) {
+        if (item._elementRef.nativeElement.getAttribute('data-has-warnings')) {
           violators.push(new ResultsComment(item.value, item._elementRef.nativeElement.getAttribute('data-comment-id')))
         }
       }
@@ -213,7 +213,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   getAge(age) {
-    if(age === null) {
+    if (age === null) {
       return ''
     }
     let dateFrom = new Date(age)
