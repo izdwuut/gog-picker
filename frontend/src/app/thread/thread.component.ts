@@ -150,7 +150,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   getWarnings(comment: RedditComment): String[] {
     let warnings = Array<String>()
     if (!this.canScrapSteamProfile(comment)) {
-      warnings.push("couldn't scrap comment")
+      warnings.push("couldn't scrap comment/nonexistent Steam profile")
       return warnings
     }
     if (!comment.steamProfile.steamId) {
