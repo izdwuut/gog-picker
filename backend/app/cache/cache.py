@@ -7,6 +7,8 @@ from app.models import RedditComment, RedditUser, SteamUser
 import logging
 import requests
 from flask_cors import cross_origin
+from prawcore.exceptions import ServerError
+from time import sleep
 
 cache = Blueprint('cache', __name__, url_prefix='/cache')
 
@@ -252,16 +254,26 @@ class GogCache:
         return self.get_json(self.get_comments_from_db(submission.url)), 200
 
     def run_stream(self):
-        for comment in self.reddit.get_regular_comment():
-            if self.scrap_comment(comment):
-                self.filter_comment(comment)
-            logging.info('Scrapped comment: {}.'.format(comment.id))
+        while True:
+            try:
+                for comment in self.reddit.get_regular_comment():
+                    if self.scrap_comment(comment):
+                        self.filter_comment(comment)
+                    logging.info('Scrapped comment: {}.'.format(comment.id))
+            except ServerError:
+                logging.error(Errors.REDDIT_SERVER_ERROR)
+                sleep(30)
 
     def run_edited_stream(self):
-        for comment in self.reddit.get_edited_comment():
-            if self.scrap_comment(comment):
-                self.filter_comment(comment)
-            logging.info('Scrapped edited comment: {}.'.format(comment.id))
+        while True:
+            try:
+                for comment in self.reddit.get_edited_comment():
+                    if self.scrap_comment(comment):
+                        self.filter_comment(comment)
+                    logging.info('Scrapped edited comment: {}.'.format(comment.id))
+            except ServerError:
+                logging.error(Errors.REDDIT_SERVER_ERROR)
+                sleep(30)
 
     def __init__(self):
         self.steam = Steam(current_app.config['STEAM'])

@@ -11,6 +11,7 @@ class Errors:
     REDDIT_KARMA_TOO_LOW = 'Karma too low.'
     BAD_URL = 'Bad URL!'
     NO_REQUIRED_KEYWORDS = 'No required keywords: '
+    REDDIT_SERVER_ERROR = "Couldn't scrap comment due to Reddit server error."
 
     # General
     BLACKLISTED = 'Blacklisted.'
