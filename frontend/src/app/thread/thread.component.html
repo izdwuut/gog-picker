@@ -26,9 +26,9 @@
         No comments detected!
     </div>
     <div *ngIf='isHttpError' class="no-results">
-        Something went wrong. <a [routerLink]="['/']">Please try again.</a>
+        Something went wrong. <a [routerLink]="['/']" >Please try again.</a>
     </div>
-    <div class="results" >
+    <div class="results" *ngIf="!isHttpError">
         <div *ngFor="let comment of comments">
             <mat-card class="comment warning" *ngIf="hasWarnings(comment) && comment.entering">
                 <mat-card-title>
