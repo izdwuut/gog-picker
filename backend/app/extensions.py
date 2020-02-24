@@ -15,7 +15,7 @@ def retry_request(func):
             try:
                 result = func(*args, **kwargs)
             except (PrawcoreException, WebAuthException, HTTPError,
-                    ConnectionError, ResponseException):
+                    ConnectionError, ResponseException, KeyError, TypeError):
                 counter += 1
                 logging.error(Errors.RETRY_REQUEST.format(str(counter)))
                 sleep(0.1)
