@@ -174,12 +174,15 @@ class GogCache:
         steam_user.games_visible = games_visible
         logging.info('Games list visible: {}.'.format(steam_user.games_visible))
 
-        level = self.steam.get_level(steam_user.steam_id)
-        if level is None and steam_user.public_profile:
-            self.commit_not_scrapped_steam_user(steam_user)
-            return
-        steam_user.level = level
-        logging.info('Steam profile level: {}.'.format(steam_user.level))
+        if steam_user.public_profile and steam_user.existent:
+            level = self.steam.get_level(steam_user.steam_id)
+            if level is None:
+                self.commit_not_scrapped_steam_user(steam_user)
+                return
+            steam_user.level = level
+            logging.info('Steam profile level: {}.'.format(steam_user.level))
+        else:
+            logging.info('Steam profile level: {}.'.format(steam_user.level))
 
         steam_user.not_scrapped = False
         if not steam_user.id:

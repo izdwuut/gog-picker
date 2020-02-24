@@ -60,15 +60,8 @@ class Steam:
         return summary['communityvisibilitystate'] == 3
 
     @retry_request
-    def _get_level(self, steam_id):
-        return self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)
-
     def get_level(self, steam_id):
-        try:
-            level = self._get_level(steam_id)['response']['player_level']
-        except (KeyError, TypeError):
-            level = None
-        return level
+        return self.api.call('IPlayerService.GetSteamLevel', steamid=steam_id)['response']['player_level']
 
     def __init__(self, settings):
         self.api = steam.WebAPI(settings.API_KEY)
