@@ -10,6 +10,12 @@
             Non entering comments and comments with errors are displayed at the bottom. They are automatically excluded
             as they can't participate in a drawing. Duplicate entries are discarded later on.
         </p>
+        Legend:
+        <ul>
+            <li><span class="yellow-highlight">warning</span></li>
+            <li><span class="gray-highlight">not entering</span></li>
+            <li><span class="red-highlight">violator</span></li>
+        </ul>
     </div>
     <div class="actions" *ngIf='comments && comments.length > 0'>
         <div>
@@ -84,7 +90,7 @@
             </mat-card>
         </div>
         <div *ngFor="let comment of comments">
-            <mat-card class="comment error" *ngIf="hasErrors(comment) && comment.entering">
+            <mat-card class="comment error" *ngIf="hasErrors(comment) && comment.entering && !hasWarnings(comment)">
                 <mat-card-title>
                     <a href="https://www.reddit.com/user/{{ comment.author.name }}"
                         target="_blank">{{ comment.author.name }}</a>

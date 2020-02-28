@@ -13,8 +13,6 @@
 
   @media only screen and (max-width: $largeTabletWidth) {
     grid-template-columns: 0.25fr 2fr 0.25fr;
-
-    
   }
 }
 
@@ -66,4 +64,16 @@
 
 .no-results {
   color: red;
+}
+
+.yellow-highlight {
+  background-color: #fafa0b;
+}
+
+.gray-highlight {
+  background-color: #b3b3b3;
+}
+
+.red-highlight {
+  background-color: #ff6464;
 }
