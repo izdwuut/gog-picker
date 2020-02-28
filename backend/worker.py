@@ -24,3 +24,9 @@ def scrap_not_scraped():
     logging.info('Listens for non-scraped comments...')
     gog_cache.scrap_not_scraped()
 
+@worker_cli.command('listen-edited-fallback')
+def listen_edited_fallback():
+    gog_cache = GogCache()
+    logging.info('Listens for non-edited comments (fallback)...')
+    gog_cache.run_edited_fallback_stream()
+

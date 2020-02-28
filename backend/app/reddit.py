@@ -111,7 +111,7 @@ class Reddit:
         return username.find('_bot') != -1 or username == 'AutoModerator'
 
     def get_subreddit(self):
-        return self.subreddit.display_name
+        return self.subreddit
 
     def is_entering(self, comment):
         return self.not_entering not in comment.body.lower()

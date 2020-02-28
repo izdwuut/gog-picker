@@ -296,6 +296,22 @@ class GogCache:
                         self.filter_comment(scrapped_comment)
                 sleep(5000)
 
+    def run_edited_fallback_stream(self):
+        while True:
+            try:
+                for submission in self.reddit.get_subreddit()\
+                    .new(limit=current_app.config['REDDIT'].SUBMISSIONS_LIMIT):
+                    if not self.reddit.has_required_keywords(submission.title):
+                        continue
+                    logging.info('Processing thread {}.'.format(submission.url))
+                    for comment in submission.comments:
+                        self.filter_comment(comment)
+            except ServerError:
+                logging.error(Errors.REDDIT_SERVER_ERROR)
+                sleep(30)
+                continue
+            sleep(2 * 60 * 60)
+
     def __init__(self):
         self.steam = Steam(current_app.config['STEAM'])
         self.reddit = Reddit(self.steam, current_app.config['REDDIT'])

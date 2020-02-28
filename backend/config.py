@@ -12,6 +12,7 @@ class RedditConfig:
     USER_AGENT = 'python:gog-picker:v0.15.2 (by /u/izdwuut)'
     NOT_ENTERING = 'not entering'
     MIN_KARMA = 300
+    SUBMISSIONS_LIMIT = 30
 
 
 class SteamConfig:
@@ -42,7 +43,7 @@ class StagingConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     REDDIT = RedditConfig()
-    REDDIT.SUBREDDIT = 'test'
+    REDDIT.SUBREDDIT = 'GiftofGames'
     REDDIT.MIN_KARMA = 0
     # JWT_ACCESS_TOKEN_EXPIRES = 5
     # JWT_REFRESH_TOKEN_EXPIRES = 30
