@@ -1,6 +1,6 @@
 from app.cache.cache import GogCache
 from flask.cli import AppGroup
-import click
+import logging
 
 worker_cli = AppGroup('worker')
 
@@ -8,12 +8,19 @@ worker_cli = AppGroup('worker')
 @worker_cli.command("listen")
 def listen():
     gog_cache = GogCache()
-    print('Listens for non-edited comments...')
+    logging.info('Listens for non-edited comments...')
     gog_cache.run_stream()
 
 
 @worker_cli.command('listen-edited')
 def listen_edited():
     gog_cache = GogCache()
+    logging.info('Listens for non-edited comments...')
     gog_cache.run_edited_stream()
+
+@worker_cli.command('scrap-not-scraped')
+def scrap_not_scraped():
+    gog_cache = GogCache()
+    logging.info('Listens for non-scraped comments...')
+    gog_cache.scrap_not_scraped()
 

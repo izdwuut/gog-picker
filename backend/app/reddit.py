@@ -138,6 +138,9 @@ class Reddit:
     def get_redditor_age(self, redditor):
         return datetime.fromtimestamp(self.get_redditor(redditor).created_utc)
 
+    def get_comment(self, id, url):
+        return praw.models.Comment(id, url)
+
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.MIN_KARMA

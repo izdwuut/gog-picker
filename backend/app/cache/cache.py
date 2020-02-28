@@ -278,6 +278,22 @@ class GogCache:
                 logging.error(Errors.REDDIT_SERVER_ERROR)
                 sleep(30)
 
+    def scrap_not_scraped(self):
+        session = db.session
+        while True:
+            results = session.query(RedditComment)\
+                .join(SteamUser)\
+                .filter(SteamUser.not_scrapped == True)\
+                .all()
+            for comment in results:
+                submission = self.reddit.get_submission(comment.thread)
+                if 'error' in submission:
+                    continue
+                for scrapped_comment in self.reddit.get_comments(submission['success']):
+                    if comment.comment_id == scrapped_comment.id:
+                        self.filter_comment(scrapped_comment)
+                sleep(5000)
+
     def __init__(self):
         self.steam = Steam(current_app.config['STEAM'])
         self.reddit = Reddit(self.steam, current_app.config['REDDIT'])
