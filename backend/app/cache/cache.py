@@ -203,6 +203,8 @@ class GogCache:
             db.session.flush()
 
     def filter_comment(self, comment):
+        if comment.author and self.reddit.is_user_special(comment.author.name):
+            return
         logging.info('Processing comment {}. Thread: {}.'.format(comment.id, comment.submission.url))
         if self.reddit.is_deleted(comment):
             self.delete_comment_from_db(comment)
@@ -277,6 +279,38 @@ class GogCache:
             except ServerError:
                 logging.error(Errors.REDDIT_SERVER_ERROR)
                 sleep(30)
+
+    def scrap_not_scraped(self):
+        session = db.session
+        while True:
+            results = session.query(RedditComment)\
+                .join(SteamUser)\
+                .filter(SteamUser.not_scrapped == True)\
+                .all()
+            for comment in results:
+                submission = self.reddit.get_submission(comment.thread)
+                if 'error' in submission:
+                    continue
+                for scrapped_comment in self.reddit.get_comments(submission['success']):
+                    if comment.comment_id == scrapped_comment.id:
+                        self.filter_comment(scrapped_comment)
+                sleep(5000)
+
+    def run_edited_fallback_stream(self):
+        while True:
+            try:
+                for submission in self.reddit.get_subreddit()\
+                    .new(limit=current_app.config['REDDIT'].SUBMISSIONS_LIMIT):
+                    if not self.reddit.has_required_keywords(submission.title):
+                        continue
+                    logging.info('Processing thread {}.'.format(submission.url))
+                    for comment in submission.comments:
+                        self.filter_comment(comment)
+            except ServerError:
+                logging.error(Errors.REDDIT_SERVER_ERROR)
+                sleep(30)
+                continue
+            sleep(2 * 60 * 60)
 
     def __init__(self):
         self.steam = Steam(current_app.config['STEAM'])

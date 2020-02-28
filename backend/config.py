@@ -9,9 +9,10 @@ class RedditConfig:
     CLIENT_SECRET = os.environ['GOG_PICKER_REDDIT_CLIENT_SECRET']
     USERNAME = os.environ['GOG_PICKER_REDDIT_USERNAME']
     PASSWORD = os.environ['GOG_PICKER_REDDIT_PASSWORD']
-    USER_AGENT = 'python:gog-picker:v0.15.2 (by /u/izdwuut)'
+    USER_AGENT = 'python:gog-picker:v0.16.0 (by /u/izdwuut)'
     NOT_ENTERING = 'not entering'
     MIN_KARMA = 300
+    SUBMISSIONS_LIMIT = 30
 
 
 class SteamConfig:
@@ -42,7 +43,7 @@ class StagingConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     REDDIT = RedditConfig()
-    REDDIT.SUBREDDIT = 'test'
+    REDDIT.SUBREDDIT = 'GiftofGames'
     REDDIT.MIN_KARMA = 0
     # JWT_ACCESS_TOKEN_EXPIRES = 5
     # JWT_REFRESH_TOKEN_EXPIRES = 30

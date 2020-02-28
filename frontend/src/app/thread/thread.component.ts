@@ -196,11 +196,11 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
   getWarnings(comment: RedditComment): String[] {
     let warnings = Array<String>()
     if (!this.canScrapSteamProfile(comment)) {
-      warnings.push("couldn't scrap comment/inaccessible Steam profile")
+      warnings.push("couldn't scrap comment. Please check Steam profile manually.")
       return warnings
     }
     if (!comment.steamProfile.steamId) {
-      warnings.push('no Steam profile detected/inaccessible profile')
+      warnings.push('no Steam profile detected/inaccessible profile. Please check it manually.')
     }
     if (comment.steamProfile && comment.steamProfile.gamesCount >= environment.hoarderNumber) {
       warnings.push('potential hoarder (' + comment.steamProfile.gamesCount + ' games)')
