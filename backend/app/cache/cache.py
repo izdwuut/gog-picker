@@ -205,7 +205,7 @@ class GogCache:
             db.session.flush()
 
     def filter_comment(self, comment):
-        if isinstance(comment, MoreComments) or (comment.author and self.reddit.is_user_special(comment.author.name)):
+        if comment.author and self.reddit.is_user_special(comment.author.name):
             return
         logging.info('Processing comment {}. Thread: {}.'.format(comment.id, comment.submission.url))
         if self.reddit.is_deleted(comment):
@@ -306,7 +306,7 @@ class GogCache:
                     if not self.reddit.has_required_keywords(submission.title):
                         continue
                     logging.info('Processing thread {}.'.format(submission.url))
-                    for comment in submission.comments:
+                    for comment in self.reddit.get_comments(submission):
                         self.filter_comment(comment)
             except ServerError:
                 logging.error(Errors.REDDIT_SERVER_ERROR)
