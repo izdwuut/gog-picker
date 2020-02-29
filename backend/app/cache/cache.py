@@ -10,6 +10,7 @@ from flask_cors import cross_origin
 from prawcore.exceptions import ServerError
 from time import sleep
 from tqdm import tqdm
+from praw.models import MoreComments
 
 cache = Blueprint('cache', __name__, url_prefix='/cache')
 
@@ -204,7 +205,7 @@ class GogCache:
             db.session.flush()
 
     def filter_comment(self, comment):
-        if comment.author and self.reddit.is_user_special(comment.author.name):
+        if isinstance(comment, MoreComments) or (comment.author and self.reddit.is_user_special(comment.author.name)):
             return
         logging.info('Processing comment {}. Thread: {}.'.format(comment.id, comment.submission.url))
         if self.reddit.is_deleted(comment):
