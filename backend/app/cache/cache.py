@@ -9,6 +9,7 @@ import requests
 from flask_cors import cross_origin
 from prawcore.exceptions import ServerError
 from time import sleep
+from tqdm import tqdm
 
 cache = Blueprint('cache', __name__, url_prefix='/cache')
 
@@ -310,7 +311,10 @@ class GogCache:
                 logging.error(Errors.REDDIT_SERVER_ERROR)
                 sleep(30)
                 continue
-            sleep(2 * 60 * 60)
+            hours = 2
+            logging.info('Sleeping for {} hours.'.format(hours))
+            for i in tqdm(range(hours * 60 * 60)):
+                sleep(1)
 
     def __init__(self):
         self.steam = Steam(current_app.config['STEAM'])
