@@ -146,6 +146,9 @@ class Reddit:
     def get_comment(self, id, url):
         return praw.models.Comment(id, url)
 
+    def is_suspended(self, redditor):
+        return hasattr(redditor, 'is_suspended')
+
     def __init__(self, steam, settings):
         self.steam_api = steam
         self.min_karma = settings.MIN_KARMA
