@@ -9,7 +9,7 @@ class RedditConfig:
     CLIENT_SECRET = os.environ['GOG_PICKER_REDDIT_CLIENT_SECRET']
     USERNAME = os.environ['GOG_PICKER_REDDIT_USERNAME']
     PASSWORD = os.environ['GOG_PICKER_REDDIT_PASSWORD']
-    USER_AGENT = 'python:gog-picker:v0.17.2 (by /u/izdwuut)'
+    USER_AGENT = 'python:gog-picker:v0.18.0 (by /u/izdwuut)'
     NOT_ENTERING = 'not entering'
     MIN_KARMA = 300
     SUBMISSIONS_LIMIT = 30

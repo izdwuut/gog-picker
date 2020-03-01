@@ -10,7 +10,6 @@ from flask_cors import cross_origin
 from prawcore.exceptions import ServerError
 from time import sleep
 from tqdm import tqdm
-from praw.models import MoreComments
 
 cache = Blueprint('cache', __name__, url_prefix='/cache')
 
@@ -57,7 +56,7 @@ class GogCache:
             logging.info('Comment {} already exists. Updating...'.format(comment.id))
             logging.info('Is comment {} entering: {}.'.format(comment.id, entering))
             result.entering = entering
-            result.body = comment.body_html
+            result.body = comment.body
             db.session.commit()
             db.session.flush()
             logging.info('Comment {} updated.'.format(comment.id))
@@ -68,7 +67,7 @@ class GogCache:
                                        author=author,
                                        comment_id=comment.id,
                                        entering=entering,
-                                       body=comment.body_html)
+                                       body=comment.body)
         db.session.add(reddit_comment)
         db.session.commit()
         db.session.flush()
