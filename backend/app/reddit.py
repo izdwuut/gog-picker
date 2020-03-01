@@ -6,7 +6,6 @@ from praw.models.util import stream_generator
 from app._errors import Errors
 from app.extensions import retry_request
 from datetime import datetime
-from psaw import PushshiftAPI
 from markdown import markdown
 
 class Reddit:
@@ -27,14 +26,10 @@ class Reddit:
 
     def get_comments(self, submission):
         comments = []
-        for comment in self.psaw.search_comments(link_id=submission.id):
-            comment.body_html = self.get_body_html(comment.body)
-            comments.append(comment)
-        if comments:
-            return comments
         try:
             submission.comments.replace_more(limit=None)
-            comments = submission.comments
+            for comment in submission.comments.list():
+                comments.append(comment)
         except prawcore.exceptions.NotFound:
             return []
         return comments
@@ -155,7 +150,6 @@ class Reddit:
         self.steam_api = steam
         self.min_karma = settings.MIN_KARMA
         self.api = self.get_api(settings)
-        self.psaw = PushshiftAPI(self.api)
         self.subreddit = self.api.subreddit(settings.SUBREDDIT)
         self.not_entering = settings.NOT_ENTERING
         self.required_keywords = settings.REQUIRED_KEYWORDS
