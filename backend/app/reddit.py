@@ -118,7 +118,7 @@ class Reddit:
 
     @staticmethod
     def is_user_special(username):
-        return username.find('_bot') != -1 or username == 'AutoModerator'
+        return username.find('_bot') != -1 or username == 'AutoModerator' or username == 'OurRobotOverlord'
 
     def get_subreddit(self):
         return self.subreddit
