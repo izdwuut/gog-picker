@@ -12,7 +12,7 @@ class RedditConfig:
     USER_AGENT = 'python:gog-picker:v0.18.0 (by /u/izdwuut)'
     NOT_ENTERING = 'not entering'
     MIN_KARMA = 300
-    SUBMISSIONS_LIMIT = 30
+    SUBMISSIONS_LIMIT = 100
 
 
 class SteamConfig:
