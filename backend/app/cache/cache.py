@@ -116,14 +116,12 @@ class GogCache:
         if not steam_user:
             steam_user = SteamUser()
         steam_user.comment = reddit_comment
-        steam_user.steam_id = self.steam.get_id(self.steam.get_steam_profile(comment))
-        if not steam_user.steam_id:
-            logging.error('{}. Setting "public", "existent" and "games_visible" to False. Setting level to None.'.format(Errors.NONEXISTENT_STEAM_PROFILE))
-            steam_user.public_profile = False
-            steam_user.existent = False
-            steam_user.games_visible = False
-            steam_user.level = None
-            steam_user.games_count = 0
+        steam_user.url = self.steam.get_steam_profile(comment)
+        logging.info('Steam URL: {}.'.format(steam_user.url))
+        steam_user.steam_id = self.steam.get_id(steam_user.url)
+        logging.info('Steam ID: {}.'.format(steam_user.steam_id))
+        if not steam_user.url or not steam_user.steam_id:
+            logging.error('{}. Aborting.'.format(Errors.NONEXISTENT_STEAM_PROFILE))
             if not steam_user.id:
                 db.session.add(steam_user)
             else:
@@ -240,7 +238,8 @@ class GogCache:
                                                  'level': steam_profile.level,
                                                  'public_profile': steam_profile.public_profile,
                                                  'games_count': steam_profile.games_count,
-                                                 'not_scrapped': steam_profile.not_scrapped}
+                                                 'not_scrapped': steam_profile.not_scrapped,
+                                                 'url': steam_profile.url}
             else:
                 json_comment['steam_profile'] = None
             json_comments.append(json_comment)

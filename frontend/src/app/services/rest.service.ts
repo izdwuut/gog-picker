@@ -38,7 +38,8 @@ export class RestService {
           steamProfile = new SteamProfile(record.steam_profile.steam_id, 
             record.steam_profile.existent, record.steam_profile.games_count,
             record.steam_profile.games_visible, record.steam_profile.level, 
-            record.steam_profile.public_profile, record.steam_profile.not_scrapped)
+            record.steam_profile.public_profile, record.steam_profile.not_scrapped,
+            record.steam_profile.url)
         }
         let comment = new RedditComment(record.body, record.comment_id, record.entering, redditProfile, steamProfile)
         comments.push(comment)
