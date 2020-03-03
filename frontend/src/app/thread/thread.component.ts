@@ -131,19 +131,21 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       if (comment.steamProfile) {
         if (comment.steamProfile.url) {
-          if (comment.steamProfile.existent) {
-            if (comment.steamProfile.publicProfile) {
-              if (comment.steamProfile.level < environment.minLevel) {
-                errors.push('Steam level too low')
-              }
-              if (!comment.steamProfile.gamesVisible) {
-                errors.push('Steam games not visible')
+          if (comment.steamProfile.steamId) {
+            if (comment.steamProfile.existent) {
+              if (comment.steamProfile.publicProfile) {
+                if (comment.steamProfile.level < environment.minLevel) {
+                  errors.push('Steam level too low')
+                }
+                if (!comment.steamProfile.gamesVisible) {
+                  errors.push('Steam games not visible')
+                }
+              } else {
+                errors.push('non public Steam profile')
               }
             } else {
-              errors.push('non public Steam profile')
+              errors.push('nonexistent Steam profile')
             }
-          } else {
-            errors.push('nonexistent Steam profile')
           }
         } else {
           errors.push('no Steam profile link')
@@ -202,7 +204,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
     if (comment.steamProfile && !comment.steamProfile.url) {
       return warnings
     }
-    if (!this.canScrapSteamProfile(comment)) {
+    if (!this.canScrapSteamProfile(comment) || !comment.steamProfile.steamId) {
       warnings.push("couldn't scrap Steam profile. Please check it manually.")
       return warnings
     }
