@@ -195,7 +195,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   canScrapSteamProfile(comment: RedditComment): Boolean {
-    return comment.steamProfile && !comment.steamProfile.notScrapped
+    return comment.steamProfile && comment.steamProfile.steamId && !comment.steamProfile.notScrapped
   }
 
   getWarnings(comment: RedditComment): String[] {
@@ -203,8 +203,8 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
     if (comment.steamProfile && !comment.steamProfile.url) {
       return warnings
     }
-    if (!this.canScrapSteamProfile(comment) || !comment.steamProfile.steamId) {
-      warnings.push("couldn't scrap comment/inaccessible Steam profile. Please check Steam profile manually.")
+    if (!this.canScrapSteamProfile(comment)) {
+      warnings.push("couldn't scrap comment/inaccessible Steam profile. Please check it manually.")
       return warnings
     }
     if (comment.steamProfile && comment.steamProfile.gamesCount >= environment.hoarderNumber) {
