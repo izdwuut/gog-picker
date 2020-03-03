@@ -146,7 +146,6 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
             errors.push('nonexistent Steam profile')
           }
         } else {
-          
           errors.push('no Steam profile link')
         }
       }
@@ -195,7 +194,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   canScrapSteamProfile(comment: RedditComment): Boolean {
-    return comment.steamProfile && comment.steamProfile.steamId && !comment.steamProfile.notScrapped
+    return comment.steamProfile && !comment.steamProfile.notScrapped
   }
 
   getWarnings(comment: RedditComment): String[] {
@@ -204,7 +203,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
       return warnings
     }
     if (!this.canScrapSteamProfile(comment)) {
-      warnings.push("couldn't scrap comment/inaccessible Steam profile. Please check it manually.")
+      warnings.push("couldn't scrap Steam profile. Please check it manually.")
       return warnings
     }
     if (comment.steamProfile && comment.steamProfile.gamesCount >= environment.hoarderNumber) {
