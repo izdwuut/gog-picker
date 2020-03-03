@@ -56,7 +56,7 @@ class GogCache:
             logging.info('Comment {} already exists. Updating...'.format(comment.id))
             logging.info('Is comment {} entering: {}.'.format(comment.id, entering))
             result.entering = entering
-            result.body = comment.body
+            result.body = comment.body_html
             db.session.commit()
             db.session.flush()
             logging.info('Comment {} updated.'.format(comment.id))
@@ -67,7 +67,7 @@ class GogCache:
                                        author=author,
                                        comment_id=comment.id,
                                        entering=entering,
-                                       body=comment.body)
+                                       body=comment.body_html)
         db.session.add(reddit_comment)
         db.session.commit()
         db.session.flush()
