@@ -29,7 +29,8 @@ class Reddit:
         try:
             submission.comments.replace_more(limit=None)
             for comment in submission.comments.list():
-                comments.append(comment)
+                if Reddit.is_top_level_comment(comment):
+                    comments.append(comment)
         except prawcore.exceptions.NotFound:
             return []
         return comments
