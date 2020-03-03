@@ -141,7 +141,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
                   errors.push('Steam games not visible')
                 }
               } else {
-                errors.push('non public Steam profile')
+                errors.push('private Steam profile')
               }
             } else {
               errors.push('nonexistent Steam profile')
@@ -183,7 +183,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
           profile.push('games not visible')
         }
       } else {
-        profile.push('non public')
+        profile.push('private')
       }
     } else {
       profile.push('nonexistent')
