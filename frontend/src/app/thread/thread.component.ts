@@ -42,9 +42,9 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
             sessionStorage.setItem('comments', JSON.stringify(results))
             this.initSelected()
           },
-          error => {
-            this.isHttpError = true
-          })
+            error => {
+              this.isHttpError = true
+            })
         } else {
           this.initSelected()
         }
@@ -96,7 +96,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
 
   saveSelection(commentId: String, $event) {
     const index = this.selection.indexOf(commentId)
-    if($event.checked && index == -1) {
+    if ($event.checked && index == -1) {
       this.selection.push(commentId)
     } else {
       this.selection.splice(index, 1)
@@ -129,20 +129,26 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
       if (comment.author.karma < environment.minKarma) {
         errors.push('not enough karma')
       }
-      if (comment.steamProfile && comment.steamProfile.steamId) {
-        if (comment.steamProfile.existent) {
-          if (comment.steamProfile.publicProfile) {
-            if (comment.steamProfile.level < environment.minLevel) {
-              errors.push('Steam level too low')
+      if (comment.steamProfile) {
+        if (comment.steamProfile.url) {
+          if (comment.steamProfile.steamId) {
+            if (comment.steamProfile.existent) {
+              if (comment.steamProfile.publicProfile) {
+                if (comment.steamProfile.level < environment.minLevel) {
+                  errors.push('Steam level too low')
+                }
+                if (!comment.steamProfile.gamesVisible) {
+                  errors.push('Steam games not visible')
+                }
+              } else {
+                errors.push('private Steam profile')
+              }
+            } else {
+              errors.push('nonexistent Steam profile')
             }
-            if (!comment.steamProfile.gamesVisible) {
-              errors.push('Steam games not visible')
-            }
-          } else {
-            errors.push('non public Steam profile')
           }
         } else {
-          errors.push('nonexistent Steam profile')
+          errors.push('no Steam profile link')
         }
       }
 
@@ -164,7 +170,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
     if (comment.steamProfile == null) {
       return ''
     }
-    if (comment.steamProfile.notScrapped) {
+    if (comment.steamProfile.notScrapped || !comment.steamProfile.url) {
       return ''
     }
     if (comment.steamProfile.existent) {
@@ -177,7 +183,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
           profile.push('games not visible')
         }
       } else {
-        profile.push('non public')
+        profile.push('private')
       }
     } else {
       profile.push('nonexistent')
@@ -195,12 +201,12 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getWarnings(comment: RedditComment): String[] {
     let warnings = Array<String>()
-    if (!this.canScrapSteamProfile(comment)) {
-      warnings.push("couldn't scrap comment. Please check Steam profile manually.")
+    if (comment.steamProfile && !comment.steamProfile.url) {
       return warnings
     }
-    if (!comment.steamProfile.steamId) {
-      warnings.push('no Steam profile detected/inaccessible profile. Please check it manually.')
+    if (!this.canScrapSteamProfile(comment) || !comment.steamProfile.steamId) {
+      warnings.push("couldn't scrap Steam profile. Please check it manually.")
+      return warnings
     }
     if (comment.steamProfile && comment.steamProfile.gamesCount >= environment.hoarderNumber) {
       warnings.push('potential hoarder (' + comment.steamProfile.gamesCount + ' games)')
@@ -249,7 +255,7 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selection = []
     this.results.forEach(item => {
       item.checked = this.isAllToggled
-      if(this.isAllToggled) {
+      if (this.isAllToggled) {
         this.selection.push(item._elementRef.nativeElement.getAttribute('data-comment-id'))
       }
     })

@@ -6,9 +6,13 @@ from praw.models.util import stream_generator
 from app._errors import Errors
 from app.extensions import retry_request
 from datetime import datetime
+from markdown import markdown
 
 class Reddit:
     not_included_keywords = ''
+
+    def get_body_html(self, body):
+        return markdown(body)
 
     @staticmethod
     def is_deleted(item):
@@ -20,11 +24,13 @@ class Reddit:
     def get_not_deleted_comments(cls, submission):
         return [comment for comment in Reddit.get_comments(submission) if not cls.is_deleted(comment)]
 
-    @staticmethod
-    def get_comments(submission):
+    def get_comments(self, submission):
+        comments = []
         try:
             submission.comments.replace_more(limit=None)
-            comments = submission.comments
+            for comment in submission.comments.list():
+                if Reddit.is_top_level_comment(comment):
+                    comments.append(comment)
         except prawcore.exceptions.NotFound:
             return []
         return comments
@@ -108,7 +114,7 @@ class Reddit:
 
     @staticmethod
     def is_user_special(username):
-        return username.find('_bot') != -1 or username == 'AutoModerator'
+        return username.find('_bot') != -1 or username == 'AutoModerator' or username == 'OurRobotOverlord'
 
     def get_subreddit(self):
         return self.subreddit
@@ -140,6 +146,9 @@ class Reddit:
 
     def get_comment(self, id, url):
         return praw.models.Comment(id, url)
+
+    def is_suspended(self, redditor):
+        return hasattr(redditor, 'is_suspended')
 
     def __init__(self, steam, settings):
         self.steam_api = steam

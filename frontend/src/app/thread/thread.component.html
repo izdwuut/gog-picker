@@ -44,7 +44,7 @@
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br />
                     <div *ngIf='comment.entering'>
-                        <div *ngIf='comment.steamProfile && comment.steamProfile.steamId && canScrapSteamProfile(comment)'>
+                        <div *ngIf='canScrapSteamProfile(comment) && comment.steamProfile.steamId'>
                             <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
                                 target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                         </div>
@@ -65,7 +65,7 @@
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br />
-                    <div *ngIf='comment.steamProfile && comment.steamProfile.steamId && canScrapSteamProfile(comment)'>
+                    <div *ngIf='canScrapSteamProfile(comment) && comment.steamProfile.steamId'>
                         <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
                             target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                     </div>
@@ -97,7 +97,7 @@
                 </mat-card-title>
                 <mat-card-subtitle>
                     Comment karma: {{ comment.author.karma }}<span *ngIf='getAge(comment.author.age)'>, age: {{ getAge(comment.author.age) }}</span><br />
-                    <div *ngIf='comment.steamProfile && comment.steamProfile.steamId && canScrapSteamProfile(comment)'>
+                    <div *ngIf='canScrapSteamProfile(comment) && comment.steamProfile.steamId'>
                         <a href="https://steamcommunity.com/profiles/{{ comment.steamProfile.steamId }}/"
                             target="_blank">Steam profile</a>: {{ getSteamProfile(comment) }}
                     </div>

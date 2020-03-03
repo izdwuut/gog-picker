@@ -47,13 +47,15 @@ class SteamUser(db.Model):
     games_visible = db.Column(db.Boolean)
     games_count = db.Column(db.Integer)
     not_scrapped = db.Column(db.Boolean, default=False)
+    url = db.Column(db.String())
 
-    def __init__(self, level=None, public=None, steam_id=None, reddit_user=None, games_count=None):
+    def __init__(self, level=None, public=None, steam_id=None, reddit_user=None, games_count=None, url=url):
         self.level = level
         self.public_profile = public
         self.steam_id = steam_id
         self.reddit_user = reddit_user
         self.games_count = games_count
+        self.url = url
 
 
 class Results(db.Model):
