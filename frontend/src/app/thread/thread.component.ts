@@ -84,7 +84,6 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
   setSelected() {
     this.selection = JSON.parse(sessionStorage.getItem('selection'))
     this.results.forEach(item => {
-      console.log(true)
       const commentId = item._elementRef.nativeElement.getAttribute('data-comment-id')
       if (this.selection.includes(commentId)) {
         item.checked = true
