@@ -197,6 +197,7 @@ class GogCache:
         session = db.session
         result = session.query(RedditComment).filter(RedditComment.comment_id == comment.id).first()
         if result:
+            logging.info("Comment {} has been deleted. Deleting from database.".format(comment.id))
             db.session.delete(result)
             db.session.commit()
             db.session.flush()
