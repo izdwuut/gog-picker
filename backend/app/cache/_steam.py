@@ -39,7 +39,7 @@ class Steam:
         result = re.search("(" + self.steam_url + "/(?:id|profiles)/ ?[^\)\]\"< ]+)", comment_body.lower())
         url = ''
         if result:
-            url = 'https://' + result.group(0).replace(' ', '').strip('.').strip(',').replace('%20', '')
+            url = 'https://' + result.group(0).replace(' ', '').strip('.').strip(',').replace('%20', '').replace('%5c', '')
         return url
 
     @retry_request
