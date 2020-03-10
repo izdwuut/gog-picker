@@ -111,17 +111,6 @@ export class ThreadComponent implements OnInit, OnDestroy, AfterViewInit {
     return comment.steamProfile == null || !comment.steamProfile.existent || comment.steamProfile.gamesCount >= environment.hoarderNumber
   }
 
-  isError(comment: RedditComment): Boolean {
-    if (comment.steamProfile) {
-      return comment.author.karma < environment.minKarma ||
-        !comment.steamProfile.existent ||
-        comment.steamProfile.level < environment.minLevel ||
-        !comment.steamProfile.gamesVisible ||
-        !comment.steamProfile.publicProfile
-    }
-    return comment.author.karma < environment.minKarma
-  }
-
   getErrors(comment: RedditComment): String[] {
     let errors = Array<String>()
     if (comment.entering) {
