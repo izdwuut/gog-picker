@@ -203,10 +203,9 @@ class GogCache:
             db.session.flush()
 
     def filter_comment(self, comment):
-        if comment.author and self.reddit.is_user_special(comment.author.name):
-            return
-        if comment.author and self.reddit.is_suspended(comment.author):
-            return
+        if comment.author:
+            if self.reddit.is_user_special(comment.author.name) or self.reddit.is_suspended(comment.author) or self.reddit.is_submitter(comment):
+                return
         logging.info('Processing comment {}. Thread: {}.'.format(comment.id, comment.submission.url))
         if self.reddit.is_deleted(comment):
             self.delete_comment_from_db(comment)
