@@ -264,6 +264,8 @@ class GogCache:
         while True:
             try:
                 for comment in self.reddit.get_regular_comment():
+                    if comment is None:
+                        continue
                     if self.scrap_comment(comment):
                         self.filter_comment(comment)
                     logging.info('Scrapped comment: {}.'.format(comment.id))
@@ -275,6 +277,8 @@ class GogCache:
         while True:
             try:
                 for comment in self.reddit.get_edited_comment():
+                    if comment is None:
+                        continue
                     if self.scrap_comment(comment):
                         self.filter_comment(comment)
                     logging.info('Scrapped edited comment: {}.'.format(comment.id))
