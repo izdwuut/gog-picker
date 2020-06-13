@@ -11,7 +11,8 @@ class Steam:
                              steamid=steamid,
                              include_appinfo=False,
                              include_played_free_games=False,
-                             appids_filter=None)['response']
+                             appids_filter=None,
+                             include_free_sub=False)['response']
 
     def is_games_list_visible(self, games):
         return bool(games)
